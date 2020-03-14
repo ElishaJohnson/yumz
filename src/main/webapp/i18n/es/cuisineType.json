@@ -1,0 +1,23 @@
+{
+  "yumzApp": {
+    "cuisineType": {
+      "home": {
+        "title": "Cuisine Types",
+        "createLabel": "Crear nuevo Cuisine Type",
+        "createOrEditLabel": "Crear o editar Cuisine Type",
+        "notFound": "Ningún Cuisine Types encontrado"
+      },
+      "created": "Un nuevo Cuisine Type ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cuisine Type ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cuisine Type ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cuisine Type {{ id }}?"
+      },
+      "detail": {
+        "title": "Cuisine Type"
+      },
+      "name": "Name",
+      "restaurant": "Restaurant"
+    }
+  }
+}

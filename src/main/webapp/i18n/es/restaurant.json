@@ -1,0 +1,27 @@
+{
+  "yumzApp": {
+    "restaurant": {
+      "home": {
+        "title": "Restaurants",
+        "createLabel": "Crear nuevo Restaurant",
+        "createOrEditLabel": "Crear o editar Restaurant",
+        "notFound": "Ningún Restaurants encontrado"
+      },
+      "created": "Un nuevo Restaurant ha sido creado con el identificador {{ param }}",
+      "updated": "Un Restaurant ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Restaurant ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Restaurant {{ id }}?"
+      },
+      "detail": {
+        "title": "Restaurant"
+      },
+      "name": "Name",
+      "location": "Location",
+      "phone": "Phone",
+      "website": "Website",
+      "cuisineType": "Cuisine Type",
+      "review": "Review"
+    }
+  }
+}

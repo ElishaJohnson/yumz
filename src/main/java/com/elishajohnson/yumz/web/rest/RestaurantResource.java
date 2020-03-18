@@ -97,6 +97,8 @@ public class RestaurantResource {
     public ResponseEntity<List<Restaurant>> getAllRestaurants(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get a page of Restaurants");
         Page<Restaurant> page;
+        eagerload = true;
+        log.debug("eagerload = " + eagerload);
         if (eagerload) {
             page = restaurantRepository.findAllWithEagerRelationships(pageable);
         } else {

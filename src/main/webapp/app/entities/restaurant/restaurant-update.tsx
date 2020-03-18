@@ -75,14 +75,14 @@ export const RestaurantUpdate = (props: IRestaurantUpdateProps) => {
             <p>Loading...</p>
           ) : (
             <AvForm model={isNew ? {} : restaurantEntity} onSubmit={saveEntity}>
-              {!isNew ? (
+              {/* }{!isNew ? (
                 <AvGroup>
                   <Label for="restaurant-id">
                     <Translate contentKey="global.field.id">ID</Translate>
                   </Label>
                   <AvInput id="restaurant-id" type="text" className="form-control" name="id" required readOnly />
                 </AvGroup>
-              ) : null}
+              ) : null} */}
               <AvGroup>
                 <Label id="nameLabel" for="restaurant-name">
                   <Translate contentKey="yumzApp.restaurant.name">Name</Translate>
@@ -164,7 +164,7 @@ export const RestaurantUpdate = (props: IRestaurantUpdateProps) => {
                     : null}
                 </AvInput>
               </AvGroup>
-              <AvGroup>
+              {/* }<AvGroup>
                 <Label for="restaurant-review">
                   <Translate contentKey="yumzApp.restaurant.review">Review</Translate>
                 </Label>
@@ -178,7 +178,7 @@ export const RestaurantUpdate = (props: IRestaurantUpdateProps) => {
                       ))
                     : null}
                 </AvInput>
-              </AvGroup>
+              </AvGroup> */}
               <Button tag={Link} id="cancel-save" to="/restaurant" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

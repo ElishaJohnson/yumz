@@ -134,7 +134,7 @@ export const Review = (props: IReviewProps) => {
                     <td>
                       <TextFormat type="date" value={review.reviewDate} format={APP_DATE_FORMAT} />
                     </td>
-                    <td>{review.user ? review.user.id : ''}</td>
+                    <td>{review.user ? review.user.login : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${review.id}`} color="info" size="sm">

@@ -70,14 +70,14 @@ export const CuisineTypeUpdate = (props: ICuisineTypeUpdateProps) => {
             <p>Loading...</p>
           ) : (
             <AvForm model={isNew ? {} : cuisineTypeEntity} onSubmit={saveEntity}>
-              {!isNew ? (
+              {/* }{!isNew ? (
                 <AvGroup>
                   <Label for="cuisine-type-id">
                     <Translate contentKey="global.field.id">ID</Translate>
                   </Label>
                   <AvInput id="cuisine-type-id" type="text" className="form-control" name="id" required readOnly />
                 </AvGroup>
-              ) : null}
+              ) : null} */}
               <AvGroup>
                 <Label id="nameLabel" for="cuisine-type-name">
                   <Translate contentKey="yumzApp.cuisineType.name">Name</Translate>

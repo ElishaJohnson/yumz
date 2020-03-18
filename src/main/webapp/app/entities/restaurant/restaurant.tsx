@@ -101,6 +101,9 @@ export const Restaurant = (props: IRestaurantProps) => {
                   <th className="hand" onClick={sort('name')}>
                     <Translate contentKey="yumzApp.restaurant.name">Name</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
+                  <th className="hand" onClick={sort('')}>  {/* TODO: implement sort by cuisine type */}
+                    <Translate contentKey="yumzApp.restaurant.cuisineType">Cuisine Type</Translate> <FontAwesomeIcon icon="sort" />
+                  </th>
                   <th className="hand" onClick={sort('location')}>
                     <Translate contentKey="yumzApp.restaurant.location">Location</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -109,9 +112,6 @@ export const Restaurant = (props: IRestaurantProps) => {
                   </th>
                   <th className="hand" onClick={sort('website')}>
                     <Translate contentKey="yumzApp.restaurant.website">Website</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th>
-                    <Translate contentKey="yumzApp.restaurant.review">Review</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
                   <th />
                 </tr>
@@ -125,10 +125,11 @@ export const Restaurant = (props: IRestaurantProps) => {
                       </Button>
                     </td>
                     <td>{restaurant.name}</td>
+                    <td>{restaurant.cuisineTypes ? restaurant.cuisineTypes.map(cuisineType =>
+                      cuisineType.name).join(", ") : 'o'}</td>
                     <td>{restaurant.location}</td>
                     <td>{restaurant.phone}</td>
                     <td>{restaurant.website}</td>
-                    <td>{restaurant.review ? <Link to={`review/${restaurant.review.id}`}>{restaurant.review.id}</Link> : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${restaurant.id}`} color="info" size="sm">

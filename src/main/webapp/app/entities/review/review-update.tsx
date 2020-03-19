@@ -45,7 +45,7 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
   }, [props.updateSuccess]);
 
   const saveEntity = (event, errors, values) => {
-    values.reviewDate = convertDateTimeToServer(values.reviewDate);
+    values.reviewDate = convertDateTimeToServer(new Date());
 
     if (errors.length === 0) {
       const entity = {
@@ -145,7 +145,7 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
                   }}
                 />
               </AvGroup>
-              <AvGroup>
+              {/* <AvGroup>
                 <Label id="reviewDateLabel" for="review-reviewDate">
                   <Translate contentKey="yumzApp.review.reviewDate">Review Date</Translate>
                 </Label>
@@ -157,7 +157,7 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
                   placeholder={'YYYY-MM-DD HH:mm'}
                   value={isNew ? displayDefaultDateTime() : convertDateTimeFromServer(props.reviewEntity.reviewDate)}
                 />
-              </AvGroup>
+              </AvGroup> */}
               <AvGroup>
                 <Label for="review-user">
                   <Translate contentKey="yumzApp.review.user">User</Translate>

@@ -162,7 +162,15 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
                 <Label for="review-user">
                   <Translate contentKey="yumzApp.review.user">User</Translate>
                 </Label>
-                <AvInput id="review-user" type="select" className="form-control" name="user.id">
+                <AvInput
+                  id="review-user"
+                  type="select"
+                  className="form-control"
+                  name="user.id"
+                  validate={{
+                    required: { value: true, errorMessage: translate('entity.validation.required') }
+                  }}
+                >
                   <option value="" key="0" />
                   {users
                     ? users.map(otherEntity => (
@@ -177,7 +185,15 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
                 <Label for="review-restaurant">
                   <Translate contentKey="yumzApp.review.restaurant">Restaurant</Translate>
                 </Label>
-                <AvInput id="review-restaurant" type="select" className="form-control" name="restaurant.id">
+                <AvInput
+                  id="review-restaurant"
+                  type="select"
+                  className="form-control"
+                  name="restaurant.id"
+                  validate={{
+                    required: { value: true, errorMessage: translate('entity.validation.required') }
+                  }}
+                >
                   <option value="" key="0" />
                   {restaurants
                     ? restaurants.map(otherEntity => (

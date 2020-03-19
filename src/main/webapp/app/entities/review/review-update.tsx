@@ -76,14 +76,14 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
             <p>Loading...</p>
           ) : (
             <AvForm model={isNew ? {} : reviewEntity} onSubmit={saveEntity}>
-              {!isNew ? (
+              {/* {!isNew ? (
                 <AvGroup>
                   <Label for="review-id">
                     <Translate contentKey="global.field.id">ID</Translate>
                   </Label>
                   <AvInput id="review-id" type="text" className="form-control" name="id" required readOnly />
                 </AvGroup>
-              ) : null}
+              ) : null} */}
               <AvGroup>
                 <Label id="reviewTextLabel" for="review-reviewText">
                   <Translate contentKey="yumzApp.review.reviewText">Review Text</Translate>
@@ -167,7 +167,7 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
                   {users
                     ? users.map(otherEntity => (
                         <option value={otherEntity.id} key={otherEntity.id}>
-                          {otherEntity.id}
+                          {otherEntity.login}
                         </option>
                       ))
                     : null}
@@ -182,7 +182,7 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
                   {restaurants
                     ? restaurants.map(otherEntity => (
                         <option value={otherEntity.id} key={otherEntity.id}>
-                          {otherEntity.id}
+                          {otherEntity.name}
                         </option>
                       ))
                     : null}

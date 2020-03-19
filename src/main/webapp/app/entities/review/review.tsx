@@ -95,9 +95,9 @@ export const Review = (props: IReviewProps) => {
             <Table responsive>
               <thead>
                 <tr>
-                  <th className="hand" onClick={sort('id')}>
+                  {/* <th className="hand" onClick={sort('id')}>
                     <Translate contentKey="global.field.id">ID</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
+                  </th> */}
                   <th className="hand" onClick={sort('reviewText')}>
                     <Translate contentKey="yumzApp.review.reviewText">Review Text</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -125,11 +125,11 @@ export const Review = (props: IReviewProps) => {
               <tbody>
                 {reviewList.map((review, i) => (
                   <tr key={`entity-${i}`}>
-                    <td>
+                    {/* <td>
                       <Button tag={Link} to={`${match.url}/${review.id}`} color="link" size="sm">
                         {review.id}
                       </Button>
-                    </td>
+                    </td> */}
                     <td>{review.reviewText}</td>
                     <td>{review.food}</td>
                     <td>{review.hospitality}</td>
@@ -137,8 +137,8 @@ export const Review = (props: IReviewProps) => {
                     <td>
                       <TextFormat type="date" value={review.reviewDate} format={APP_DATE_FORMAT} />
                     </td>
-                    <td>{review.user ? review.user.id : ''}</td>
-                    <td>{review.restaurant ? <Link to={`restaurant/${review.restaurant.id}`}>{review.restaurant.id}</Link> : ''}</td>
+                    <td>{review.user ? <Link to={`admin/user-management/${review.user.login}`}>{review.user.login}</Link> : ''}</td>
+                    <td>{review.restaurant ? <Link to={`restaurant/${review.restaurant.id}`}>{review.restaurant.name}</Link> : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${review.id}`} color="info" size="sm">

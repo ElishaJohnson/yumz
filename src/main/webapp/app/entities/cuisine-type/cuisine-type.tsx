@@ -95,9 +95,9 @@ export const CuisineType = (props: ICuisineTypeProps) => {
             <Table responsive>
               <thead>
                 <tr>
-                  <th className="hand" onClick={sort('id')}>
+                  {/* <th className="hand" onClick={sort('id')}>
                     <Translate contentKey="global.field.id">ID</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
+                  </th> */}
                   <th className="hand" onClick={sort('name')}>
                     <Translate contentKey="yumzApp.cuisineType.name">Name</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -107,11 +107,11 @@ export const CuisineType = (props: ICuisineTypeProps) => {
               <tbody>
                 {cuisineTypeList.map((cuisineType, i) => (
                   <tr key={`entity-${i}`}>
-                    <td>
+                    {/* <td>
                       <Button tag={Link} to={`${match.url}/${cuisineType.id}`} color="link" size="sm">
                         {cuisineType.id}
                       </Button>
-                    </td>
+                    </td> */}
                     <td>{cuisineType.name}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">

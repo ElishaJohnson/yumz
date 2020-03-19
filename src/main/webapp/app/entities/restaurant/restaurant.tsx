@@ -95,11 +95,14 @@ export const Restaurant = (props: IRestaurantProps) => {
             <Table responsive>
               <thead>
                 <tr>
-                  <th className="hand" onClick={sort('id')}>
+                  {/* <th className="hand" onClick={sort('id')}>
                     <Translate contentKey="global.field.id">ID</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
+                  </th> */}
                   <th className="hand" onClick={sort('name')}>
                     <Translate contentKey="yumzApp.restaurant.name">Name</Translate> <FontAwesomeIcon icon="sort" />
+                  </th>
+                  <th>
+                    <Translate contentKey="yumzApp.restaurant.cuisineType">Cuisine Type</Translate>
                   </th>
                   <th className="hand" onClick={sort('location')}>
                     <Translate contentKey="yumzApp.restaurant.location">Location</Translate> <FontAwesomeIcon icon="sort" />
@@ -116,12 +119,13 @@ export const Restaurant = (props: IRestaurantProps) => {
               <tbody>
                 {restaurantList.map((restaurant, i) => (
                   <tr key={`entity-${i}`}>
-                    <td>
+                    {/* <td>
                       <Button tag={Link} to={`${match.url}/${restaurant.id}`} color="link" size="sm">
                         {restaurant.id}
                       </Button>
-                    </td>
+                    </td> */}
                     <td>{restaurant.name}</td>
+                    <td>{restaurant.cuisineTypes.map(cuisineType => cuisineType.name).join(", ")}</td>
                     <td>{restaurant.location}</td>
                     <td>{restaurant.phone}</td>
                     <td>{restaurant.website}</td>

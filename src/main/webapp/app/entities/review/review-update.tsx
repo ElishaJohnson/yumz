@@ -13,7 +13,6 @@ import { getEntity, updateEntity, createEntity, reset } from './review.reducer';
 import { IReview } from 'app/shared/model/review.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
-
 export interface IReviewUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
 export const ReviewUpdate = (props: IReviewUpdateProps) => {
@@ -41,7 +40,8 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
   }, [props.updateSuccess]);
 
   const saveEntity = (event, errors, values) => {
-    values.reviewDate = convertDateTimeToServer(values.reviewDate);
+    {/* values.reviewDate = convertDateTimeToServer(values.reviewDate); */}
+    values.reviewDate = convertDateTimeToServer(new Date());
 
     if (errors.length === 0) {
       const entity = {
@@ -141,13 +141,13 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
                   }}
                 />
               </AvGroup>
-              {/* }<AvGroup>
+              {/* <AvGroup>
                 <Label id="reviewDateLabel" for="review-reviewDate">
                   <Translate contentKey="yumzApp.review.reviewDate">Review Date</Translate>
                 </Label>
                 <AvInput
                   id="review-reviewDate"
-                  type="datetime-local"
+                  type="hidden datetime-local"
                   className="form-control"
                   name="reviewDate"
                   placeholder={'YYYY-MM-DD HH:mm'}

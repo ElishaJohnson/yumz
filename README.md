@@ -9,13 +9,13 @@ This program will provide a searchable database of restaurant ratings and review
 The thing that will set this apart from other rating systems will be personalized customization a user's search results. Users will be able to select the priority of each category (or turn any of them off if desired), and the database will return weighted overall average ratings based on the user's settings. For example, if a restaurant has 5 stars for quality, 4 stars for service, and 3 stars for atmosphere, the default overall rating would be 4 stars. However, if the user prioritizes quality at 100%, service at 60%, and atmosphere at 10%, the restaurant's overall rating would show up as 4.5 stars in the user's personalized search. If the user selected 0% for quality, 100% for service, and 100% for atmosphere, the same restaurant would have a 3.5 star overall rating. This will allow the user to tailor their dining experience to their immediate individual needs.
 
 ### Features
-1. A database of users, with the ability to create an account, log in & out, and create restaurant ratings & reviews
-2. A searchable database of restaurants, each connected to a set of reviews & ratings
-3. A database of restaurant reviews and ratings, allowing restaurants to be sorted by their average star ratings
-4. A "weighted average" feature which will allow users to customize their search results based on personal priority
+* A database of users, with the ability to create an account, log in & out, and create restaurant ratings & reviews
+* A searchable database of restaurants, each connected to a set of reviews & ratings
+* A database of restaurant reviews and ratings, allowing restaurants to be sorted by their average star ratings
+* A "weighted average" feature which will allow users to customize their search results based on personal priority
 
 ### Technologies
-1. JHipster
-2. Java / Spring
-3. JavaScript / React
-4. MySQL
+* JHipster
+* Java / Spring
+* JavaScript / React
+* MySQL

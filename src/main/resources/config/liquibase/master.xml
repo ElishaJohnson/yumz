@@ -17,8 +17,10 @@
     <include file="config/liquibase/changelog/20200319033800_added_entity_Restaurant.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200319033900_added_entity_Review.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200319034000_added_entity_CuisineType.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200325194900_added_entity_SearchPreferences.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20200319033800_added_entity_constraints_Restaurant.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200319033900_added_entity_constraints_Review.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200325194900_added_entity_constraints_SearchPreferences.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

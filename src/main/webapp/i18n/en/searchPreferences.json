@@ -1,0 +1,25 @@
+{
+  "yumzApp": {
+    "searchPreferences": {
+      "home": {
+        "title": "Search Preferences",
+        "createLabel": "Create a new Search Preferences",
+        "createOrEditLabel": "Create or edit a Search Preferences",
+        "notFound": "No Search Preferences found"
+      },
+      "created": "A new Search Preferences is created with identifier {{ param }}",
+      "updated": "A Search Preferences is updated with identifier {{ param }}",
+      "deleted": "A Search Preferences is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Search Preferences {{ id }}?"
+      },
+      "detail": {
+        "title": "Search Preferences"
+      },
+      "food": "Food",
+      "hospitality": "Hospitality",
+      "atmosphere": "Atmosphere",
+      "user": "User"
+    }
+  }
+}

@@ -10,6 +10,7 @@
         "restaurant": "Restaurant",
         "review": "Review",
         "cuisineType": "Cuisine Type",
+        "searchPreferences": "Search Preferences",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

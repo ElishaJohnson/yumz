@@ -24,6 +24,10 @@ import review, {
 import cuisineType, {
   CuisineTypeState
 } from 'app/entities/cuisine-type/cuisine-type.reducer';
+// prettier-ignore
+import searchPreferences, {
+  SearchPreferencesState
+} from 'app/entities/search-preferences/search-preferences.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 export interface IRootState {
@@ -40,6 +44,7 @@ export interface IRootState {
   readonly restaurant: RestaurantState;
   readonly review: ReviewState;
   readonly cuisineType: CuisineTypeState;
+  readonly searchPreferences: SearchPreferencesState;
   /* jhipster-needle-add-reducer-type - JHipster will add reducer type here */
   readonly loadingBar: any;
 }
@@ -58,6 +63,7 @@ const rootReducer = combineReducers<IRootState>({
   restaurant,
   review,
   cuisineType,
+  searchPreferences,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar
 });

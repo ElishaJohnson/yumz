@@ -1,34 +1,10 @@
-entity Restaurant {
-    name String required maxlength(50),
-    location String required minlength(3) maxlength(100),
-    phone String required minlength(7) maxlength(20),
-    website String required minlength(5) maxlength(100)
-}
-
-entity Review {
-    reviewText String maxlength(5000),
+entity SearchPreferences {
     food Integer required max(5),
     hospitality Integer required max(5),
-    atmosphere Integer required max(5),
-    reviewDate Instant
-}
-
-entity CuisineType {
-	name String required minlength(3) maxlength(25)
-}
-
-relationship ManyToOne {
-	Review{user} to User
-}
-
-relationship ManyToMany {
-    Restaurant{cuisineType(name)} to CuisineType{restaurant(name)}
-}
-
-relationship OneToMany {
-	Restaurant{review} to Review{restaurant}
+    atmosphere Integer required max(5)
 }
 
 
-
-paginate Restaurant, Review, CuisineType with infinite-scroll
+relationship OneToOne {
+	SearchPreferences{user} to User
+}

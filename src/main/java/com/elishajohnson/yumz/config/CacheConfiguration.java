@@ -48,6 +48,7 @@ public class CacheConfiguration {
             createCache(cm, com.elishajohnson.yumz.domain.Review.class.getName());
             createCache(cm, com.elishajohnson.yumz.domain.CuisineType.class.getName());
             createCache(cm, com.elishajohnson.yumz.domain.CuisineType.class.getName() + ".restaurants");
+            createCache(cm, com.elishajohnson.yumz.domain.SearchPreferences.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

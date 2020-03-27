@@ -1,16 +1,18 @@
 import './home.scss';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Translate } from 'react-jhipster';
 import { connect } from 'react-redux';
 import { Row, Col, Alert } from 'reactstrap';
+import StarRatingComponent from 'react-star-rating-component';
 
 import { IRootState } from 'app/shared/reducers';
 
 export type IHomeProp = StateProps;
 
 export const Home = (props: IHomeProp) => {
+  const [starCount, setStarCount] = useState(3);
   const { account } = props;
 
   return (
@@ -19,6 +21,7 @@ export const Home = (props: IHomeProp) => {
         <h2>
           <Translate contentKey="home.title">Welcome to Yumz!</Translate>
         </h2>
+        <StarRatingComponent name="Test" value={starCount} onStarClick={setStarCount} />
         <p className="lead">
           <Translate contentKey="home.subtitle">Personalize your search for food.</Translate>
         </p>

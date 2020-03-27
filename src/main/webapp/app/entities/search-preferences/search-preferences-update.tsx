@@ -13,12 +13,15 @@ import { getEntity, updateEntity, createEntity, reset } from './search-preferenc
 import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
-
+import StarRatingComponent from 'react-star-rating-component';
 export interface ISearchPreferencesUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
 export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) => {
   const [userId, setUserId] = useState('0');
   const [isNew, setIsNew] = useState(!props.match.params || !props.match.params.id);
+  const [foodStarCount, setFoodStarCount] = useState(0);
+  const [atmosphereStarCount, setAtmosphereStarCount] = useState(0);
+  const [hospitalityStarCount, setHospitalityStarCount] = useState(0);
 
   const { searchPreferencesEntity, users, loading, updating } = props;
 
@@ -46,7 +49,10 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
     if (errors.length === 0) {
       const entity = {
         ...searchPreferencesEntity,
-        ...values
+        ...values,
+        food: foodStarCount,
+        hospitality: hospitalityStarCount,
+        atmosphere: atmosphereStarCount
       };
 
       if (isNew) {
@@ -64,6 +70,9 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
           <h2 id="yumzApp.searchPreferences.home.createOrEditLabel">
             <Translate contentKey="yumzApp.searchPreferences.home.createOrEditLabel">Create or edit a SearchPreferences</Translate>
           </h2>
+          <StarRatingComponent name="Food" value={foodStarCount} onStarClick={setFoodStarCount} />
+          <StarRatingComponent name="Hospitality" value={hospitalityStarCount} onStarClick={setHospitalityStarCount} />
+          <StarRatingComponent name="Atmosphere" value={atmosphereStarCount} onStarClick={setAtmosphereStarCount} />
         </Col>
       </Row>
       <Row className="justify-content-center">

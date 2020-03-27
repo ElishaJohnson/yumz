@@ -4,7 +4,7 @@
       "home": {
         "title": "Search Preferences",
         "createLabel": "Create a new Search Preferences",
-        "createOrEditLabel": "Create or edit a Search Preferences",
+        "createOrEditLabel": "Select the priority of each category:",
         "notFound": "No Search Preferences found"
       },
       "created": "A new Search Preferences is created with identifier {{ param }}",

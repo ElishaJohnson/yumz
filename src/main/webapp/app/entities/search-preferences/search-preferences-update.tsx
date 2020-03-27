@@ -14,11 +14,16 @@ import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
 import StarRatingComponent from 'react-star-rating-component';
+import './stars.css';
+
 export interface ISearchPreferencesUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
 export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) => {
   const [userId, setUserId] = useState('0');
   const [isNew, setIsNew] = useState(!props.match.params || !props.match.params.id);
+  const [foodClicked, setFoodClicked] = useState(false);
+  const [hospitalityClicked, setHospitalityClicked] = useState(false);
+  const [atmosphereClicked, setAtmosphereClicked] = useState(false);
   const [foodStarCount, setFoodStarCount] = useState(0);
   const [atmosphereStarCount, setAtmosphereStarCount] = useState(0);
   const [hospitalityStarCount, setHospitalityStarCount] = useState(0);
@@ -27,6 +32,27 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
 
   const handleClose = () => {
     props.history.push('/search-preferences');
+  };
+
+  const handleFoodClick = (starValue) => {
+    setFoodStarCount(starValue);
+    setFoodClicked(true);
+  };
+
+  const handleHospitalityClick = (starValue) => {
+    setHospitalityStarCount(starValue);
+    setHospitalityClicked(true);
+  };
+
+  const handleAtmosphereClick = (starValue) => {
+    setAtmosphereStarCount(starValue);
+    setAtmosphereClicked(true);
+  };
+
+  const mapUnclickedStars = () => {
+    if (!foodClicked) { setFoodStarCount(searchPreferencesEntity.food); }
+    if (!hospitalityClicked) { setHospitalityStarCount(searchPreferencesEntity.hospitality); }
+    if (!atmosphereClicked) { setAtmosphereStarCount(searchPreferencesEntity.atmosphere); }
   };
 
   useEffect(() => {
@@ -70,9 +96,6 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
           <h2 id="yumzApp.searchPreferences.home.createOrEditLabel">
             <Translate contentKey="yumzApp.searchPreferences.home.createOrEditLabel">Create or edit a SearchPreferences</Translate>
           </h2>
-          <StarRatingComponent name="Food" value={foodStarCount} onStarClick={setFoodStarCount} />
-          <StarRatingComponent name="Hospitality" value={hospitalityStarCount} onStarClick={setHospitalityStarCount} />
-          <StarRatingComponent name="Atmosphere" value={atmosphereStarCount} onStarClick={setAtmosphereStarCount} />
         </Col>
       </Row>
       <Row className="justify-content-center">
@@ -81,77 +104,56 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
             <p>Loading...</p>
           ) : (
             <AvForm model={isNew ? {} : searchPreferencesEntity} onSubmit={saveEntity}>
-              {!isNew ? (
-                <AvGroup>
-                  <Label for="search-preferences-id">
-                    <Translate contentKey="global.field.id">ID</Translate>
-                  </Label>
-                  <AvInput id="search-preferences-id" type="text" className="form-control" name="id" required readOnly />
-                </AvGroup>
-              ) : null}
-              <AvGroup>
-                <Label id="foodLabel" for="search-preferences-food">
-                  <Translate contentKey="yumzApp.searchPreferences.food">Food</Translate>
-                </Label>
-                <AvField
-                  id="search-preferences-food"
-                  type="string"
-                  className="form-control"
-                  name="food"
-                  validate={{
-                    required: { value: true, errorMessage: translate('entity.validation.required') },
-                    max: { value: 5, errorMessage: translate('entity.validation.max', { max: 5 }) },
-                    number: { value: true, errorMessage: translate('entity.validation.number') }
-                  }}
-                />
-              </AvGroup>
-              <AvGroup>
-                <Label id="hospitalityLabel" for="search-preferences-hospitality">
-                  <Translate contentKey="yumzApp.searchPreferences.hospitality">Hospitality</Translate>
-                </Label>
-                <AvField
-                  id="search-preferences-hospitality"
-                  type="string"
-                  className="form-control"
-                  name="hospitality"
-                  validate={{
-                    required: { value: true, errorMessage: translate('entity.validation.required') },
-                    max: { value: 5, errorMessage: translate('entity.validation.max', { max: 5 }) },
-                    number: { value: true, errorMessage: translate('entity.validation.number') }
-                  }}
-                />
-              </AvGroup>
-              <AvGroup>
-                <Label id="atmosphereLabel" for="search-preferences-atmosphere">
-                  <Translate contentKey="yumzApp.searchPreferences.atmosphere">Atmosphere</Translate>
-                </Label>
-                <AvField
-                  id="search-preferences-atmosphere"
-                  type="string"
-                  className="form-control"
-                  name="atmosphere"
-                  validate={{
-                    required: { value: true, errorMessage: translate('entity.validation.required') },
-                    max: { value: 5, errorMessage: translate('entity.validation.max', { max: 5 }) },
-                    number: { value: true, errorMessage: translate('entity.validation.number') }
-                  }}
-                />
-              </AvGroup>
-              <AvGroup>
-                <Label for="search-preferences-user">
-                  <Translate contentKey="yumzApp.searchPreferences.user">User</Translate>
-                </Label>
-                <AvInput id="search-preferences-user" type="select" className="form-control" name="user.id">
-                  <option value="" key="0" />
-                  {users
-                    ? users.map(otherEntity => (
-                        <option value={otherEntity.id} key={otherEntity.id}>
-                          {otherEntity.id}
-                        </option>
-                      ))
-                    : null}
-                </AvInput>
-              </AvGroup>
+              <table onMouseEnter={mapUnclickedStars}>
+                <tr>
+                  <td>
+                    <Label className="stars-label" id="foodLabel" for="search-preferences-food">
+                      <Translate contentKey="yumzApp.searchPreferences.food">Food</Translate>
+                    </Label>
+                  </td>
+                  <td>
+                    <span className="stars" >
+                      <StarRatingComponent
+                        name="Food"
+                        value={foodClicked ? foodStarCount : searchPreferencesEntity.food}
+                        onStarClick={handleFoodClick}
+                      />
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <Label className="stars-label" id="hospitalityLabel" for="search-preferences-hospitality">
+                      <Translate contentKey="yumzApp.searchPreferences.hospitality">Hospitality</Translate>
+                    </Label>
+                  </td>
+                  <td>
+                    <span className="stars">
+                      <StarRatingComponent
+                        name="Hospitality"
+                        value={hospitalityClicked ? hospitalityStarCount : searchPreferencesEntity.hospitality}
+                        onStarClick={handleHospitalityClick}
+                      />
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <Label className="stars-label" id="atmosphereLabel" for="search-preferences-atmosphere">
+                      <Translate contentKey="yumzApp.searchPreferences.atmosphere">Atmosphere</Translate>
+                    </Label>
+                  </td>
+                  <td>
+                    <span className="stars">
+                      <StarRatingComponent
+                        name="Atmosphere"
+                        value={atmosphereClicked ? atmosphereStarCount : searchPreferencesEntity.atmosphere}
+                        onStarClick={handleAtmosphereClick}
+                      />
+                    </span>
+                  </td>
+                </tr>
+              </table>
               <Button tag={Link} id="cancel-save" to="/search-preferences" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;
@@ -160,7 +162,7 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
                 </span>
               </Button>
               &nbsp;
-              <Button color="primary" id="save-entity" type="submit" disabled={updating}>
+              <Button color="primary" id="save-entity" type="submit" onMouseEnter={mapUnclickedStars} disabled={updating}>
                 <FontAwesomeIcon icon="save" />
                 &nbsp;
                 <Translate contentKey="entity.action.save">Save</Translate>

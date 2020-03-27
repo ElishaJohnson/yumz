@@ -1,0 +1,10 @@
+.stars {
+  font-size: 40px;
+  vertical-align: bottom;
+  padding-left: 16px;
+}
+
+.stars-label {
+  font-size: 24px;
+  padding-bottom: 10px;
+}

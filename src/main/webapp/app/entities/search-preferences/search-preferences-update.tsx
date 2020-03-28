@@ -13,7 +13,7 @@ import { getEntity, updateEntity, createEntity, reset } from './search-preferenc
 import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
-import StarRatingComponent from 'react-star-rating-component';
+import StarRatingComponent from 'react-star-ratings';
 import './stars.css';
 
 export interface ISearchPreferencesUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
@@ -35,7 +35,7 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
   };
 
   const handleFoodClick = (starValue) => {
-    setFoodStarCount(starValue);
+    if (starValue) { setFoodStarCount(starValue); } else { setFoodStarCount(0); }
     setFoodClicked(true);
   };
 
@@ -48,6 +48,21 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
     setAtmosphereStarCount(starValue);
     setAtmosphereClicked(true);
   };
+
+  const clearFoodStarCount = () => {
+    setFoodStarCount(0);
+    setFoodClicked(true);
+  }
+
+  const clearHospitalityStarCount = () => {
+    setHospitalityStarCount(0);
+    setHospitalityClicked(true);
+  }
+
+  const clearAtmosphereStarCount = () => {
+    setAtmosphereStarCount(0);
+    setAtmosphereClicked(true);
+  }
 
   const mapUnclickedStars = () => {
     if (!foodClicked) { setFoodStarCount(searchPreferencesEntity.food); }
@@ -107,50 +122,71 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
               <table onMouseEnter={mapUnclickedStars}>
                 <tr>
                   <td>
-                    <Label className="stars-label" id="foodLabel" for="search-preferences-food">
+                    <Label id="foodLabel" for="search-preferences-food">
                       <Translate contentKey="yumzApp.searchPreferences.food">Food</Translate>
                     </Label>
                   </td>
                   <td>
-                    <span className="stars" >
-                      <StarRatingComponent
-                        name="Food"
-                        value={foodClicked ? foodStarCount : searchPreferencesEntity.food}
-                        onStarClick={handleFoodClick}
-                      />
-                    </span>
+                    <StarRatingComponent
+                      name="Food"
+                      starHoverColor="gold"
+                      starRatedColor="green"
+                      rating={foodClicked ? foodStarCount : searchPreferencesEntity.food}
+                      changeRating={handleFoodClick}
+                    />
+                  </td>
+                  <td>
+                    <Button color="primary" onClick={clearFoodStarCount} disabled={updating}>
+                      <FontAwesomeIcon icon="ban" />
+                      &nbsp;
+                      Disable
+                    </Button>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <Label className="stars-label" id="hospitalityLabel" for="search-preferences-hospitality">
+                    <Label id="hospitalityLabel" for="search-preferences-hospitality">
                       <Translate contentKey="yumzApp.searchPreferences.hospitality">Hospitality</Translate>
                     </Label>
                   </td>
                   <td>
-                    <span className="stars">
-                      <StarRatingComponent
-                        name="Hospitality"
-                        value={hospitalityClicked ? hospitalityStarCount : searchPreferencesEntity.hospitality}
-                        onStarClick={handleHospitalityClick}
-                      />
-                    </span>
+                    <StarRatingComponent
+                      name="Hospitality"
+                      starHoverColor="gold"
+                      starRatedColor="red"
+                      rating={hospitalityClicked ? hospitalityStarCount : searchPreferencesEntity.hospitality}
+                      changeRating={handleHospitalityClick}
+                    />
+                  </td>
+                  <td>
+                    <Button color="primary" onClick={clearHospitalityStarCount} disabled={updating}>
+                      <FontAwesomeIcon icon="ban" />
+                      &nbsp;
+                      Disable
+                    </Button>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <Label className="stars-label" id="atmosphereLabel" for="search-preferences-atmosphere">
+                    <Label id="atmosphereLabel" for="search-preferences-atmosphere">
                       <Translate contentKey="yumzApp.searchPreferences.atmosphere">Atmosphere</Translate>
                     </Label>
                   </td>
                   <td>
-                    <span className="stars">
-                      <StarRatingComponent
-                        name="Atmosphere"
-                        value={atmosphereClicked ? atmosphereStarCount : searchPreferencesEntity.atmosphere}
-                        onStarClick={handleAtmosphereClick}
-                      />
-                    </span>
+                    <StarRatingComponent
+                      name="Atmosphere"
+                      starHoverColor="gold"
+                      starRatedColor="blue"
+                      rating={atmosphereClicked ? atmosphereStarCount : searchPreferencesEntity.atmosphere}
+                      changeRating={handleAtmosphereClick}
+                    />
+                  </td>
+                  <td>
+                    <Button color="primary" onClick={clearAtmosphereStarCount} disabled={updating}>
+                      <FontAwesomeIcon icon="ban" />
+                      &nbsp;
+                      Disable
+                    </Button>
                   </td>
                 </tr>
               </table>

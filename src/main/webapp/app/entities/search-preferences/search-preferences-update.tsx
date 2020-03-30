@@ -21,53 +21,50 @@ export interface ISearchPreferencesUpdateProps extends StateProps, DispatchProps
 export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) => {
   const [userId, setUserId] = useState('0');
   const [isNew, setIsNew] = useState(!props.match.params || !props.match.params.id);
-  const [foodClicked, setFoodClicked] = useState(false);
-  const [hospitalityClicked, setHospitalityClicked] = useState(false);
-  const [atmosphereClicked, setAtmosphereClicked] = useState(false);
-  const [foodStarCount, setFoodStarCount] = useState(0);
-  const [atmosphereStarCount, setAtmosphereStarCount] = useState(0);
-  const [hospitalityStarCount, setHospitalityStarCount] = useState(0);
+  const [stars, setStars] = useState({
+    food: {value: 0, clicked: false},
+    hospitality: {value: 0, clicked: false},
+    atmosphere: {value: 0, clicked: false}
+  });
 
   const { searchPreferencesEntity, users, loading, updating } = props;
 
-  const handleClose = () => {
-    props.history.push('/search-preferences');
-  };
-
-  const handleFoodClick = (starValue) => {
-    if (starValue) { setFoodStarCount(starValue); } else { setFoodStarCount(0); }
-    setFoodClicked(true);
-  };
-
-  const handleHospitalityClick = (starValue) => {
-    setHospitalityStarCount(starValue);
-    setHospitalityClicked(true);
-  };
-
-  const handleAtmosphereClick = (starValue) => {
-    setAtmosphereStarCount(starValue);
-    setAtmosphereClicked(true);
-  };
-
-  const clearFoodStarCount = () => {
-    setFoodStarCount(0);
-    setFoodClicked(true);
+  const starKeys = ["food", "hospitality", "atmosphere"];
+  const starColors = {
+    food: "red",
+    hospitality: "blue",
+    atmosphere: "green",
+    empty: "gray",
+    hover: "gold"
   }
 
-  const clearHospitalityStarCount = () => {
-    setHospitalityStarCount(0);
-    setHospitalityClicked(true);
+  const handleStarClick = (starValue, starKey) => {
+    if (starValue) {
+      stars[starKey].value = starValue;
+    } else {
+      stars[starKey].value = 0;
+    }
+    stars[starKey].clicked = true;
+    setStars(JSON.parse(JSON.stringify(stars)));
   }
 
-  const clearAtmosphereStarCount = () => {
-    setAtmosphereStarCount(0);
-    setAtmosphereClicked(true);
+  const clearStarCount = (starKey) => {
+    stars[starKey].value = 0;
+    stars[starKey].clicked = true;
+    setStars(JSON.parse(JSON.stringify(stars)));
   }
 
   const mapUnclickedStars = () => {
-    if (!foodClicked) { setFoodStarCount(searchPreferencesEntity.food); }
-    if (!hospitalityClicked) { setHospitalityStarCount(searchPreferencesEntity.hospitality); }
-    if (!atmosphereClicked) { setAtmosphereStarCount(searchPreferencesEntity.atmosphere); }
+    for (const star of starKeys) {
+      if (!stars[star].clicked) {
+        stars[star].value = searchPreferencesEntity[star];
+      }
+    }
+    setStars(JSON.parse(JSON.stringify(stars)));
+  };
+
+  const handleClose = () => {
+    props.history.push('/search-preferences');
   };
 
   useEffect(() => {
@@ -91,9 +88,9 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
       const entity = {
         ...searchPreferencesEntity,
         ...values,
-        food: foodStarCount,
-        hospitality: hospitalityStarCount,
-        atmosphere: atmosphereStarCount
+        food: stars.food.value,
+        hospitality: stars.hospitality.value,
+        atmosphere: stars.atmosphere.value
       };
 
       if (isNew) {
@@ -120,75 +117,32 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
           ) : (
             <AvForm model={isNew ? {} : searchPreferencesEntity} onSubmit={saveEntity}>
               <table onMouseEnter={mapUnclickedStars}>
-                <tr>
+               {starKeys.map((category) => (
+               <tr key={category}>
                   <td>
-                    <Label id="foodLabel" for="search-preferences-food">
-                      <Translate contentKey="yumzApp.searchPreferences.food">Food</Translate>
+                    <Label id="foodLabel" for={"search-preferences-" + category}>
+                      <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
                     </Label>
                   </td>
                   <td>
                     <StarRatingComponent
-                      name="Food"
-                      starHoverColor="gold"
-                      starRatedColor="green"
-                      rating={foodClicked ? foodStarCount : searchPreferencesEntity.food}
-                      changeRating={handleFoodClick}
+                      name={category}
+                      starHoverColor={starColors.hover}
+                      starRatedColor={starColors[category]}
+                      starEmptyColor={starColors.empty}
+                      rating={stars[category].clicked ? stars[category].value : searchPreferencesEntity[category]}
+                      changeRating={handleStarClick}
                     />
                   </td>
                   <td>
-                    <Button color="primary" onClick={clearFoodStarCount} disabled={updating}>
+                    <Button color="primary" onClick={() => clearStarCount(category)} disabled={updating}>
                       <FontAwesomeIcon icon="ban" />
                       &nbsp;
                       Disable
                     </Button>
                   </td>
                 </tr>
-                <tr>
-                  <td>
-                    <Label id="hospitalityLabel" for="search-preferences-hospitality">
-                      <Translate contentKey="yumzApp.searchPreferences.hospitality">Hospitality</Translate>
-                    </Label>
-                  </td>
-                  <td>
-                    <StarRatingComponent
-                      name="Hospitality"
-                      starHoverColor="gold"
-                      starRatedColor="red"
-                      rating={hospitalityClicked ? hospitalityStarCount : searchPreferencesEntity.hospitality}
-                      changeRating={handleHospitalityClick}
-                    />
-                  </td>
-                  <td>
-                    <Button color="primary" onClick={clearHospitalityStarCount} disabled={updating}>
-                      <FontAwesomeIcon icon="ban" />
-                      &nbsp;
-                      Disable
-                    </Button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <Label id="atmosphereLabel" for="search-preferences-atmosphere">
-                      <Translate contentKey="yumzApp.searchPreferences.atmosphere">Atmosphere</Translate>
-                    </Label>
-                  </td>
-                  <td>
-                    <StarRatingComponent
-                      name="Atmosphere"
-                      starHoverColor="gold"
-                      starRatedColor="blue"
-                      rating={atmosphereClicked ? atmosphereStarCount : searchPreferencesEntity.atmosphere}
-                      changeRating={handleAtmosphereClick}
-                    />
-                  </td>
-                  <td>
-                    <Button color="primary" onClick={clearAtmosphereStarCount} disabled={updating}>
-                      <FontAwesomeIcon icon="ban" />
-                      &nbsp;
-                      Disable
-                    </Button>
-                  </td>
-                </tr>
+              ))}
               </table>
               <Button tag={Link} id="cancel-save" to="/search-preferences" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />

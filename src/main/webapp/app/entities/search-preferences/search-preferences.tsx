@@ -84,9 +84,11 @@ export const SearchPreferences = (props: ISearchPreferencesProps) => {
                       starRatedColor="green"
                     />
                   </td>
-                  <td>{searchPreferences.user ?
+                  <td>
+                    {searchPreferences.user ?
                     searchPreferences.user.firstName + " " + searchPreferences.user.lastName + " (" +
-                    searchPreferences.user.login + ")" : ''}</td>
+                    searchPreferences.user.login + ")" : ''}
+                  </td>
                   <td className="text-right">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`${match.url}/${searchPreferences.id}`} color="info" size="sm">

@@ -4,14 +4,64 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Translate } from 'react-jhipster';
 import { connect } from 'react-redux';
-import { Row, Col, Alert } from 'reactstrap';
+import { Row, Col, Alert, Button, Label } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
+import { IUser } from 'app/shared/model/user.model';
+import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
+import { getEntity, updateEntity, createEntity, reset } from './search-preferences.reducer';
+import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
+
+import StarRatingComponent from 'react-star-ratings';
 
 export type IHomeProp = StateProps;
 
 export const Home = (props: IHomeProp) => {
+  const [stars, setStars] = useState({
+    food: {value: 5, clicked: false},
+    hospitality: {value: 5, clicked: false},
+    atmosphere: {value: 5, clicked: false}
+  });
   const { account } = props;
+
+  const starKeys = ["food", "hospitality", "atmosphere"];
+  const starColors = {
+    food: "red",
+    hospitality: "blue",
+    atmosphere: "green",
+    empty: "gray",
+    hover: "gold"
+  }
+
+  const handleStarClick = (starValue, starKey) => {
+    if (starValue) {
+      stars[starKey].value = starValue;
+    } else {
+      stars[starKey].value = 0;
+    }
+    stars[starKey].clicked = true;
+    setStars(JSON.parse(JSON.stringify(stars)));
+  }
+
+  const clearStarCount = (starKey) => {
+    stars[starKey].value = 0;
+    stars[starKey].clicked = true;
+    setStars(JSON.parse(JSON.stringify(stars)));
+  }
+
+  const mapUnclickedStars = () => {
+    for (const star of starKeys) {
+      if (!stars[star].clicked) {
+        stars[star].value = currentSearchPreferences[star];
+      }
+    }
+    setStars(JSON.parse(JSON.stringify(stars)));
+  };
+
+  const getUserSearchPreferences = () => {
+
+  }
 
   return (
     <Row>
@@ -22,15 +72,9 @@ export const Home = (props: IHomeProp) => {
         <p className="lead">
           <Translate contentKey="home.subtitle">Personalize your search for food.</Translate>
         </p>
-        <div>
-          *** SEARCH BAR *** {/* TODO: create search bar */}
-          <br />
-          *** SEARCH PRIORITIES *** {/* TODO: input search priorities */}
-          <br />
-          <br />
-        </div>
         {account && account.login ? (
           <div>
+            {() => getUserSearchPreferences()}
             <Alert color="success">
               <Translate contentKey="home.logged.message" interpolate={{ username: account.login }}>
                 You are logged in as user {account.login}.
@@ -62,46 +106,36 @@ export const Home = (props: IHomeProp) => {
             </Alert>
           </div>
         )}
-        *** SEARCH RESULTS *** {/* TODO: display search results */}
-        {/* <p>
-          <Translate contentKey="home.question">If you have any question on JHipster:</Translate>
-        </p>
-
-        <ul>
-          <li>
-            <a href="https://www.jhipster.tech/" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.homepage">JHipster homepage</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.stackoverflow">JHipster on Stack Overflow</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.bugtracker">JHipster bug tracker</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.chat">JHipster public chat room</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://twitter.com/jhipster" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.follow">follow @jhipster on Twitter</Translate>
-            </a>
-          </li>
-        </ul>
-
-        <p>
-          <Translate contentKey="home.like">If you like JHipster, do not forget to give us a star on</Translate>{' '}
-          <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-            Github
-          </a>
-          !
-        </p> */}
+        <div>
+          Select the importance of each category:
+          <br />
+          <table onMouseEnter={mapUnclickedStars}>
+            {starKeys.map((category) => (
+              <tr key={category}>
+                <td>
+                  <Label id="foodLabel" for={"search-preferences-" + category}>
+                    <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
+                  </Label>
+                </td>
+                <td style={{paddingLeft: 20, color: "red"}}>
+                  <Button color="" onClick={() => clearStarCount(category)}>
+                    <FontAwesomeIcon icon="ban" />
+                  </Button>
+                </td>
+                <td>
+                  <StarRatingComponent
+                    name={category}
+                    starHoverColor={starColors.hover}
+                    starRatedColor={starColors[category]}
+                    starEmptyColor={starColors.empty}
+                    rating={stars[category].value}
+                    changeRating={handleStarClick}
+                  />
+                </td>
+              </tr>
+            ))}
+          </table>
+        </div>
       </Col>
       <Col md="3" className="pad">
         <span className="hipster rounded" />

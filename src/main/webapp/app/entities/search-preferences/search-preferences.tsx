@@ -9,6 +9,7 @@ import { IRootState } from 'app/shared/reducers';
 import { getEntities } from './search-preferences.reducer';
 import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
+import StarRatingComponent from 'react-star-ratings';
 
 export interface ISearchPreferencesProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
@@ -59,10 +60,33 @@ export const SearchPreferences = (props: ISearchPreferencesProps) => {
                       {searchPreferences.id}
                     </Button>
                   </td>
-                  <td>{searchPreferences.food}</td>
-                  <td>{searchPreferences.hospitality}</td>
-                  <td>{searchPreferences.atmosphere}</td>
-                  <td>{searchPreferences.user ? searchPreferences.user.id : ''}</td>
+                  <td>
+                    <StarRatingComponent
+                      rating={searchPreferences.food}
+                      starDimension="20px"
+                      starSpacing="1px"
+                      starRatedColor="red"
+                    />
+                  </td>
+                  <td>
+                    <StarRatingComponent
+                      rating={searchPreferences.hospitality}
+                      starDimension="20px"
+                      starSpacing="1px"
+                      starRatedColor="blue"
+                    />
+                  </td>
+                  <td>
+                    <StarRatingComponent
+                      rating={searchPreferences.atmosphere}
+                      starDimension="20px"
+                      starSpacing="1px"
+                      starRatedColor="green"
+                    />
+                  </td>
+                  <td>{searchPreferences.user ?
+                    searchPreferences.user.firstName + " " + searchPreferences.user.lastName + " (" +
+                    searchPreferences.user.login + ")" : ''}</td>
                   <td className="text-right">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`${match.url}/${searchPreferences.id}`} color="info" size="sm">

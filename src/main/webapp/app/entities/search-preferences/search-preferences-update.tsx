@@ -14,7 +14,6 @@ import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
 import StarRatingComponent from 'react-star-ratings';
-import './stars.css';
 
 export interface ISearchPreferencesUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
@@ -124,6 +123,11 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
                       <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
                     </Label>
                   </td>
+                  <td style={{paddingLeft: 20, color: "red"}}>
+                    <Button color="" onClick={() => clearStarCount(category)} disabled={updating}>
+                      <FontAwesomeIcon icon="ban" />
+                    </Button>
+                  </td>
                   <td>
                     <StarRatingComponent
                       name={category}
@@ -134,16 +138,32 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
                       changeRating={handleStarClick}
                     />
                   </td>
-                  <td>
-                    <Button color="primary" onClick={() => clearStarCount(category)} disabled={updating}>
-                      <FontAwesomeIcon icon="ban" />
-                      &nbsp;
-                      Disable
-                    </Button>
-                  </td>
                 </tr>
               ))}
               </table>
+              <AvGroup>
+                <Label for="search-preferences-user">
+                  <Translate contentKey="yumzApp.searchPreferences.user">User</Translate>
+                </Label>
+                <AvInput
+                  id="search-preferences-user"
+                  type="select"
+                  className="form-control"
+                  name="user.id"
+                  validate={{
+                    required: { value: true, errorMessage: translate('entity.validation.required') }
+                  }}
+                >
+                  <option value="" key="0" />
+                  {users
+                    ? users.map(otherEntity => (
+                        <option value={otherEntity.id} key={otherEntity.id}>
+                          {otherEntity.login}
+                        </option>
+                      ))
+                    : null}
+                </AvInput>
+              </AvGroup>
               <Button tag={Link} id="cancel-save" to="/search-preferences" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

@@ -4,7 +4,7 @@
       "home": {
         "title": "Search Preferences",
         "createLabel": "Create a new Search Preferences",
-        "createOrEditLabel": "Select the priority of each category:",
+        "createOrEditLabel": "Create or edit a Search Preferences",
         "notFound": "No Search Preferences found"
       },
       "created": "A new Search Preferences is created with identifier {{ param }}",
@@ -17,7 +17,7 @@
         "title": "Search Preferences"
       },
       "food": "Food",
-      "hospitality": "Hospitality",
+      "hospitality": "Service",
       "atmosphere": "Atmosphere",
       "user": "User"
     }

@@ -18,21 +18,10 @@ import StarRatingComponent from 'react-star-ratings';
 export interface IHomeProp extends StateProps, DispatchProps {}
 {/* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   changed this from "export type IHomeProp = StateProps;"
-  which now allows dispatch to be accessed but causes numerous errors while there is no user logged in:
+  which now allows dispatch to be accessed but causes numerous errors while there is no user logged in.
 
-  (on startup):
-  2020-04-01 18:38:35.593  WARN 6944 --- [  XNIO-1 task-1] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.security.authentication.InsufficientAuthenticationException: Full authentication is required to access this resource]
-  2020-04-01 18:38:35.593  WARN 6944 --- [  XNIO-1 task-2] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.security.authentication.InsufficientAuthenticationException: Full authentication is required to access this resource]
-
-  (on page refresh):
-  2020-04-01 18:39:55.988 DEBUG 6944 --- [  XNIO-1 task-5] c.e.yumz.aop.logging.LoggingAspect       : Enter: com.elishajohnson.yumz.repository.CustomAuditEventRepository.add() with argument[s] = [AuditEvent [timestamp=2020-04-01T23:39:55.988585200Z, principal=anonymousUser, type=AUTHORIZATION_FAILURE, data={details=org.springframework.security.web.authentication.WebAuthenticationDetails@957e: RemoteIpAddress: 127.0.0.1; SessionId: null, type=org.springframework.security.access.AccessDeniedException, message=Access is denied}]]
-  2020-04-01 18:39:55.988 DEBUG 6944 --- [  XNIO-1 task-4] c.e.yumz.aop.logging.LoggingAspect       : Enter: com.elishajohnson.yumz.repository.CustomAuditEventRepository.add() with argument[s] = [AuditEvent [timestamp=2020-04-01T23:39:55.972960Z, principal=anonymousUser, type=AUTHORIZATION_FAILURE, data={details=org.springframework.security.web.authentication.WebAuthenticationDetails@957e: RemoteIpAddress: 127.0.0.1; SessionId: null, type=org.springframework.security.access.AccessDeniedException, message=Access is denied}]]
-  2020-04-01 18:39:55.988 DEBUG 6944 --- [  XNIO-1 task-5] c.e.yumz.aop.logging.LoggingAspect       : Exit: com.elishajohnson.yumz.repository.CustomAuditEventRepository.add() with result = null
-  2020-04-01 18:39:55.988 DEBUG 6944 --- [  XNIO-1 task-4] c.e.yumz.aop.logging.LoggingAspect       : Exit: com.elishajohnson.yumz.repository.CustomAuditEventRepository.add() with result = null
-  2020-04-01 18:39:56.000  WARN 6944 --- [  XNIO-1 task-4] o.z.problem.spring.common.AdviceTraits   : Unauthorized: Full authentication is required to access this resource
-  2020-04-01 18:39:56.001  WARN 6944 --- [  XNIO-1 task-4] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.security.authentication.InsufficientAuthenticationException: Full authentication is required to access this resource]
-  2020-04-01 18:39:56.001  WARN 6944 --- [  XNIO-1 task-5] o.z.problem.spring.common.AdviceTraits   : Unauthorized: Full authentication is required to access this resource
-  2020-04-01 18:39:56.001  WARN 6944 --- [  XNIO-1 task-5] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.security.authentication.InsufficientAuthenticationException: Full authentication is required to access this resource]
+  *** UPDATE *** errors by relaxing certain restrictions in java/.../config/SecurityConfiguration.java
+  TODO: find permanent solution that does not compromise security
 */}
 
 export const Home = (props: IHomeProp) => {
@@ -49,7 +38,7 @@ export const Home = (props: IHomeProp) => {
     food: "red",
     hospitality: "blue",
     atmosphere: "green",
-    empty: "gray",
+    empty: "lightgray",
     hover: "gold"
   }
 

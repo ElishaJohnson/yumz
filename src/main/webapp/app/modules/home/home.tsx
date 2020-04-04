@@ -15,21 +15,18 @@ import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
 
 import StarRatingComponent from 'react-star-ratings';
 
-export interface IHomeProp extends StateProps, DispatchProps {}
-{/* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  changed this from "export type IHomeProp = StateProps;"
-  which now allows dispatch to be accessed but causes numerous errors while there is no user logged in.
-
-  *** UPDATE *** errors by relaxing certain restrictions in java/.../config/SecurityConfiguration.java
+{/*
+  removed the line "export type IHomeProp = StateProps;" and removed ": IHomeProps" from function declaration
+  which now allowed dispatch to be accessed but caused numerous errors while there was no user logged in.
+  removed errors by relaxing certain restrictions in java/.../config/SecurityConfiguration.java.
   TODO: find permanent solution that does not compromise security
 */}
 
-export const Home = (props: IHomeProp) => {
-  const [currentSearchPreferences, setCurrentSearchPreferences] = useState({});
-  const [stars, setStars] = useState({
-    food: {value: 5, clicked: false},
-    hospitality: {value: 5, clicked: false},
-    atmosphere: {value: 5, clicked: false}
+export const Home = (props) => {
+  const [currentSearchPreferences, setCurrentSearchPreferences] = useState({
+    food: 5,
+    hospitality: 5,
+    atmosphere: 5
   });
   const { account, searchPreferencesList, loading, updating } = props;
 
@@ -42,9 +39,12 @@ export const Home = (props: IHomeProp) => {
     hover: "gold"
   }
 
-  {/* fetch user's search preferences, since JHipster does not want to store foreign information
+  {/*
+    fetch user's search preferences, since JHipster does not want to store foreign information
     in its user entity this requires checking every searchPreferences entity for a matching user id.
-    At this point the stars should display values from currentSearchPreferences but they do not. */}
+    fails to set saved user preferences on page refresh.
+    TODO: display user's saved search preferences even if they refresh the page
+  */}
   useEffect(() => {
     props.getEntities();
     if (account && account.login) {
@@ -56,24 +56,13 @@ export const Home = (props: IHomeProp) => {
     }
   }, []);
 
-  const handleStarClick = (starValue, starKey) => {
-    if (starValue) {
-      stars[starKey].value = starValue;
-    } else {
-      stars[starKey].value = 0;
-    }
-    stars[starKey].clicked = true;
-    setStars(JSON.parse(JSON.stringify(stars)));
-    currentSearchPreferences[starKey] = stars[starKey].value;
+  {/*
+    failed to set state the correct way, employed weird object mutation workaround.
+    TODO: rewrite this using best practice
+  */}
+  const handleStarClick = (starValue, category) => {
+    currentSearchPreferences[category] = starValue;
     setCurrentSearchPreferences(JSON.parse(JSON.stringify(currentSearchPreferences)));
-  }
-
-  const clearStarCount = (starKey) => {
-    stars[starKey].value = 0;
-    stars[starKey].clicked = true;
-    setStars(JSON.parse(JSON.stringify(stars)));
-    currentSearchPreferences[starKey] = 0;
-    setCurrentSearchPreferences(JSON.parse(JSON.stringify(currentSearchPreferences[starKey])));
   }
 
   return (
@@ -118,20 +107,17 @@ export const Home = (props: IHomeProp) => {
                   </Label>
                 </td>
                 <td style={{paddingLeft: 20, color: "red"}}>
-                  <Button color="" onClick={() => clearStarCount(category)}>
+                  <Button color="" onClick={() => handleStarClick(0, category)}>
                     <FontAwesomeIcon icon="ban" />
                   </Button>
                 </td>
                 <td>
-                  {/* on initial load & every page refresh currentSearchPreferences is still null
-                    but upon leaving the main page & returning it properly displays the user's saved
-                    searchPreferences rather than the default stars values*/}
                   <StarRatingComponent
                     name={category}
                     starHoverColor={starColors.hover}
                     starRatedColor={starColors[category]}
                     starEmptyColor={starColors.empty}
-                    rating={currentSearchPreferences[category] ? currentSearchPreferences[category] : stars[category].value}
+                    rating={currentSearchPreferences[category]}
                     changeRating={handleStarClick}
                   />
                 </td>
@@ -157,6 +143,7 @@ const mapStateToProps = (storeState: IRootState) => ({
 });
 
 const mapDispatchToProps = {
+    getUsers,
     getEntities,
     updateEntity,
     createEntity,

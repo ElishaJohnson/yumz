@@ -33,30 +33,30 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
     food: "red",
     hospitality: "blue",
     atmosphere: "green",
-    empty: "gray",
+    empty: "lightgray",
     hover: "gold"
   }
 
-  const handleStarClick = (starValue, starKey) => {
-    if (starValue) {
-      stars[starKey].value = starValue;
-    } else {
-      stars[starKey].value = 0;
-    }
-    stars[starKey].clicked = true;
+  {/*
+    failed to set state the correct way, employed wierd object mutation workaround.
+    TODO: rewrite this using best practice
+  */}
+  const handleStarClick = (starValue, category) => {
+    stars[category].value = starValue;
+    stars[category].clicked = true;
     setStars(JSON.parse(JSON.stringify(stars)));
   }
 
-  const clearStarCount = (starKey) => {
-    stars[starKey].value = 0;
-    stars[starKey].clicked = true;
-    setStars(JSON.parse(JSON.stringify(stars)));
-  }
-
+  {/*
+    assign any unchanged values from the old object to the new one
+    so that they are not saved as null if they haven't been clicked.
+    activated when the mouse enters the stars table or the save button.
+    TODO: find a more stable & reliable way to transfer these values
+  */}
   const mapUnclickedStars = () => {
-    for (const star of starKeys) {
-      if (!stars[star].clicked) {
-        stars[star].value = searchPreferencesEntity[star];
+    for (const category of starKeys) {
+      if (!stars[category].clicked) {
+        stars[category].value = searchPreferencesEntity[category];
       }
     }
     setStars(JSON.parse(JSON.stringify(stars)));
@@ -124,7 +124,7 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
                     </Label>
                   </td>
                   <td style={{paddingLeft: 20, color: "red"}}>
-                    <Button color="" onClick={() => clearStarCount(category)} disabled={updating}>
+                    <Button color="" onClick={() => handleStarClick(0, category)}>
                       <FontAwesomeIcon icon="ban" />
                     </Button>
                   </td>

@@ -38,7 +38,7 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
   }
 
   {/*
-    failed to set state the correct way, employed weird object mutation workaround.
+    failed to set state the correct way, employed weird object mutation workaround
     TODO: rewrite this using best practice
   */}
   const handleStarClick = (starValue, category) => {

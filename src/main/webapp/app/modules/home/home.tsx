@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IRootState } from 'app/shared/reducers';
 import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
-import { getEntities, updateEntity, createEntity, reset } from 'app/entities/search-preferences/search-preferences.reducer';
+import { getEntity, getEntities, updateEntity, createEntity, reset } from 'app/entities/search-preferences/search-preferences.reducer';
 import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
 
 import StarRatingComponent from 'react-star-ratings';
@@ -37,7 +37,15 @@ export const Home = (props) => {
     hospitality: false,
     atmosphere: false
   });
+  const [entityLoaded, setEntityLoaded] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
+  const [searchPreferencesEntity, setSearchPreferencesEntity] = useState({
+    id: null,
+    food: null,
+    hospitality: null,
+    atmosphere: null,
+    user: {}
+  });
   const { account, searchPreferencesList, loading, updating, users } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
@@ -56,13 +64,19 @@ export const Home = (props) => {
   const savedUserRating = (id, category) => {
     for (const preferences of searchPreferencesList) {
       if (preferences.user.id === id) {
+        if (!entityLoaded) {
+          setSearchPreferencesEntity(JSON.parse(JSON.stringify(preferences)));
+          setEntityLoaded(true);
+        }
         return preferences[category];
       }
     }
   }
 
+
+
   const mapUnclickedStars = () => {
-    if (account) {
+    if (account && account.login) {
       for (const category of starKeys) {
         if (!clicked[category]) { currentSearchPreferences[category] = savedUserRating(account.id, category); }
       }
@@ -82,6 +96,17 @@ export const Home = (props) => {
     setClicked(JSON.parse(JSON.stringify(clicked)));
     mapUnclickedStars();
   }
+
+  const saveEntity = () => {
+    const entity = {
+      id: searchPreferencesEntity.id,
+      food: currentSearchPreferences.food,
+      hospitality: currentSearchPreferences.hospitality,
+      atmosphere: currentSearchPreferences.atmosphere,
+      user: searchPreferencesEntity.user
+    };
+    props.updateEntity(entity);
+ };
 
   return (
     <Row>
@@ -142,6 +167,13 @@ export const Home = (props) => {
               </tr>
             ))}
           </table>
+          {account && account.login ? (
+            <Button style={{marginLeft: 382, marginTop: 12}} color="primary" onClick={() => saveEntity()}>
+              <FontAwesomeIcon icon="save" />
+              &nbsp;
+              <Translate contentKey="entity.action.save">Save</Translate>
+            </Button>
+          ) : null}
         </div>
       </Col>
       <Col md="3" className="pad">
@@ -163,6 +195,7 @@ const mapStateToProps = (storeState: IRootState) => ({
 
 const mapDispatchToProps = {
     getUsers,
+    getEntity,
     getEntities,
     updateEntity,
     createEntity,

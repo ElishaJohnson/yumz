@@ -23,12 +23,22 @@ import StarRatingComponent from 'react-star-ratings';
 */}
 
 export const Home = (props) => {
+  useEffect(() => {
+    props.getEntities();
+  }, []);
+
   const [currentSearchPreferences, setCurrentSearchPreferences] = useState({
     food: 5,
     hospitality: 5,
     atmosphere: 5
   });
-  const { account, searchPreferencesList, loading, updating } = props;
+  const [clicked, setClicked] = useState({
+    food: false,
+    hospitality: false,
+    atmosphere: false
+  });
+  const [currentUser, setCurrentUser] = useState({});
+  const { account, searchPreferencesList, loading, updating, users } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
@@ -42,27 +52,35 @@ export const Home = (props) => {
   {/*
     fetch user's search preferences, since JHipster does not want to store foreign information
     in its user entity this requires checking every searchPreferences entity for a matching user id.
-    fails to set saved user preferences on page refresh.
-    TODO: display user's saved search preferences even if they refresh the page
   */}
-  useEffect(() => {
-    props.getEntities();
-    if (account && account.login) {
-      for (const preferences of searchPreferencesList) {
-        if (preferences.user.id === account.id) {
-          setCurrentSearchPreferences(preferences);
-        }
+  const savedUserRating = (id, category) => {
+    for (const preferences of searchPreferencesList) {
+      if (preferences.user.id === id) {
+        return preferences[category];
       }
     }
-  }, []);
+  }
+
+  const mapUnclickedStars = () => {
+    if (account) {
+      for (const category of starKeys) {
+        if (!clicked[category]) { currentSearchPreferences[category] = savedUserRating(account.id, category); }
+      }
+      setCurrentSearchPreferences(JSON.parse(JSON.stringify(currentSearchPreferences)));
+    }
+  };
 
   {/*
     failed to set state the correct way, employed weird object mutation workaround.
     TODO: rewrite this using best practice
   */}
+
   const handleStarClick = (starValue, category) => {
     currentSearchPreferences[category] = starValue;
+    clicked[category] = true;
     setCurrentSearchPreferences(JSON.parse(JSON.stringify(currentSearchPreferences)));
+    setClicked(JSON.parse(JSON.stringify(clicked)));
+    mapUnclickedStars();
   }
 
   return (
@@ -117,7 +135,7 @@ export const Home = (props) => {
                     starHoverColor={starColors.hover}
                     starRatedColor={starColors[category]}
                     starEmptyColor={starColors.empty}
-                    rating={currentSearchPreferences[category]}
+                    rating={account.login && !clicked[category] ? savedUserRating(account.id, category) : currentSearchPreferences[category]}
                     changeRating={handleStarClick}
                   />
                 </td>
@@ -136,6 +154,7 @@ export const Home = (props) => {
 const mapStateToProps = (storeState: IRootState) => ({
   account: storeState.authentication.account,
   isAuthenticated: storeState.authentication.isAuthenticated,
+  users: storeState.userManagement.users,
   searchPreferencesList: storeState.searchPreferences.entities,
   loading: storeState.searchPreferences.loading,
   updating: storeState.searchPreferences.updating,

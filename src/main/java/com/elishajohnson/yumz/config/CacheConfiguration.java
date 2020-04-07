@@ -42,6 +42,13 @@ public class CacheConfiguration {
             createCache(cm, com.elishajohnson.yumz.domain.User.class.getName());
             createCache(cm, com.elishajohnson.yumz.domain.Authority.class.getName());
             createCache(cm, com.elishajohnson.yumz.domain.User.class.getName() + ".authorities");
+            createCache(cm, com.elishajohnson.yumz.domain.Restaurant.class.getName());
+            createCache(cm, com.elishajohnson.yumz.domain.Restaurant.class.getName() + ".reviews");
+            createCache(cm, com.elishajohnson.yumz.domain.Restaurant.class.getName() + ".cuisineTypes");
+            createCache(cm, com.elishajohnson.yumz.domain.Review.class.getName());
+            createCache(cm, com.elishajohnson.yumz.domain.CuisineType.class.getName());
+            createCache(cm, com.elishajohnson.yumz.domain.CuisineType.class.getName() + ".restaurants");
+            createCache(cm, com.elishajohnson.yumz.domain.SearchPreferences.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

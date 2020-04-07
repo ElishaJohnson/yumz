@@ -7,6 +7,10 @@
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Entities",
+        "restaurant": "Restaurant",
+        "review": "Review",
+        "cuisineType": "Cuisine Type",
+        "searchPreferences": "Search Preferences",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

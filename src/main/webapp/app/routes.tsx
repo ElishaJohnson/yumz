@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch } from 'react-router-dom';
 import Loadable from 'react-loadable';
 
+import Search from 'app/search';
 import Login from 'app/modules/login/login';
 import Register from 'app/modules/account/register/register';
 import Activate from 'app/modules/account/activate/activate';
@@ -28,6 +29,7 @@ const Admin = Loadable({
 const Routes = () => (
   <div className="view-routes">
     <Switch>
+      <ErrorBoundaryRoute path="/search" exact component={Search} />
       <ErrorBoundaryRoute path="/login" component={Login} />
       <ErrorBoundaryRoute path="/logout" component={Logout} />
       <ErrorBoundaryRoute path="/account/register" component={Register} />
@@ -37,7 +39,7 @@ const Routes = () => (
       <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />
       <ErrorBoundaryRoute path="/" exact component={Home} />
-      <PrivateRoute path="/" component={Entities} hasAnyAuthorities={[AUTHORITIES.USER]} />
+      <PrivateRoute path="/" component={Entities} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <ErrorBoundaryRoute component={PageNotFound} />
     </Switch>
   </div>

@@ -81,11 +81,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/activate").permitAll()
             .antMatchers("/api/account/reset-password/init").permitAll()
             .antMatchers("/api/account/reset-password/finish").permitAll()
+            .antMatchers("/api/account/errors/**").permitAll() // unsecured manually
+            .antMatchers("/api/search-preferences").permitAll() // unsecured manually
             .antMatchers("/api/**").authenticated()
+            .antMatchers("/api/management/audits/**").permitAll() // unsecured manually
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/info").permitAll()
             .antMatchers("/management/prometheus").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/repository/CustomAuditEventRepository").permitAll() // unsecured manually
         .and()
             .httpBasic()
         .and()

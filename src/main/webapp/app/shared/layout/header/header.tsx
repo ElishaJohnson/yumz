@@ -45,7 +45,7 @@ const Header = (props: IHeaderProps) => {
 
   return (
     <div id="app-header">
-      {renderDevRibbon()}
+      {/* {renderDevRibbon()} */}
       <LoadingBar className="loading-bar" />
       <Navbar dark expand="sm" fixed="top" className="jh-navbar">
         <NavbarToggler aria-label="Menu" onClick={toggleMenu} />
@@ -53,7 +53,7 @@ const Header = (props: IHeaderProps) => {
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ml-auto" navbar>
             <Home />
-            {props.isAuthenticated && <EntitiesMenu />}
+            {props.isAuthenticated && props.isAdmin && <EntitiesMenu />}
             {props.isAuthenticated && props.isAdmin && <AdminMenu showSwagger={props.isSwaggerEnabled} />}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
             <AccountMenu isAuthenticated={props.isAuthenticated} />

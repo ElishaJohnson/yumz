@@ -1,26 +1,121 @@
 import './home.scss';
 
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Translate } from 'react-jhipster';
+import React, { useState, useEffect } from 'react';
+import { Link, RouteComponentProps } from 'react-router-dom';
+import { Translate, ICrudGetAction, ICrudGetAllAction, ICrudPutAction } from 'react-jhipster';
 import { connect } from 'react-redux';
-import { Row, Col, Alert } from 'reactstrap';
+import { Row, Col, Alert, Button, Label } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
+import { IUser } from 'app/shared/model/user.model';
+import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
+import { getEntity, getEntities, updateEntity, createEntity, reset } from 'app/entities/search-preferences/search-preferences.reducer';
+import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
 
-export type IHomeProp = StateProps;
+import StarRatingComponent from 'react-star-ratings';
 
-export const Home = (props: IHomeProp) => {
-  const { account } = props;
+{/*
+  removed the line "export type IHomeProp = StateProps;" and removed ": IHomeProps" from function declaration
+  which now allowed dispatch to be accessed but caused numerous errors while there was no user logged in.
+  removed errors by relaxing certain restrictions in java/.../config/SecurityConfiguration.java.
+  TODO: find permanent solution that does not compromise security
+*/}
+
+export const Home = (props) => {
+  useEffect(() => {
+    props.getEntities();
+  }, []);
+
+  const [currentSearchPreferences, setCurrentSearchPreferences] = useState({
+    food: 5,
+    hospitality: 5,
+    atmosphere: 5
+  });
+  const [clicked, setClicked] = useState({
+    food: false,
+    hospitality: false,
+    atmosphere: false
+  });
+  const [entityLoaded, setEntityLoaded] = useState(false);
+  const [currentUser, setCurrentUser] = useState({});
+  const [searchPreferencesEntity, setSearchPreferencesEntity] = useState({
+    id: null,
+    food: null,
+    hospitality: null,
+    atmosphere: null,
+    user: {}
+  });
+  const { account, searchPreferencesList, loading, updating, users } = props;
+
+  const starKeys = ["food", "hospitality", "atmosphere"];
+  const starColors = {
+    food: "red",
+    hospitality: "blue",
+    atmosphere: "green",
+    empty: "lightgray",
+    hover: "gold"
+  }
+
+  {/*
+    fetch user's search preferences, since JHipster does not want to store foreign information
+    in its user entity this requires checking every searchPreferences entity for a matching user id.
+  */}
+  const savedUserRating = (id, category) => {
+    for (const preferences of searchPreferencesList) {
+      if (preferences.user.id === id) {
+        if (!entityLoaded) {
+          setSearchPreferencesEntity(JSON.parse(JSON.stringify(preferences)));
+          setEntityLoaded(true);
+        }
+        return preferences[category];
+      }
+    }
+  }
+
+
+
+  const mapUnclickedStars = () => {
+    if (account && account.login) {
+      for (const category of starKeys) {
+        if (!clicked[category]) { currentSearchPreferences[category] = savedUserRating(account.id, category); }
+      }
+      setCurrentSearchPreferences(JSON.parse(JSON.stringify(currentSearchPreferences)));
+    }
+  };
+
+  {/*
+    failed to set state the correct way, employed weird object mutation workaround.
+    TODO: rewrite this using best practice
+  */}
+
+  const handleStarClick = (starValue, category) => {
+    currentSearchPreferences[category] = starValue;
+    clicked[category] = true;
+    setCurrentSearchPreferences(JSON.parse(JSON.stringify(currentSearchPreferences)));
+    setClicked(JSON.parse(JSON.stringify(clicked)));
+    mapUnclickedStars();
+  }
+
+  const saveEntity = () => {
+    const entity = {
+      id: searchPreferencesEntity.id,
+      food: currentSearchPreferences.food,
+      hospitality: currentSearchPreferences.hospitality,
+      atmosphere: currentSearchPreferences.atmosphere,
+      user: searchPreferencesEntity.user
+    };
+    props.updateEntity(entity);
+ };
 
   return (
     <Row>
       <Col md="9">
         <h2>
-          <Translate contentKey="home.title">Welcome, Java Hipster!</Translate>
+          <Translate contentKey="home.title">Welcome to Yumz!</Translate>
         </h2>
         <p className="lead">
-          <Translate contentKey="home.subtitle">This is your homepage</Translate>
+          <Translate contentKey="home.subtitle">Personalize your search for food</Translate>
         </p>
         {account && account.login ? (
           <div>
@@ -33,64 +128,53 @@ export const Home = (props: IHomeProp) => {
         ) : (
           <div>
             <Alert color="warning">
-              <Translate contentKey="global.messages.info.authenticated.prefix">If you want to </Translate>
               <Link to="/login" className="alert-link">
                 <Translate contentKey="global.messages.info.authenticated.link"> sign in</Translate>
               </Link>
-              <Translate contentKey="global.messages.info.authenticated.suffix">
-                , you can try the default accounts:
-                <br />- Administrator (login=&quot;admin&quot; and password=&quot;admin&quot;)
-                <br />- User (login=&quot;user&quot; and password=&quot;user&quot;).
-              </Translate>
-            </Alert>
-
-            <Alert color="warning">
-              <Translate contentKey="global.messages.info.register.noaccount">You do not have an account yet?</Translate>&nbsp;
+              <span> or </span>
               <Link to="/account/register" className="alert-link">
                 <Translate contentKey="global.messages.info.register.link">Register a new account</Translate>
               </Link>
             </Alert>
           </div>
         )}
-        <p>
-          <Translate contentKey="home.question">If you have any question on JHipster:</Translate>
-        </p>
-
-        <ul>
-          <li>
-            <a href="https://www.jhipster.tech/" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.homepage">JHipster homepage</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.stackoverflow">JHipster on Stack Overflow</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.bugtracker">JHipster bug tracker</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.chat">JHipster public chat room</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://twitter.com/jhipster" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.follow">follow @jhipster on Twitter</Translate>
-            </a>
-          </li>
-        </ul>
-
-        <p>
-          <Translate contentKey="home.like">If you like JHipster, do not forget to give us a star on</Translate>{' '}
-          <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-            Github
-          </a>
-          !
-        </p>
+        <div>
+          Select the importance of each category:
+          <br />
+          <table>
+            {starKeys.map((category) => (
+              <tr key={category}>
+                <td>
+                  <Label id="foodLabel" for={"search-preferences-" + category}>
+                    <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
+                  </Label>
+                </td>
+                <td style={{paddingLeft: 20, color: "red"}}>
+                  <Button color="" onClick={() => handleStarClick(0, category)}>
+                    <FontAwesomeIcon icon="ban" />
+                  </Button>
+                </td>
+                <td>
+                  <StarRatingComponent
+                    name={category}
+                    starHoverColor={starColors.hover}
+                    starRatedColor={starColors[category]}
+                    starEmptyColor={starColors.empty}
+                    rating={account.login && !clicked[category] ? savedUserRating(account.id, category) : currentSearchPreferences[category]}
+                    changeRating={handleStarClick}
+                  />
+                </td>
+              </tr>
+            ))}
+          </table>
+          {account && account.login ? (
+            <Button style={{marginLeft: 382, marginTop: 12}} color="primary" onClick={() => saveEntity()}>
+              <FontAwesomeIcon icon="save" />
+              &nbsp;
+              <Translate contentKey="entity.action.save">Save</Translate>
+            </Button>
+          ) : null}
+        </div>
       </Col>
       <Col md="3" className="pad">
         <span className="hipster rounded" />
@@ -99,11 +183,26 @@ export const Home = (props: IHomeProp) => {
   );
 };
 
-const mapStateToProps = storeState => ({
+const mapStateToProps = (storeState: IRootState) => ({
   account: storeState.authentication.account,
-  isAuthenticated: storeState.authentication.isAuthenticated
+  isAuthenticated: storeState.authentication.isAuthenticated,
+  users: storeState.userManagement.users,
+  searchPreferencesList: storeState.searchPreferences.entities,
+  loading: storeState.searchPreferences.loading,
+  updating: storeState.searchPreferences.updating,
+  updateSuccess: storeState.searchPreferences.updateSuccess
 });
 
-type StateProps = ReturnType<typeof mapStateToProps>;
+const mapDispatchToProps = {
+    getUsers,
+    getEntity,
+    getEntities,
+    updateEntity,
+    createEntity,
+    reset
+};
 
-export default connect(mapStateToProps)(Home);
+type StateProps = ReturnType<typeof mapStateToProps>;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

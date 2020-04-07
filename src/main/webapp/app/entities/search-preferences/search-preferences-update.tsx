@@ -13,14 +13,54 @@ import { getEntity, updateEntity, createEntity, reset } from './search-preferenc
 import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
+import StarRatingComponent from 'react-star-ratings';
 
 export interface ISearchPreferencesUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
 export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) => {
   const [userId, setUserId] = useState('0');
   const [isNew, setIsNew] = useState(!props.match.params || !props.match.params.id);
+  const [stars, setStars] = useState({
+    food: {value: 0, clicked: false},
+    hospitality: {value: 0, clicked: false},
+    atmosphere: {value: 0, clicked: false}
+  });
 
   const { searchPreferencesEntity, users, loading, updating } = props;
+
+  const starKeys = ["food", "hospitality", "atmosphere"];
+  const starColors = {
+    food: "red",
+    hospitality: "blue",
+    atmosphere: "green",
+    empty: "lightgray",
+    hover: "gold"
+  }
+
+  {/*
+    failed to set state the correct way, employed weird object mutation workaround.
+    TODO: rewrite this using best practice
+  */}
+  const handleStarClick = (starValue, category) => {
+    stars[category].value = starValue;
+    stars[category].clicked = true;
+    setStars(JSON.parse(JSON.stringify(stars)));
+  }
+
+  {/*
+    assign any unchanged values from the old object to the new one
+    so that they are not saved as null if they haven't been clicked.
+    activated when the mouse enters the stars table or the save button.
+    TODO: find a more stable & reliable way to transfer these values
+  */}
+  const mapUnclickedStars = () => {
+    for (const category of starKeys) {
+      if (!stars[category].clicked) {
+        stars[category].value = searchPreferencesEntity[category];
+      }
+    }
+    setStars(JSON.parse(JSON.stringify(stars)));
+  };
 
   const handleClose = () => {
     props.history.push('/search-preferences');
@@ -46,7 +86,10 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
     if (errors.length === 0) {
       const entity = {
         ...searchPreferencesEntity,
-        ...values
+        ...values,
+        food: stars.food.value,
+        hospitality: stars.hospitality.value,
+        atmosphere: stars.atmosphere.value
       };
 
       if (isNew) {
@@ -72,72 +115,50 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
             <p>Loading...</p>
           ) : (
             <AvForm model={isNew ? {} : searchPreferencesEntity} onSubmit={saveEntity}>
-              {!isNew ? (
-                <AvGroup>
-                  <Label for="search-preferences-id">
-                    <Translate contentKey="global.field.id">ID</Translate>
-                  </Label>
-                  <AvInput id="search-preferences-id" type="text" className="form-control" name="id" required readOnly />
-                </AvGroup>
-              ) : null}
-              <AvGroup>
-                <Label id="foodLabel" for="search-preferences-food">
-                  <Translate contentKey="yumzApp.searchPreferences.food">Food</Translate>
-                </Label>
-                <AvField
-                  id="search-preferences-food"
-                  type="string"
-                  className="form-control"
-                  name="food"
-                  validate={{
-                    required: { value: true, errorMessage: translate('entity.validation.required') },
-                    max: { value: 5, errorMessage: translate('entity.validation.max', { max: 5 }) },
-                    number: { value: true, errorMessage: translate('entity.validation.number') }
-                  }}
-                />
-              </AvGroup>
-              <AvGroup>
-                <Label id="hospitalityLabel" for="search-preferences-hospitality">
-                  <Translate contentKey="yumzApp.searchPreferences.hospitality">Hospitality</Translate>
-                </Label>
-                <AvField
-                  id="search-preferences-hospitality"
-                  type="string"
-                  className="form-control"
-                  name="hospitality"
-                  validate={{
-                    required: { value: true, errorMessage: translate('entity.validation.required') },
-                    max: { value: 5, errorMessage: translate('entity.validation.max', { max: 5 }) },
-                    number: { value: true, errorMessage: translate('entity.validation.number') }
-                  }}
-                />
-              </AvGroup>
-              <AvGroup>
-                <Label id="atmosphereLabel" for="search-preferences-atmosphere">
-                  <Translate contentKey="yumzApp.searchPreferences.atmosphere">Atmosphere</Translate>
-                </Label>
-                <AvField
-                  id="search-preferences-atmosphere"
-                  type="string"
-                  className="form-control"
-                  name="atmosphere"
-                  validate={{
-                    required: { value: true, errorMessage: translate('entity.validation.required') },
-                    max: { value: 5, errorMessage: translate('entity.validation.max', { max: 5 }) },
-                    number: { value: true, errorMessage: translate('entity.validation.number') }
-                  }}
-                />
-              </AvGroup>
+              <table onMouseEnter={mapUnclickedStars}>
+               {starKeys.map((category) => (
+               <tr key={category}>
+                  <td>
+                    <Label id="foodLabel" for={"search-preferences-" + category}>
+                      <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
+                    </Label>
+                  </td>
+                  <td style={{paddingLeft: 20, color: "red"}}>
+                    <Button color="" onClick={() => handleStarClick(0, category)}>
+                      <FontAwesomeIcon icon="ban" />
+                    </Button>
+                  </td>
+                  <td>
+                    <StarRatingComponent
+                      name={category}
+                      starHoverColor={starColors.hover}
+                      starRatedColor={starColors[category]}
+                      starEmptyColor={starColors.empty}
+                      rating={stars[category].clicked ? stars[category].value : searchPreferencesEntity[category]}
+                      changeRating={handleStarClick}
+                    />
+                  </td>
+                </tr>
+              ))}
+              </table>
               <AvGroup>
                 <Label for="search-preferences-user">
                   <Translate contentKey="yumzApp.searchPreferences.user">User</Translate>
                 </Label>
-                <AvInput id="search-preferences-user" type="select" className="form-control" name="user.id">
+                <AvInput
+                  id="search-preferences-user"
+                  type="select"
+                  className="form-control"
+                  name="user.id"
+                  validate={{
+                    required: { value: true, errorMessage: translate('entity.validation.required') }
+                  }}
+                >
                   <option value="" key="0" />
                   {users
                     ? users.map(otherEntity => (
                         <option value={otherEntity.id} key={otherEntity.id}>
-                          {otherEntity.id}
+                          {otherEntity.login}
                         </option>
                       ))
                     : null}
@@ -151,7 +172,7 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
                 </span>
               </Button>
               &nbsp;
-              <Button color="primary" id="save-entity" type="submit" disabled={updating}>
+              <Button color="primary" id="save-entity" type="submit" onMouseEnter={mapUnclickedStars} disabled={updating}>
                 <FontAwesomeIcon icon="save" />
                 &nbsp;
                 <Translate contentKey="entity.action.save">Save</Translate>

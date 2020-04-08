@@ -6,7 +6,7 @@ import { Translate, ICrudGetAction, ICrudGetAllAction, ICrudPutAction } from 're
 import { connect } from 'react-redux';
 import { Row, Col, Alert, Button, Label } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import { AvForm, AvField } from 'availity-reactstrap-validation';
 import { IRootState } from 'app/shared/reducers';
 import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
@@ -174,6 +174,18 @@ export const Home = (props) => {
               <Translate contentKey="entity.action.save">Save</Translate>
             </Button>
           ) : null}
+          <div style={{marginTop: 40}}>
+            <AvForm>
+              <div>
+                <AvField type="text" name="search" placeholder="Enter search term here (optional)"></AvField>
+                <Button type="submit" color="success" style={{float: "right"}}>
+                  <FontAwesomeIcon icon="search" />
+                  &nbsp;
+                  <Translate contentKey="global.search">Search</Translate>
+                </Button>
+              </div>
+            </AvForm>
+          </div>
         </div>
       </Col>
       <Col md="3" className="pad">

@@ -43,7 +43,7 @@ export const CuisineType = (props: ICuisineTypeProps) => {
               </tr>
             </thead>
             <tbody>
-              {cuisineTypeList.sort((a, b) => (a.name > b.name) ? 1 : -1).map((cuisineType, i) => (
+              {cuisineTypeList.slice().sort((a, b) => (a.name > b.name) ? 1 : -1).map((cuisineType, i) => (
                 <tr key={`entity-${i}`}>
                   <td>
                     <Button tag={Link} to={`${match.url}/${cuisineType.id}`} color="link" size="sm">

@@ -2,7 +2,7 @@ import './home.scss';
 
 import React, { useState, useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { Translate, ICrudGetAction, ICrudGetAllAction, ICrudPutAction } from 'react-jhipster';
+import { translate, Translate, ICrudGetAction, ICrudGetAllAction, ICrudPutAction } from 'react-jhipster';
 import { connect } from 'react-redux';
 import { Row, Col, Alert, Button, Label } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -106,7 +106,14 @@ export const Home = (props) => {
       user: searchPreferencesEntity.user
     };
     props.updateEntity(entity);
- };
+  };
+
+  const search = (event, errors, values) => {
+    if (errors.length === 0) {
+      mapUnclickedStars();
+      window.location.href=`/search?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${values.param ? '&param=' + values.param : ''}`;
+    }
+  }
 
   return (
     <Row>
@@ -175,15 +182,20 @@ export const Home = (props) => {
             </Button>
           ) : null}
           <div style={{marginTop: 40}}>
-            <AvForm>
-              <div>
-                <AvField type="text" name="search" placeholder="Enter search term here (optional)"></AvField>
-                <Button type="submit" color="success" style={{float: "right"}}>
+            <AvForm onSubmit={search}>
+                <AvField
+                  type="text"
+                  name="param"
+                  placeholder="Enter search term here (optional)"
+                  validate={{
+                    maxLength: { value: 50, errorMessage: translate('entity.validation.maxlength', { max: 50 }) }
+                  }}
+                />
+                <Button color="success" style={{float: "right"}}>
                   <FontAwesomeIcon icon="search" />
                   &nbsp;
                   <Translate contentKey="global.search">Search</Translate>
                 </Button>
-              </div>
             </AvForm>
           </div>
         </div>

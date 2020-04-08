@@ -17,7 +17,21 @@ export const Search = (props: IRestaurantProps) => {
     props.getEntities();
   }, []);
 
+  const params = new URLSearchParams(window.location.search);
+  const [food, setFood] = useState(5);
+  const [hospitality, setHospitality] = useState(5);
+  const [atmosphere, setAtmosphere] = useState(5);
+  const [searchFilter, setSearchFilter] = useState('');
+
   const { restaurantList, match, loading } = props;
+
+  useEffect(() => {
+    if (params.has("food")) { setFood(parseInt(params.get("food"), 10)); }
+    if (params.has("hospitality")) { setHospitality(parseInt(params.get("hospitality"), 10)); }
+    if (params.has("atmosphere")) { setAtmosphere(parseInt(params.get("atmosphere"), 10)); }
+    if (params.has("keyword")) { setSearchFilter(params.get("keyword")); }
+  }, []);
+
   return (
     <div>
       <h2 id="restaurant-heading">
@@ -29,6 +43,7 @@ export const Search = (props: IRestaurantProps) => {
         </Link>
       </h2>
       <div className="table-responsive">
+        <p>{searchFilter ? searchFilter : "nope"}</p>
         {restaurantList && restaurantList.length > 0 ? (
           <Table responsive>
             <thead>

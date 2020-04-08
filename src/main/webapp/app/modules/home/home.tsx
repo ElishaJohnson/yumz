@@ -111,7 +111,7 @@ export const Home = (props) => {
   const search = (event, errors, values) => {
     if (errors.length === 0) {
       mapUnclickedStars();
-      window.location.href=`/search?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${values.param ? '&param=' + values.param : ''}`;
+      window.location.href=`/search?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${values.keyword ? '&keyword=' + values.keyword : ''}`;
     }
   }
 
@@ -185,7 +185,7 @@ export const Home = (props) => {
             <AvForm onSubmit={search}>
                 <AvField
                   type="text"
-                  name="param"
+                  name="keyword"
                   placeholder="Enter search term here (optional)"
                   validate={{
                     maxLength: { value: 50, errorMessage: translate('entity.validation.maxlength', { max: 50 }) }

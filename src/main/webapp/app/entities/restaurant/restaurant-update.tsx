@@ -154,7 +154,7 @@ export const RestaurantUpdate = (props: IRestaurantUpdateProps) => {
                 >
                   <option value="" key="0" />
                   {cuisineTypes
-                    ? cuisineTypes.map(otherEntity => (
+                    ? cuisineTypes.sort((a, b) => (a.name > b.name) ? 1 : -1).map(otherEntity => (
                         <option value={otherEntity.id} key={otherEntity.id}>
                           {otherEntity.name}
                         </option>

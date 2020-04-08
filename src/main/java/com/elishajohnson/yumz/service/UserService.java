@@ -8,6 +8,8 @@ import com.elishajohnson.yumz.repository.UserRepository;
 import com.elishajohnson.yumz.security.AuthoritiesConstants;
 import com.elishajohnson.yumz.security.SecurityUtils;
 import com.elishajohnson.yumz.service.dto.UserDTO;
+import com.elishajohnson.yumz.domain.SearchPreferences;
+import com.elishajohnson.yumz.repository.SearchPreferencesRepository;
 
 import io.github.jhipster.security.RandomUtil;
 
@@ -43,11 +45,14 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    private final SearchPreferencesRepository searchPreferencesRepository;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager, SearchPreferencesRepository searchPreferencesRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.searchPreferencesRepository = searchPreferencesRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -101,6 +106,7 @@ public class UserService {
             }
         });
         User newUser = new User();
+        SearchPreferences newSearchPreferences = new SearchPreferences();
         String encryptedPassword = passwordEncoder.encode(password);
         newUser.setLogin(userDTO.getLogin().toLowerCase());
         // new user gets initially a generated password
@@ -119,6 +125,11 @@ public class UserService {
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
+        newSearchPreferences.setFood(5);
+        newSearchPreferences.setAtmosphere(5);
+        newSearchPreferences.setHospitality(5);
+        newSearchPreferences.setUser(newUser);
+        searchPreferencesRepository.save(newSearchPreferences);
         userRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);

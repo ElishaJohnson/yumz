@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { Button, Col, Row, Table } from 'reactstrap';
+import { Button, Col, Row, Table, Label } from 'reactstrap';
 import { Translate, ICrudGetAllAction } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -9,6 +9,7 @@ import { IRootState } from 'app/shared/reducers';
 import { getEntities } from 'app/entities/restaurant/restaurant.reducer';
 import { IRestaurant } from 'app/shared/model/restaurant.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
+import StarRatingComponent from 'react-star-ratings';
 
 export interface IRestaurantProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
@@ -18,19 +19,42 @@ export const Search = (props: IRestaurantProps) => {
   }, []);
 
   const params = new URLSearchParams(window.location.search);
-  const [food, setFood] = useState(5);
-  const [hospitality, setHospitality] = useState(5);
-  const [atmosphere, setAtmosphere] = useState(5);
+
   const [searchFilter, setSearchFilter] = useState();
   const [filteredList, setFilteredList] = useState([]);
-  const [aggregateRatings, setAggregateRatings] = useState({});
+
+  const [currentSearchPreferences, setCurrentSearchPreferences] = useState({
+    food: 5,
+    hospitality: 5,
+    atmosphere: 5
+  });
+  const [clicked, setClicked] = useState({
+    food: false,
+    hospitality: false,
+    atmosphere: false
+  });
+  const [entityLoaded, setEntityLoaded] = useState(false);
 
   const { restaurantList, match, loading } = props;
 
+  const starKeys = ["food", "hospitality", "atmosphere"];
+  const starColors = {
+    food: "red",
+    hospitality: "blue",
+    atmosphere: "green",
+    empty: "lightgray",
+    hover: "gold"
+  }
+
   useEffect(() => {
-    if (params.has("food")) { setFood(parseInt(params.get("food"), 10)); }
-    if (params.has("hospitality")) { setHospitality(parseInt(params.get("hospitality"), 10)); }
-    if (params.has("atmosphere")) { setAtmosphere(parseInt(params.get("atmosphere"), 10)); }
+    if (params.has("food") && params.has("hospitality") && params.has("atmosphere")) {
+      setCurrentSearchPreferences({
+        ...currentSearchPreferences,
+        food: parseInt(params.get("food"), 10),
+        hospitality: parseInt(params.get("hospitality"), 10),
+        atmosphere: parseInt(params.get("atmosphere"), 10)
+      });
+    }
     if (params.has("keyword")) { setSearchFilter(params.get("keyword")); }
   }, []);
 
@@ -54,23 +78,78 @@ export const Search = (props: IRestaurantProps) => {
       });
     }
     setFilteredList(newList);
+    setEntityLoaded(true);
+  }
+
+  const mapUnclickedStars = () => {
+    starKeys.map((category) => {
+      if (!clicked[category]) {
+        setCurrentSearchPreferences({
+          ...currentSearchPreferences,
+          [category]: [category]
+        });
+        setClicked({
+          ...clicked,
+          [category]: true
+        });
+      }
+    });
+  }
+
+
+  {/*
+    failed to set state the correct way, employed weird object mutation workaround.
+    TODO: rewrite this using best practice
+  */}
+
+  const handleStarClick = (starValue, category) => {
+    currentSearchPreferences[category] = starValue;
+    clicked[category] = true;
+    setCurrentSearchPreferences(JSON.parse(JSON.stringify(currentSearchPreferences)));
+    setClicked(JSON.parse(JSON.stringify(clicked)));
+    mapUnclickedStars();
+    if (restaurantList && restaurantList.length > 0 && !entityLoaded) { createFilteredList(); }
   }
 
   return (
     <div>
+
+          <h3>Your preferences:</h3>
+          <br />
+          <table style={{width: '100%'}}>
+            {starKeys.map((category) => (
+              <th key={category} style={{textAlign: 'center'}}>
+                <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
+              </th>
+            ))}
+            <tr>
+              {starKeys.map((category) => (
+                <td key={category} style={{paddingLeft: '5%', color: 'red', fontSize: '24px'}}>
+                  <Button color="" onClick={() => handleStarClick(0, category)}>
+                    <FontAwesomeIcon icon="ban" />
+                  </Button>
+                  <StarRatingComponent
+                    name={category}
+                    starDimension={"40px"}
+                    starSpacing={"3px"}
+                    starHoverColor={starColors.hover}
+                    starRatedColor={starColors[category]}
+                    starEmptyColor={starColors.empty}
+                    rating={!clicked[category] && restaurantList && restaurantList.length > 0 && !entityLoaded ? handleStarClick(currentSearchPreferences[category], category) : currentSearchPreferences[category]}
+                    changeRating={handleStarClick}
+                  />
+                </td>
+              ))}
+            </tr>
+          </table>
+
       <h2 id="restaurant-heading">
         <Translate contentKey="yumzApp.restaurant.home.title">Restaurants</Translate>
-        <Link to={`${match.url}/new`} className="btn btn-primary float-right jh-create-entity" id="jh-create-entity">
-          <FontAwesomeIcon icon="plus" />
-          &nbsp;
-          <Translate contentKey="yumzApp.restaurant.home.createLabel">Create new Restaurant</Translate>
-        </Link>
       </h2>
       <div className="table-responsive">
         <p>{searchFilter ? 'Results containing "' + searchFilter + '":' : ''}</p>
         {restaurantList && restaurantList.length > 0 ? (
           <Table responsive>
-            {() => createFilteredList()}
             <thead>
               <tr>
                 <th>

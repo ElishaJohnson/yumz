@@ -73,8 +73,6 @@ export const Home = (props) => {
     }
   }
 
-
-
   const mapUnclickedStars = () => {
     if (account && account.login) {
       for (const category of starKeys) {

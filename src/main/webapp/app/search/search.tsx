@@ -21,7 +21,9 @@ export const Search = (props: IRestaurantProps) => {
   const [food, setFood] = useState(5);
   const [hospitality, setHospitality] = useState(5);
   const [atmosphere, setAtmosphere] = useState(5);
-  const [searchFilter, setSearchFilter] = useState('');
+  const [searchFilter, setSearchFilter] = useState();
+  const [filteredList, setFilteredList] = useState([]);
+  const [aggregateRatings, setAggregateRatings] = useState({});
 
   const { restaurantList, match, loading } = props;
 
@@ -31,6 +33,28 @@ export const Search = (props: IRestaurantProps) => {
     if (params.has("atmosphere")) { setAtmosphere(parseInt(params.get("atmosphere"), 10)); }
     if (params.has("keyword")) { setSearchFilter(params.get("keyword")); }
   }, []);
+
+  const hasSearchParameter = (restaurant) => {
+    if (restaurant.name.toLowerCase().includes(searchFilter.toLowerCase())) { return true; }
+    if (restaurant.cuisineType) {
+      for (const cuisineType of restaurant.cuisineType) {
+        if (cuisineType.name.toLowerCase().includes(searchFilter.toLowerCase())) { return true; }
+      }
+    }
+    return false;
+  }
+
+  const createFilteredList = () => {
+    const newList = [];
+    if (!filteredList || filteredList.length === 0) {
+      restaurantList.map((r, i) => {
+        if (!searchFilter || (searchFilter && hasSearchParameter(r))) {
+          newList.push(r);
+        }
+      });
+    }
+    setFilteredList(newList);
+  }
 
   return (
     <div>
@@ -43,9 +67,10 @@ export const Search = (props: IRestaurantProps) => {
         </Link>
       </h2>
       <div className="table-responsive">
-        <p>{searchFilter ? searchFilter : "nope"}</p>
+        <p>{searchFilter ? 'Results containing "' + searchFilter + '":' : ''}</p>
         {restaurantList && restaurantList.length > 0 ? (
           <Table responsive>
+            {() => createFilteredList()}
             <thead>
               <tr>
                 <th>
@@ -70,7 +95,7 @@ export const Search = (props: IRestaurantProps) => {
               </tr>
             </thead>
             <tbody>
-              {restaurantList.map((restaurant, i) => (
+              {filteredList && filteredList.length > 0 ? filteredList.map((restaurant, i) => (
                 <tr key={`entity-${i}`}>
                   <td>
                     <Button tag={Link} to={`${match.url}/${restaurant.id}`} color="link" size="sm">
@@ -114,7 +139,7 @@ export const Search = (props: IRestaurantProps) => {
                     </div>
                   </td>
                 </tr>
-              ))}
+              )): "list not loaded!"}
             </tbody>
           </Table>
         ) : (

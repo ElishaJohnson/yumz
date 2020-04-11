@@ -100,8 +100,10 @@
       "back": "Back",
       "cancel": "Cancel",
       "delete": "Delete",
+      "details": "View Details",
       "edit": "Edit",
       "open": "Open",
+      "review": "Rate/Review",
       "save": "Save",
       "view": "View"
     },

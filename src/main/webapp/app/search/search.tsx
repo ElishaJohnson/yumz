@@ -143,7 +143,7 @@ export const Search = (props: IRestaurantProps) => {
             </tr>
           </table>
 
-      <h2 id="restaurant-heading">
+      <h2 id="restaurant-heading" style={{marginTop: '50px'}}>
         <Translate contentKey="yumzApp.restaurant.home.title">Restaurants</Translate>
       </h2>
       <div className="table-responsive">
@@ -152,9 +152,6 @@ export const Search = (props: IRestaurantProps) => {
           <Table responsive>
             <thead>
               <tr>
-                <th>
-                  <Translate contentKey="global.field.id">ID</Translate>
-                </th>
                 <th>
                   <Translate contentKey="yumzApp.restaurant.name">Name</Translate>
                 </th>
@@ -176,11 +173,6 @@ export const Search = (props: IRestaurantProps) => {
             <tbody>
               {filteredList && filteredList.length > 0 ? filteredList.map((restaurant, i) => (
                 <tr key={`entity-${i}`}>
-                  <td>
-                    <Button tag={Link} to={`${match.url}/${restaurant.id}`} color="link" size="sm">
-                      {restaurant.id}
-                    </Button>
-                  </td>
                   <td>{restaurant.name}</td>
                   <td>{restaurant.location}</td>
                   <td>{restaurant.phone}</td>
@@ -200,19 +192,13 @@ export const Search = (props: IRestaurantProps) => {
                       <Button tag={Link} to={`${match.url}/${restaurant.id}`} color="info" size="sm">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.view">View</Translate>
+                          <Translate contentKey="entity.action.details">View Details</Translate>
                         </span>
                       </Button>
                       <Button tag={Link} to={`${match.url}/${restaurant.id}/edit`} color="primary" size="sm">
                         <FontAwesomeIcon icon="pencil-alt" />{' '}
                         <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.edit">Edit</Translate>
-                        </span>
-                      </Button>
-                      <Button tag={Link} to={`${match.url}/${restaurant.id}/delete`} color="danger" size="sm">
-                        <FontAwesomeIcon icon="trash" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.delete">Delete</Translate>
+                          <Translate contentKey="entity.action.review">Rate/Review</Translate>
                         </span>
                       </Button>
                     </div>

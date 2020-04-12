@@ -10,34 +10,37 @@ import { IRootState } from 'app/shared/reducers';
 import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { IRestaurant } from 'app/shared/model/restaurant.model';
-import { getEntities as getRestaurants } from 'app/entities/restaurant/restaurant.reducer';
-import { getEntity, updateEntity, createEntity, reset } from './review.reducer';
+import { getEntity as getRestaurant } from 'app/entities/restaurant/restaurant.reducer';
+import { getEntity, updateEntity, createEntity, reset } from 'app/entities/review/review.reducer';
 import { IReview } from 'app/shared/model/review.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
 
 export interface IReviewUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
-export const ReviewUpdate = (props: IReviewUpdateProps) => {
-  const [userId, setUserId] = useState('0');
-  const [restaurantId, setRestaurantId] = useState('0');
+export const RestaurantReview = (props: IReviewUpdateProps) => {
   const [isNew, setIsNew] = useState(!props.match.params || !props.match.params.id);
 
-  const { reviewEntity, users, restaurants, loading, updating } = props;
+  const { account, reviewEntity, restaurant, loading, updating } = props;
 
   const handleClose = () => {
-    props.history.push('/review');
+    props.history.push('/search');
+  };
+
+  const reviewId = () => {
+    return 1;
+    {/* TODO: find existing review based on current user & selected restaurant */}
   };
 
   useEffect(() => {
+    props.getRestaurant(props.match.params.id);
+
     if (isNew) {
       props.reset();
     } else {
-      props.getEntity(props.match.params.id);
+      props.getEntity(reviewId());
     }
 
-    props.getUsers();
-    props.getRestaurants();
   }, []);
 
   useEffect(() => {
@@ -48,6 +51,8 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
 
   const saveEntity = (event, errors, values) => {
     values.reviewDate = convertDateTimeToServer(new Date());
+    values.user = account;
+    values.restaurant = restaurant;
 
     if (errors.length === 0) {
       const entity = {
@@ -67,25 +72,15 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
     <div>
       <Row className="justify-content-center">
         <Col md="8">
-          <h2 id="yumzApp.review.home.createOrEditLabel">
-            <Translate contentKey="yumzApp.review.home.createOrEditLabel">Create or edit a Review</Translate>
-          </h2>
-        </Col>
-      </Row>
-      <Row className="justify-content-center">
-        <Col md="8">
           {loading ? (
             <p>Loading...</p>
           ) : (
             <AvForm model={isNew ? {} : reviewEntity} onSubmit={saveEntity}>
-              {!isNew ? (
-                <AvGroup>
-                  <Label for="review-id">
-                    <Translate contentKey="global.field.id">ID</Translate>
-                  </Label>
-                  <AvInput id="review-id" type="text" className="form-control" name="id" required readOnly />
-                </AvGroup>
-              ) : null}
+              <h2 id="yumzApp.review.home.userReview">
+                <span>{account.login ? account.login : "User"}&apos;s </span>
+                <Translate contentKey="yumzApp.review.home.userReview">Review for</Translate>
+                <span> {restaurant && restaurant.name ? restaurant.name : "Restaurant"}</span>
+              </h2>
               <AvGroup>
                 <Label id="reviewTextLabel" for="review-reviewText">
                   <Translate contentKey="yumzApp.review.reviewText">Review Text</Translate>
@@ -147,37 +142,7 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
                   }}
                 />
               </AvGroup>
-              <AvGroup>
-                <Label for="review-user">
-                  <Translate contentKey="yumzApp.review.user">User</Translate>
-                </Label>
-                <AvInput id="review-user" type="select" className="form-control" name="user.id">
-                  <option value="" key="0" />
-                  {users
-                    ? users.map(otherEntity => (
-                        <option value={otherEntity.id} key={otherEntity.id}>
-                          {otherEntity.id}
-                        </option>
-                      ))
-                    : null}
-                </AvInput>
-              </AvGroup>
-              <AvGroup>
-                <Label for="review-restaurant">
-                  <Translate contentKey="yumzApp.review.restaurant">Restaurant</Translate>
-                </Label>
-                <AvInput id="review-restaurant" type="select" className="form-control" name="restaurant.id">
-                  <option value="" key="0" />
-                  {restaurants
-                    ? restaurants.map(otherEntity => (
-                        <option value={otherEntity.id} key={otherEntity.id}>
-                          {otherEntity.id}
-                        </option>
-                      ))
-                    : null}
-                </AvInput>
-              </AvGroup>
-              <Button tag={Link} id="cancel-save" to="/review" replace color="info">
+              <Button tag={Link} id="cancel-save" to="/search" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;
                 <span className="d-none d-md-inline">
@@ -199,8 +164,8 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
 };
 
 const mapStateToProps = (storeState: IRootState) => ({
-  users: storeState.userManagement.users,
-  restaurants: storeState.restaurant.entities,
+  account: storeState.authentication.account,
+  restaurant: storeState.restaurant.entity,
   reviewEntity: storeState.review.entity,
   loading: storeState.review.loading,
   updating: storeState.review.updating,
@@ -208,8 +173,7 @@ const mapStateToProps = (storeState: IRootState) => ({
 });
 
 const mapDispatchToProps = {
-  getUsers,
-  getRestaurants,
+  getRestaurant,
   getEntity,
   updateEntity,
   createEntity,
@@ -219,4 +183,4 @@ const mapDispatchToProps = {
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReviewUpdate);
+export default connect(mapStateToProps, mapDispatchToProps)(RestaurantReview);

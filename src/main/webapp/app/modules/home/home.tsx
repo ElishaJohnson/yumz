@@ -8,6 +8,7 @@ import { Row, Col, Alert, Button, Label } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AvForm, AvField } from 'availity-reactstrap-validation';
 import { IRootState } from 'app/shared/reducers';
+import { logout } from 'app/shared/reducers/authentication';
 import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { getEntity, getEntities, updateEntity, createEntity, reset } from 'app/entities/search-preferences/search-preferences.reducer';
@@ -122,6 +123,7 @@ export const Home = (props) => {
         <p className="lead">
           <Translate contentKey="home.subtitle">Personalize your search for food</Translate>
         </p>
+        {account && account.login && account.login === "anonymoususer" ? props.logout() : null}
         {account && account.login ? (
           <div>
             <Alert color="success">
@@ -212,7 +214,8 @@ const mapStateToProps = (storeState: IRootState) => ({
   searchPreferencesList: storeState.searchPreferences.entities,
   loading: storeState.searchPreferences.loading,
   updating: storeState.searchPreferences.updating,
-  updateSuccess: storeState.searchPreferences.updateSuccess
+  updateSuccess: storeState.searchPreferences.updateSuccess,
+  logoutUrl: storeState.authentication.logoutUrl
 });
 
 const mapDispatchToProps = {
@@ -221,7 +224,8 @@ const mapDispatchToProps = {
     getEntities,
     updateEntity,
     createEntity,
-    reset
+    reset,
+    logout
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;

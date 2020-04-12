@@ -47,7 +47,7 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
   }, [props.updateSuccess]);
 
   const saveEntity = (event, errors, values) => {
-    values.reviewDate = convertDateTimeToServer(values.reviewDate);
+    values.reviewDate = convertDateTimeToServer(new Date());
 
     if (errors.length === 0) {
       const entity = {
@@ -145,19 +145,6 @@ export const ReviewUpdate = (props: IReviewUpdateProps) => {
                     max: { value: 5, errorMessage: translate('entity.validation.max', { max: 5 }) },
                     number: { value: true, errorMessage: translate('entity.validation.number') }
                   }}
-                />
-              </AvGroup>
-              <AvGroup>
-                <Label id="reviewDateLabel" for="review-reviewDate">
-                  <Translate contentKey="yumzApp.review.reviewDate">Review Date</Translate>
-                </Label>
-                <AvInput
-                  id="review-reviewDate"
-                  type="datetime-local"
-                  className="form-control"
-                  name="reviewDate"
-                  placeholder={'YYYY-MM-DD HH:mm'}
-                  value={isNew ? displayDefaultDateTime() : convertDateTimeFromServer(props.reviewEntity.reviewDate)}
                 />
               </AvGroup>
               <AvGroup>

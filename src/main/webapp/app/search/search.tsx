@@ -35,7 +35,7 @@ export const Search = (props: IRestaurantProps) => {
   });
   const [entityLoaded, setEntityLoaded] = useState(false);
 
-  const { restaurantList, match, loading } = props;
+  const { account, restaurantList, match, loading } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
@@ -195,12 +195,14 @@ export const Search = (props: IRestaurantProps) => {
                           <Translate contentKey="entity.action.details">View Details</Translate>
                         </span>
                       </Button>
-                      <Button tag={Link} to={`${match.url}/${restaurant.id}/review`} color="primary" size="sm">
-                        <FontAwesomeIcon icon="pencil-alt" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.review">Rate/Review</Translate>
-                        </span>
-                      </Button>
+                      {account && account.login && account.login && account.login !== "anonymoususer" ? (
+                        <Button tag={Link} to={`${match.url}/${restaurant.id}/review`} color="primary" size="sm">
+                          <FontAwesomeIcon icon="pencil-alt" />{' '}
+                          <span className="d-none d-md-inline">
+                            <Translate contentKey="entity.action.review">Rate/Review</Translate>
+                          </span>
+                        </Button>
+                      ) : null}
                     </div>
                   </td>
                 </tr>
@@ -219,9 +221,10 @@ export const Search = (props: IRestaurantProps) => {
   );
 };
 
-const mapStateToProps = ({ restaurant }: IRootState) => ({
-  restaurantList: restaurant.entities,
-  loading: restaurant.loading
+const mapStateToProps = (storeState: IRootState) => ({
+  account: storeState.authentication.account,
+  restaurantList: storeState.restaurant.entities,
+  loading: storeState.restaurant.loading
 });
 
 const mapDispatchToProps = {

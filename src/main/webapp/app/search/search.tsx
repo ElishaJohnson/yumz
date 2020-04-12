@@ -195,7 +195,7 @@ export const Search = (props: IRestaurantProps) => {
                           <Translate contentKey="entity.action.details">View Details</Translate>
                         </span>
                       </Button>
-                      <Button tag={Link} to={`${match.url}/${restaurant.id}/edit`} color="primary" size="sm">
+                      <Button tag={Link} to={`${match.url}/${restaurant.id}/review`} color="primary" size="sm">
                         <FontAwesomeIcon icon="pencil-alt" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.review">Rate/Review</Translate>
@@ -204,7 +204,7 @@ export const Search = (props: IRestaurantProps) => {
                     </div>
                   </td>
                 </tr>
-              )): "list not loaded!"}
+              )): "no restaurants found!"}
             </tbody>
           </Table>
         ) : (

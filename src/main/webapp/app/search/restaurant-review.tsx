@@ -15,32 +15,37 @@ import { getEntity, updateEntity, createEntity, reset } from 'app/entities/revie
 import { IReview } from 'app/shared/model/review.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
+import StarRatingComponent from 'react-star-ratings';
 
 export interface IReviewUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
 export const RestaurantReview = (props: IReviewUpdateProps) => {
-  const [isNew, setIsNew] = useState(!props.match.params || !props.match.params.id);
+  const [isNew, setIsNew] = useState(true);
+  const [checkedForExistingReview, setCheckedForExistingReview] = useState(false);
+  const [oldReviewText, setOldReviewText] = useState('');
+  const [newRating, setNewRating] = useState({
+    food: 5,
+    hospitality: 5,
+    atmosphere: 5
+  });
 
   const { account, reviewEntity, restaurant, loading, updating } = props;
+
+  const starKeys = ["food", "hospitality", "atmosphere"];
+  const starColors = {
+    food: "red",
+    hospitality: "blue",
+    atmosphere: "green",
+    empty: "lightgray",
+    hover: "gold"
+  }
 
   const handleClose = () => {
     props.history.push('/search');
   };
 
-  const reviewId = () => {
-    return 1;
-    {/* TODO: find existing review based on current user & selected restaurant */}
-  };
-
   useEffect(() => {
     props.getRestaurant(props.match.params.id);
-
-    if (isNew) {
-      props.reset();
-    } else {
-      props.getEntity(reviewId());
-    }
-
   }, []);
 
   useEffect(() => {
@@ -48,6 +53,37 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
       handleClose();
     }
   }, [props.updateSuccess]);
+
+  const handleStarClick = (starValue, category) => {
+    setNewRating({
+      ...newRating,
+      [category]: starValue
+    });
+  }
+
+  const checkNew = (category) => {
+    if (!checkedForExistingReview) {
+      restaurant.reviews.map(review => {
+        if (review.user.id === account.id) {
+          props.getEntity(review.id);
+          setIsNew(false);
+          setNewRating({
+            ...newRating,
+            food: review.food,
+            hospitality: review.hospitality,
+            atmosphere: review.atmosphere
+          });
+          setOldReviewText(review.reviewText);
+        }
+      });
+      if (isNew) {
+        props.reset();
+      }
+      setCheckedForExistingReview(true);
+    }
+
+    return newRating[category];
+  }
 
   const saveEntity = (event, errors, values) => {
     values.reviewDate = convertDateTimeToServer(new Date());
@@ -57,7 +93,10 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
     if (errors.length === 0) {
       const entity = {
         ...reviewEntity,
-        ...values
+        ...values,
+        food: newRating.food,
+        hospitality: newRating.hospitality,
+        atmosphere: newRating.atmosphere
       };
 
       if (isNew) {
@@ -72,7 +111,7 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
     <div>
       <Row className="justify-content-center">
         <Col md="8">
-          {loading ? (
+          {loading || restaurant.id !== JSON.parse(props.match.params.id) ? (
             <p>Loading...</p>
           ) : (
             <AvForm model={isNew ? {} : reviewEntity} onSubmit={saveEntity}>
@@ -81,6 +120,33 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
                 <Translate contentKey="yumzApp.review.home.userReview">Review for</Translate>
                 <span> {restaurant && restaurant.name ? restaurant.name : "Restaurant"}</span>
               </h2>
+              <table>
+                {starKeys.map((category) => (
+                  <tr key={category}>
+                    <td>
+                      <Label id="foodLabel" for={"search-preferences-" + category}>
+                        <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
+                      </Label>
+                    </td>
+                    <td style={{paddingLeft: 20, color: "red"}}>
+                      <Button color="" onClick={() => handleStarClick(0, category)}>
+                        <FontAwesomeIcon icon="ban" />
+                      </Button>
+                    </td>
+                    <td>
+                      <StarRatingComponent
+                        name={category}
+                        starHoverColor={starColors.hover}
+                        starRatedColor={starColors[category]}
+                        starEmptyColor={starColors.empty}
+                        rating={!checkedForExistingReview ? checkNew(category) : newRating[category]}
+                        changeRating={handleStarClick}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </table>
+              <br />
               <AvGroup>
                 <Label id="reviewTextLabel" for="review-reviewText">
                   <Translate contentKey="yumzApp.review.reviewText">Review Text</Translate>
@@ -89,56 +155,10 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
                   id="review-reviewText"
                   type="text"
                   name="reviewText"
+                  placeholder="(optional)"
+                  value={oldReviewText}
                   validate={{
                     maxLength: { value: 5000, errorMessage: translate('entity.validation.maxlength', { max: 5000 }) }
-                  }}
-                />
-              </AvGroup>
-              <AvGroup>
-                <Label id="foodLabel" for="review-food">
-                  <Translate contentKey="yumzApp.review.food">Food</Translate>
-                </Label>
-                <AvField
-                  id="review-food"
-                  type="string"
-                  className="form-control"
-                  name="food"
-                  validate={{
-                    required: { value: true, errorMessage: translate('entity.validation.required') },
-                    max: { value: 5, errorMessage: translate('entity.validation.max', { max: 5 }) },
-                    number: { value: true, errorMessage: translate('entity.validation.number') }
-                  }}
-                />
-              </AvGroup>
-              <AvGroup>
-                <Label id="hospitalityLabel" for="review-hospitality">
-                  <Translate contentKey="yumzApp.review.hospitality">Hospitality</Translate>
-                </Label>
-                <AvField
-                  id="review-hospitality"
-                  type="string"
-                  className="form-control"
-                  name="hospitality"
-                  validate={{
-                    required: { value: true, errorMessage: translate('entity.validation.required') },
-                    max: { value: 5, errorMessage: translate('entity.validation.max', { max: 5 }) },
-                    number: { value: true, errorMessage: translate('entity.validation.number') }
-                  }}
-                />
-              </AvGroup>
-              <AvGroup>
-                <Label id="atmosphereLabel" for="review-atmosphere">
-                  <Translate contentKey="yumzApp.review.atmosphere">Atmosphere</Translate>
-                </Label>
-                <AvField
-                  id="review-atmosphere"
-                  type="string"
-                  className="form-control"
-                  name="atmosphere"
-                  validate={{
-                    required: { value: true, errorMessage: translate('entity.validation.required') },
-                    max: { value: 5, errorMessage: translate('entity.validation.max', { max: 5 }) },
-                    number: { value: true, errorMessage: translate('entity.validation.number') }
                   }}
                 />
               </AvGroup>

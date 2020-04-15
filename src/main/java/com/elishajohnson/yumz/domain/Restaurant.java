@@ -192,6 +192,7 @@ public class Restaurant implements Serializable {
             ", phone='" + getPhone() + "'" +
             ", website='" + getWebsite() + "'" +
             ", reviews='" + getReviews() + "'" +
+            ", cuisineTypes='" + getCuisineTypes() + "'" +
             "}";
     }
 }

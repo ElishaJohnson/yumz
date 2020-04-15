@@ -60,9 +60,9 @@ export const Search = (props: IRestaurantProps) => {
 
   const hasSearchParameter = (restaurant) => {
     if (restaurant.name.toLowerCase().includes(searchFilter.toLowerCase())) { return true; }
-    if (restaurant.cuisineType) {
-      for (const cuisineType of restaurant.cuisineType) {
-        if (cuisineType.name.toLowerCase().includes(searchFilter.toLowerCase())) { return true; }
+    if (restaurant.cuisineTypes && restaurant.cuisineTypes.length > 0) {
+      for (const aCuisineType in restaurant.cuisineTypes) {
+        if (restaurant.cuisineTypes[aCuisineType].name.toLowerCase().includes(searchFilter.toLowerCase())) { return true; }
       }
     }
     return false;
@@ -71,9 +71,9 @@ export const Search = (props: IRestaurantProps) => {
   const createFilteredList = () => {
     const newList = [];
     if (!filteredList || filteredList.length === 0) {
-      restaurantList.map((r, i) => {
-        if (!searchFilter || (searchFilter && hasSearchParameter(r))) {
-          newList.push(r);
+      restaurantList.map((aRestaurant) => {
+        if (!searchFilter || (searchFilter && hasSearchParameter(aRestaurant))) {
+          newList.push(aRestaurant);
         }
       });
     }

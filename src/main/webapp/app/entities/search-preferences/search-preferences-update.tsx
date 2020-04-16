@@ -21,9 +21,9 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
   const [userId, setUserId] = useState('0');
   const [isNew, setIsNew] = useState(!props.match.params || !props.match.params.id);
   const [stars, setStars] = useState({
-    food: {value: 0, clicked: false},
-    hospitality: {value: 0, clicked: false},
-    atmosphere: {value: 0, clicked: false}
+    food: {value: 0, mapped: false},
+    hospitality: {value: 0, mapped: false},
+    atmosphere: {value: 0, mapped: false}
   });
 
   const { searchPreferencesEntity, users, loading, updating } = props;
@@ -37,29 +37,24 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
     hover: "gold"
   }
 
-  {/*
-    failed to set state the correct way, employed weird object mutation workaround.
-    TODO: rewrite this using best practice
-  */}
   const handleStarClick = (starValue, category) => {
-    stars[category].value = starValue;
-    stars[category].clicked = true;
-    setStars(JSON.parse(JSON.stringify(stars)));
+    setStars({
+      ...stars,
+      [category]: {
+          value: starValue,
+          mapped: true
+      }
+    })
   }
 
-  {/*
-    assign any unchanged values from the old object to the new one
-    so that they are not saved as null if they haven't been clicked.
-    activated when the mouse enters the stars table or the save button.
-    TODO: find a more stable & reliable way to transfer these values
-  */}
-  const mapUnclickedStars = () => {
-    for (const category of starKeys) {
-      if (!stars[category].clicked) {
-        stars[category].value = searchPreferencesEntity[category];
+  const unmappedStars = (category) => {
+    setStars({
+      ...stars,
+      [category]: {
+        value: searchPreferencesEntity[category],
+        mapped: true
       }
-    }
-    setStars(JSON.parse(JSON.stringify(stars)));
+    });
   };
 
   const handleClose = () => {
@@ -115,7 +110,7 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
             <p>Loading...</p>
           ) : (
             <AvForm model={isNew ? {} : searchPreferencesEntity} onSubmit={saveEntity}>
-              <table onMouseEnter={mapUnclickedStars}>
+              <table>
                {starKeys.map((category) => (
                <tr key={category}>
                   <td>
@@ -134,7 +129,7 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
                       starHoverColor={starColors.hover}
                       starRatedColor={starColors[category]}
                       starEmptyColor={starColors.empty}
-                      rating={stars[category].clicked ? stars[category].value : searchPreferencesEntity[category]}
+                      rating={stars[category].mapped ? stars[category].value : unmappedStars(category)}
                       changeRating={handleStarClick}
                     />
                   </td>
@@ -172,7 +167,7 @@ export const SearchPreferencesUpdate = (props: ISearchPreferencesUpdateProps) =>
                 </span>
               </Button>
               &nbsp;
-              <Button color="primary" id="save-entity" type="submit" onMouseEnter={mapUnclickedStars} disabled={updating}>
+              <Button color="primary" id="save-entity" type="submit" disabled={updating}>
                 <FontAwesomeIcon icon="save" />
                 &nbsp;
                 <Translate contentKey="entity.action.save">Save</Translate>

@@ -81,68 +81,48 @@ export const Search = (props: IRestaurantProps) => {
     setEntityLoaded(true);
   }
 
-  const mapUnclickedStars = () => {
-    starKeys.map((category) => {
-      if (!clicked[category]) {
-        setCurrentSearchPreferences({
-          ...currentSearchPreferences,
-          [category]: [category]
-        });
-        setClicked({
-          ...clicked,
-          [category]: true
-        });
-      }
-    });
-  }
-
-
-  {/*
-    failed to set state the correct way, employed weird object mutation workaround.
-    TODO: rewrite this using best practice
-  */}
-
   const handleStarClick = (starValue, category) => {
-    currentSearchPreferences[category] = starValue;
-    clicked[category] = true;
-    setCurrentSearchPreferences(JSON.parse(JSON.stringify(currentSearchPreferences)));
-    setClicked(JSON.parse(JSON.stringify(clicked)));
-    mapUnclickedStars();
+    setCurrentSearchPreferences({
+      ...currentSearchPreferences,
+      [category]: starValue
+    });
+    setClicked({
+      ...clicked,
+      [category]: true
+    });
     if (restaurantList && restaurantList.length > 0 && !entityLoaded) { createFilteredList(); }
   }
 
   return (
     <div>
-
-          <h3>Your preferences:</h3>
-          <br />
-          <table style={{width: '100%'}}>
-            {starKeys.map((category) => (
-              <th key={category} style={{textAlign: 'center'}}>
-                <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
-              </th>
-            ))}
-            <tr>
-              {starKeys.map((category) => (
-                <td key={category} style={{paddingLeft: '5%', color: 'red', fontSize: '24px'}}>
-                  <Button color="" onClick={() => handleStarClick(0, category)}>
-                    <FontAwesomeIcon icon="ban" />
-                  </Button>
-                  <StarRatingComponent
-                    name={category}
-                    starDimension={"40px"}
-                    starSpacing={"3px"}
-                    starHoverColor={starColors.hover}
-                    starRatedColor={starColors[category]}
-                    starEmptyColor={starColors.empty}
-                    rating={!clicked[category] && restaurantList && restaurantList.length > 0 && !entityLoaded ? handleStarClick(currentSearchPreferences[category], category) : currentSearchPreferences[category]}
-                    changeRating={handleStarClick}
-                  />
-                </td>
-              ))}
-            </tr>
-          </table>
-
+      <h3>Your preferences:</h3>
+      <br />
+      <table style={{width: '100%'}}>
+        {starKeys.map((category) => (
+          <th key={category} style={{textAlign: 'center'}}>
+            <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
+          </th>
+        ))}
+        <tr>
+          {starKeys.map((category) => (
+            <td key={category} style={{paddingLeft: '5%', color: 'red', fontSize: '24px'}}>
+              <Button color="" onClick={() => handleStarClick(0, category)}>
+                <FontAwesomeIcon icon="ban" />
+              </Button>
+              <StarRatingComponent
+                name={category}
+                starDimension={"40px"}
+                starSpacing={"3px"}
+                starHoverColor={starColors.hover}
+                starRatedColor={starColors[category]}
+                starEmptyColor={starColors.empty}
+                rating={!clicked[category] && restaurantList && restaurantList.length > 0 && !entityLoaded ? handleStarClick(currentSearchPreferences[category], category) : currentSearchPreferences[category]}
+                changeRating={handleStarClick}
+              />
+            </td>
+          ))}
+        </tr>
+      </table>
       <h2 id="restaurant-heading" style={{marginTop: '50px'}}>
         <Translate contentKey="yumzApp.restaurant.home.title">Restaurants</Translate>
       </h2>

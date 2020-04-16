@@ -11,7 +11,7 @@ import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { IRestaurant } from 'app/shared/model/restaurant.model';
 import { getEntity as getRestaurant } from 'app/entities/restaurant/restaurant.reducer';
-import { getEntity, updateEntity, createEntity, reset } from 'app/entities/review/review.reducer';
+import { getEntity, getEntities, updateEntity, createEntity, reset } from 'app/entities/review/review.reducer';
 import { IReview } from 'app/shared/model/review.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
@@ -29,7 +29,7 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
     atmosphere: 5
   });
 
-  const { account, reviewEntity, restaurant, loading, updating } = props;
+  const { account, reviewEntity, reviewList, restaurant, loading, updating } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
@@ -45,6 +45,7 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
   };
 
   useEffect(() => {
+    props.getEntities();
     props.getRestaurant(props.match.params.id);
   }, []);
 
@@ -62,9 +63,9 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
   }
 
   const checkNew = (category) => {
-    if (!checkedForExistingReview) {
-      restaurant.reviews.map(review => {
-        if (review.user.id === account.id) {
+    if (!checkedForExistingReview && reviewList && reviewList.length > 0) {
+      reviewList.map(review => {
+        if (review.user && review.user.id === account.id && review.restaurant.id === restaurant.id) {
           props.getEntity(review.id);
           setIsNew(false);
           setNewRating({
@@ -187,6 +188,7 @@ const mapStateToProps = (storeState: IRootState) => ({
   account: storeState.authentication.account,
   restaurant: storeState.restaurant.entity,
   reviewEntity: storeState.review.entity,
+  reviewList: storeState.review.entities,
   loading: storeState.review.loading,
   updating: storeState.review.updating,
   updateSuccess: storeState.review.updateSuccess
@@ -195,6 +197,7 @@ const mapStateToProps = (storeState: IRootState) => ({
 const mapDispatchToProps = {
   getRestaurant,
   getEntity,
+  getEntities,
   updateEntity,
   createEntity,
   reset

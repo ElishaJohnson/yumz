@@ -180,7 +180,7 @@ public class Review implements Serializable {
             ", hospitality=" + getHospitality() +
             ", atmosphere=" + getAtmosphere() +
             ", reviewDate='" + getReviewDate() + "'" +
-            ", user=" + getUser().getId() +
+            ", user='" + getUser() + "'" +
             "}";
     }
 }

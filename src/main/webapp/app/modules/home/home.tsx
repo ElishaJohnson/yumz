@@ -58,43 +58,42 @@ export const Home = (props) => {
     hover: "gold"
   }
 
-  {/*
-    fetch user's search preferences, since JHipster does not want to store foreign information
-    in its user entity this requires checking every searchPreferences entity for a matching user id.
-  */}
+  const handleStarClick = (starValue, category) => {
+    setCurrentSearchPreferences({
+      ...currentSearchPreferences,
+      [category]: starValue
+    });
+    setClicked({
+      ...clicked,
+      [category]: true
+    });
+  }
+
   const savedUserRating = (id, category) => {
     for (const preferences of searchPreferencesList) {
       if (preferences.user.id === id) {
         if (!entityLoaded) {
-          setSearchPreferencesEntity(JSON.parse(JSON.stringify(preferences)));
+          setSearchPreferencesEntity({ ...preferences });
           setEntityLoaded(true);
         }
-        return preferences[category];
+        handleStarClick(preferences[category], category);
       }
     }
   }
 
   const mapUnclickedStars = () => {
     if (account && account.login) {
-      for (const category of starKeys) {
-        if (!clicked[category]) { currentSearchPreferences[category] = savedUserRating(account.id, category); }
-      }
-      setCurrentSearchPreferences(JSON.parse(JSON.stringify(currentSearchPreferences)));
+      starKeys.map(category => {
+        if (!clicked[category]) {
+          const aRating = savedUserRating(account.id, category);
+          setCurrentSearchPreferences({
+            ...currentSearchPreferences,
+            [category]: aRating
+          });
+        }
+      });
     }
   };
-
-  {/*
-    failed to set state the correct way, employed weird object mutation workaround.
-    TODO: rewrite this using best practice
-  */}
-
-  const handleStarClick = (starValue, category) => {
-    currentSearchPreferences[category] = starValue;
-    clicked[category] = true;
-    setCurrentSearchPreferences(JSON.parse(JSON.stringify(currentSearchPreferences)));
-    setClicked(JSON.parse(JSON.stringify(clicked)));
-    mapUnclickedStars();
-  }
 
   const saveEntity = () => {
     const entity = {

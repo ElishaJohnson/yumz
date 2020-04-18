@@ -112,7 +112,7 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
     <div>
       <Row className="justify-content-center">
         <Col md="8">
-          {loading || restaurant.id !== JSON.parse(props.match.params.id) ? (
+          {loading || restaurant.id !== parseInt(props.match.params.id, 10) ? (
             <p>Loading...</p>
           ) : (
             <AvForm model={isNew ? {} : reviewEntity} onSubmit={saveEntity}>

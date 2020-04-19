@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
 import { getEntities } from 'app/entities/restaurant/restaurant.reducer';
+import { setCurrentSearchPreferences } from 'app/search/search.reducer'
 import { IRestaurant } from 'app/shared/model/restaurant.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import StarRatingComponent from 'react-star-ratings';
@@ -23,19 +24,9 @@ export const Search = (props: IRestaurantProps) => {
   const [searchFilter, setSearchFilter] = useState();
   const [filteredList, setFilteredList] = useState([]);
 
-  const [currentSearchPreferences, setCurrentSearchPreferences] = useState({
-    food: 5,
-    hospitality: 5,
-    atmosphere: 5
-  });
-  const [clicked, setClicked] = useState({
-    food: false,
-    hospitality: false,
-    atmosphere: false
-  });
   const [entityLoaded, setEntityLoaded] = useState(false);
 
-  const { account, restaurantList, match, loading } = props;
+  const { account, currentSearchPreferences, restaurantList, match, loading } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
@@ -48,7 +39,7 @@ export const Search = (props: IRestaurantProps) => {
 
   useEffect(() => {
     if (params.has("food") && params.has("hospitality") && params.has("atmosphere")) {
-      setCurrentSearchPreferences({
+      props.setCurrentSearchPreferences({
         ...currentSearchPreferences,
         food: parseInt(params.get("food"), 10),
         hospitality: parseInt(params.get("hospitality"), 10),
@@ -82,19 +73,15 @@ export const Search = (props: IRestaurantProps) => {
   }
 
   const handleStarClick = (starValue, category) => {
-    setCurrentSearchPreferences({
+    props.setCurrentSearchPreferences({
       ...currentSearchPreferences,
       [category]: starValue
     });
-    setClicked({
-      ...clicked,
-      [category]: true
-    });
-    if (restaurantList && restaurantList.length > 0 && !entityLoaded) { createFilteredList(); }
   }
 
   return (
     <div>
+      {restaurantList && restaurantList.length > 0 && !entityLoaded ? createFilteredList() : null}
       <h3>Your preferences:</h3>
       <br />
       <table style={{width: '100%'}}>
@@ -116,7 +103,7 @@ export const Search = (props: IRestaurantProps) => {
                 starHoverColor={starColors.hover}
                 starRatedColor={starColors[category]}
                 starEmptyColor={starColors.empty}
-                rating={!clicked[category] && restaurantList && restaurantList.length > 0 && !entityLoaded ? handleStarClick(currentSearchPreferences[category], category) : currentSearchPreferences[category]}
+                rating={currentSearchPreferences[category]}
                 changeRating={handleStarClick}
               />
             </td>
@@ -128,7 +115,7 @@ export const Search = (props: IRestaurantProps) => {
       </h2>
       <div className="table-responsive">
         <p>{searchFilter ? 'Results containing "' + searchFilter + '":' : ''}</p>
-        {restaurantList && restaurantList.length > 0 ? (
+        {entityLoaded && filteredList && filteredList.length > 0 ? (
           <Table responsive>
             <thead>
               <tr>
@@ -204,11 +191,13 @@ export const Search = (props: IRestaurantProps) => {
 const mapStateToProps = (storeState: IRootState) => ({
   account: storeState.authentication.account,
   restaurantList: storeState.restaurant.entities,
-  loading: storeState.restaurant.loading
+  loading: storeState.restaurant.loading,
+  currentSearchPreferences: storeState.search.currentSearchPreferences
 });
 
 const mapDispatchToProps = {
-  getEntities
+  getEntities,
+  setCurrentSearchPreferences
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;

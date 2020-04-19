@@ -29,25 +29,9 @@ export const Home = (props) => {
     props.getEntities();
   }, []);
 
-  {/* const [currentSearchPreferences, setCurrentSearchPreferences] = useState({
-    food: 5,
-    hospitality: 5,
-    atmosphere: 5
-  }); */}
-  const [clicked, setClicked] = useState({
-    food: false,
-    hospitality: false,
-    atmosphere: false
-  });
+  const [searchPreferencesId, setSearchPreferencesId] = useState(null);
   const [entityLoaded, setEntityLoaded] = useState(false);
-  const [currentUser, setCurrentUser] = useState({});
-  const [searchPreferencesEntity, setSearchPreferencesEntity] = useState({
-    id: null,
-    food: null,
-    hospitality: null,
-    atmosphere: null,
-    user: {}
-  });
+
   const { account, searchPreferencesList, currentSearchPreferences, loading, updating, users } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
@@ -65,52 +49,39 @@ export const Home = (props) => {
       [category]: starValue
     }
     props.setCurrentSearchPreferences(obj);
-    setClicked({
-      ...clicked,
-      [category]: true
+  }
+
+  const savedUserRating = () => {
+    searchPreferencesList.map(preferences => {
+      if (preferences.user.id === account.id) {
+        if (!entityLoaded) {
+          props.setCurrentSearchPreferences({
+            food: preferences.food,
+            hospitality: preferences.hospitality,
+            atmosphere: preferences.atmosphere
+          });
+          setSearchPreferencesId(preferences.id)
+          setEntityLoaded(true);
+        }
+      }
     });
   }
 
-  const savedUserRating = (id, category) => {
-    for (const preferences of searchPreferencesList) {
-      if (preferences.user.id === id) {
-        if (!entityLoaded) {
-          setSearchPreferencesEntity({ ...preferences });
-          setEntityLoaded(true);
-        }
-        handleStarClick(preferences[category], category);
-      }
-    }
-  }
-
-  const mapUnclickedStars = () => {
-    if (account && account.login) {
-      starKeys.map(category => {
-        if (!clicked[category]) {
-          const aRating = savedUserRating(account.id, category);
-          props.setCurrentSearchPreferences({
-            ...currentSearchPreferences,
-            [category]: aRating
-          });
-        }
-      });
-    }
-  };
-
   const saveEntity = () => {
-    const entity = {
-      id: searchPreferencesEntity.id,
-      food: currentSearchPreferences.food,
-      hospitality: currentSearchPreferences.hospitality,
-      atmosphere: currentSearchPreferences.atmosphere,
-      user: searchPreferencesEntity.user
-    };
-    props.updateEntity(entity);
+    if (entityLoaded && searchPreferencesId) {
+      const entity = {
+        id: searchPreferencesId,
+        food: currentSearchPreferences.food,
+        hospitality: currentSearchPreferences.hospitality,
+        atmosphere: currentSearchPreferences.atmosphere,
+        user: account
+      };
+      props.updateEntity(entity);
+    }
   };
 
   const search = (event, errors, values) => {
     if (errors.length === 0) {
-      mapUnclickedStars();
       window.location.href=`/search?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${values.keyword ? '&keyword=' + values.keyword : ''}`;
     }
   }
@@ -127,6 +98,7 @@ export const Home = (props) => {
         {account && account.login && account.login === "anonymoususer" ? props.logout() : null}
         {account && account.login ? (
           <div>
+            {!entityLoaded && searchPreferencesList && searchPreferencesList.length > 0 ? savedUserRating() : null}
             <Alert color="success">
               <Translate contentKey="home.logged.message" interpolate={{ username: account.login }}>
                 You are logged in as user {account.login}.
@@ -168,7 +140,7 @@ export const Home = (props) => {
                     starHoverColor={starColors.hover}
                     starRatedColor={starColors[category]}
                     starEmptyColor={starColors.empty}
-                    rating={account.login && !clicked[category] ? savedUserRating(account.id, category) : currentSearchPreferences[category]}
+                    rating={currentSearchPreferences[category]}
                     changeRating={handleStarClick}
                   />
                 </td>

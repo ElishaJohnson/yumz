@@ -13,6 +13,7 @@ import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { getEntity, getEntities, updateEntity, createEntity, reset } from 'app/entities/search-preferences/search-preferences.reducer';
 import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
+import { setCurrentSearchPreferences } from 'app/search/search.reducer';
 
 import StarRatingComponent from 'react-star-ratings';
 
@@ -28,11 +29,11 @@ export const Home = (props) => {
     props.getEntities();
   }, []);
 
-  const [currentSearchPreferences, setCurrentSearchPreferences] = useState({
+  {/* const [currentSearchPreferences, setCurrentSearchPreferences] = useState({
     food: 5,
     hospitality: 5,
     atmosphere: 5
-  });
+  }); */}
   const [clicked, setClicked] = useState({
     food: false,
     hospitality: false,
@@ -47,7 +48,7 @@ export const Home = (props) => {
     atmosphere: null,
     user: {}
   });
-  const { account, searchPreferencesList, loading, updating, users } = props;
+  const { account, searchPreferencesList, currentSearchPreferences, loading, updating, users } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
@@ -59,10 +60,11 @@ export const Home = (props) => {
   }
 
   const handleStarClick = (starValue, category) => {
-    setCurrentSearchPreferences({
+    const obj = {
       ...currentSearchPreferences,
       [category]: starValue
-    });
+    }
+    props.setCurrentSearchPreferences(obj);
     setClicked({
       ...clicked,
       [category]: true
@@ -86,7 +88,7 @@ export const Home = (props) => {
       starKeys.map(category => {
         if (!clicked[category]) {
           const aRating = savedUserRating(account.id, category);
-          setCurrentSearchPreferences({
+          props.setCurrentSearchPreferences({
             ...currentSearchPreferences,
             [category]: aRating
           });
@@ -214,10 +216,12 @@ const mapStateToProps = (storeState: IRootState) => ({
   loading: storeState.searchPreferences.loading,
   updating: storeState.searchPreferences.updating,
   updateSuccess: storeState.searchPreferences.updateSuccess,
-  logoutUrl: storeState.authentication.logoutUrl
+  logoutUrl: storeState.authentication.logoutUrl,
+  currentSearchPreferences: storeState.search.currentSearchPreferences
 });
 
 const mapDispatchToProps = {
+    setCurrentSearchPreferences,
     getUsers,
     getEntity,
     getEntities,

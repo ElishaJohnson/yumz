@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { Button, Row, Col, Table } from 'reactstrap';
+import { Button, Row, Col, Table, Label } from 'reactstrap';
 import { Translate, ICrudGetAction, ICrudGetAllAction, TextFormat } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -11,6 +11,7 @@ import { IRestaurant } from 'app/shared/model/restaurant.model';
 import { getEntities as getReviews } from 'app/entities/review/review.reducer';
 import { IReview } from 'app/shared/model/review.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
+import StarRatingComponent from 'react-star-ratings';
 
 export interface IRestaurantDetailProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
@@ -21,9 +22,24 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
   }, []);
 
   const [reviewsLoaded, setReviewsLoaded] = useState(false);
+  const [gotAggregateRatings, setGotAggregateRatings] = useState(false);
   const [filteredList, setFilteredList] = useState([]);
+  const [aggregateRatings, setAggregateRatings] = useState({
+    food: 0,
+    hospitality: 0,
+    atmosphere: 0
+  });
 
   const { account, restaurantEntity, reviewList, loading, match } = props;
+
+  const starKeys = ["food", "hospitality", "atmosphere"];
+  const starColors = {
+    food: "red",
+    hospitality: "blue",
+    atmosphere: "green",
+    empty: "lightgray",
+    hover: "gold"
+  }
 
   const createFilteredList = () => {
     const newList = [];
@@ -38,13 +54,22 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
     setReviewsLoaded(true);
   }
 
+  const calculateAggregateRatings = () => {
+    if (reviewsLoaded) {
+      setAggregateRatings({
+        food: filteredList.reduce((total, current) => total + parseInt(current.food, 10), 0) / filteredList.length,
+        hospitality: filteredList.reduce((total, current) => total + parseInt(current.hospitality, 10), 0) / filteredList.length,
+        atmosphere: filteredList.reduce((total, current) => total + parseInt(current.atmosphere, 10), 0) / filteredList.length
+      });
+      setGotAggregateRatings(true);
+    }
+  };
+
   return (
     <div>
-    <Row>
-      <Col md="8">
-        <dl className="jh-entity-details">
-          <h2>{restaurantEntity.name}</h2>
-          <dd>
+    <p style={{textAlign: "center"}}>
+    <h1>{restaurantEntity.name}</h1>
+    <span>
             {restaurantEntity.cuisineTypes
               ? restaurantEntity.cuisineTypes.map((val, i) => (
                   <span key={val.id}>
@@ -53,8 +78,11 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
                   </span>
                 ))
               : null}
-          </dd>
-          <br />
+    </span>
+    </p>
+    <Row>
+      <Col md="3">
+        <dl className="jh-entity-details">
           <dt>
             <span id="location">
               <Translate contentKey="yumzApp.restaurant.location">Location</Translate>
@@ -90,6 +118,29 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
           </Button>
         ) : null}
       </Col>
+      <Col>
+        {gotAggregateRatings ? (
+        <table style={{marginRight: "15%", marginLeft: "15%"}}>
+          {starKeys.map((category) => (
+            <tr key={category}>
+              <td>
+                <Label id="foodLabel" for={"search-preferences-" + category}>
+                  <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
+                </Label>
+              </td>
+              <td style={{paddingLeft: 10}}>
+                <StarRatingComponent
+                  starRatedColor={starColors[category]}
+                  starEmptyColor={starColors.empty}
+                  rating={aggregateRatings[category]}
+                />
+              </td>
+              <td style={{paddingLeft: 10}}>{aggregateRatings[category]}</td>
+            </tr>
+          ))}
+        </table>
+        ) : null}
+      </Col>
     </Row>
       <h3 id="review-heading" style={{textAlign: "center"}}>
         <Translate contentKey="yumzApp.review.home.title">Reviews</Translate>
@@ -98,6 +149,7 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
       <div className="table-responsive">
         {filteredList && filteredList.length > 0 ? (
           <Table responsive>
+            {!gotAggregateRatings ? calculateAggregateRatings() : null}
             <thead>
               <tr>
                 <th>

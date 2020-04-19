@@ -126,7 +126,6 @@ public class SearchPreferences implements Serializable {
             ", food=" + getFood() +
             ", hospitality=" + getHospitality() +
             ", atmosphere=" + getAtmosphere() +
-            ", user='" + getUser() +"'" +
             "}";
     }
 }

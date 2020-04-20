@@ -32,16 +32,18 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
   const [aggregateRatings, setAggregateRatings] = useState({
     food: 0,
     hospitality: 0,
-    atmosphere: 0
+    atmosphere: 0,
+    total: 0
   });
 
   const { account, currentSearchPreferences, restaurantEntity, reviewList, loading, match } = props;
 
-  const starKeys = ["food", "hospitality", "atmosphere"];
+  const starKeys = ["total", "food", "hospitality", "atmosphere"];
   const starColors = {
     food: "red",
     hospitality: "blue",
     atmosphere: "green",
+    total: "gold",
     empty: "lightgray",
     hover: "gold"
   }
@@ -74,10 +76,14 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
 
   const calculateAggregateRatings = () => {
     if (reviewsLoaded) {
-      setAggregateRatings({
+      const ratings = {
         food: filteredList.reduce((total, current) => total + parseInt(current.food, 10), 0) / filteredList.length,
         hospitality: filteredList.reduce((total, current) => total + parseInt(current.hospitality, 10), 0) / filteredList.length,
         atmosphere: filteredList.reduce((total, current) => total + parseInt(current.atmosphere, 10), 0) / filteredList.length
+      }
+      setAggregateRatings({
+        ...ratings,
+        total: ((ratings.food * currentSearchPreferences.food) + (ratings.hospitality * currentSearchPreferences.hospitality) + (ratings.atmosphere * currentSearchPreferences.atmosphere)) / (currentSearchPreferences.food + currentSearchPreferences.hospitality + currentSearchPreferences.atmosphere)
       });
       setGotAggregateRatings(true);
     }

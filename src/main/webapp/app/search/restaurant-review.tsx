@@ -31,6 +31,8 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
 
   const { account, reviewEntity, reviewList, restaurant, loading, updating } = props;
 
+  const params = new URLSearchParams(window.location.search);
+
   const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
     food: "red",
@@ -163,7 +165,7 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
                   }}
                 />
               </AvGroup>
-              <Button tag={Link} id="cancel-save" to="/search" replace color="info">
+              <Button tag={Link} id="cancel-save" to={`/search${params && params.has("food") && params.has("hospitality") && params.has("atmosphere") ? "?food=" + params.get("food") + "&hospitality=" + params.get("hospitality") + "&atmosphere=" + params.get("atmosphere") + (params.has("keyword") ? "&keyword=" + params.get("keyword") : "") : ""}`} replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;
                 <span className="d-none d-md-inline">

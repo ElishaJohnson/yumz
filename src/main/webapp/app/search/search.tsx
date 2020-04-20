@@ -9,6 +9,7 @@ import { IRootState } from 'app/shared/reducers';
 import { getEntities } from 'app/entities/restaurant/restaurant.reducer';
 import { setCurrentSearchPreferences } from 'app/search/search.reducer'
 import { IRestaurant } from 'app/shared/model/restaurant.model';
+import { logout } from 'app/shared/reducers/authentication';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import StarRatingComponent from 'react-star-ratings';
 
@@ -21,7 +22,7 @@ export const Search = (props: IRestaurantProps) => {
 
   const params = new URLSearchParams(window.location.search);
 
-  const [searchFilter, setSearchFilter] = useState();
+  const [keyword, setKeyword] = useState();
   const [filteredList, setFilteredList] = useState([]);
 
   const [entityLoaded, setEntityLoaded] = useState(false);
@@ -38,6 +39,8 @@ export const Search = (props: IRestaurantProps) => {
   }
 
   useEffect(() => {
+    setEntityLoaded(false);
+    setFilteredList([]);
     if (params.has("food") && params.has("hospitality") && params.has("atmosphere")) {
       props.setCurrentSearchPreferences({
         ...currentSearchPreferences,
@@ -46,14 +49,14 @@ export const Search = (props: IRestaurantProps) => {
         atmosphere: parseInt(params.get("atmosphere"), 10)
       });
     }
-    if (params.has("keyword")) { setSearchFilter(params.get("keyword")); }
+    if (params.has("keyword")) { setKeyword(params.get("keyword")); }
   }, []);
 
   const hasSearchParameter = (restaurant) => {
-    if (restaurant.name.toLowerCase().includes(searchFilter.toLowerCase())) { return true; }
+    if (restaurant.name.toLowerCase().includes(keyword.toLowerCase())) { return true; }
     if (restaurant.cuisineTypes && restaurant.cuisineTypes.length > 0) {
       for (const aCuisineType in restaurant.cuisineTypes) {
-        if (restaurant.cuisineTypes[aCuisineType].name.toLowerCase().includes(searchFilter.toLowerCase())) { return true; }
+        if (restaurant.cuisineTypes[aCuisineType].name.toLowerCase().includes(keyword.toLowerCase())) { return true; }
       }
     }
     return false;
@@ -63,13 +66,14 @@ export const Search = (props: IRestaurantProps) => {
     const newList = [];
     if (!filteredList || filteredList.length === 0) {
       restaurantList.map((aRestaurant) => {
-        if (!searchFilter || (searchFilter && hasSearchParameter(aRestaurant))) {
+        if (!keyword || (keyword && hasSearchParameter(aRestaurant))) {
           newList.push(aRestaurant);
         }
       });
     }
     setFilteredList(newList);
     setEntityLoaded(true);
+    if (account && account.login && account.login === "anonymoususer") { props.logout(); }
   }
 
   const handleStarClick = (starValue, category) => {
@@ -81,7 +85,7 @@ export const Search = (props: IRestaurantProps) => {
 
   return (
     <div>
-      {restaurantList && restaurantList.length > 0 && !entityLoaded ? createFilteredList() : null}
+      {!entityLoaded && restaurantList && restaurantList.length > 0 ? createFilteredList() : null}
       <h3>Your preferences:</h3>
       <br />
       <table style={{width: '100%'}}>
@@ -114,7 +118,7 @@ export const Search = (props: IRestaurantProps) => {
         <Translate contentKey="yumzApp.restaurant.home.title">Restaurants</Translate>
       </h2>
       <div className="table-responsive">
-        <p>{searchFilter ? 'Results containing "' + searchFilter + '":' : ''}</p>
+        <p>{keyword ? 'Results containing "' + keyword + '":' : ''}</p>
         {entityLoaded && filteredList && filteredList.length > 0 ? (
           <Table responsive>
             <thead>
@@ -156,14 +160,14 @@ export const Search = (props: IRestaurantProps) => {
                   </td>
                   <td className="text-right">
                     <div className="btn-group flex-btn-group-container">
-                      <Button tag={Link} to={`${match.url}/${restaurant.id}`} color="info" size="sm">
+                      <Button tag={Link} to={`${match.url}/${restaurant.id}?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${keyword ? '&keyword=' + keyword : ''}`} color="info" size="sm">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.details">View Details</Translate>
                         </span>
                       </Button>
                       {account && account.login && account.login && account.login !== "anonymoususer" ? (
-                        <Button tag={Link} to={`${match.url}/${restaurant.id}/review`} color="primary" size="sm">
+                        <Button tag={Link} to={`${match.url}/${restaurant.id}/review?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${params.has("keyword") ? "&keyword=" + params.get("keyword") : ""}`} color="primary" size="sm">
                           <FontAwesomeIcon icon="pencil-alt" />{' '}
                           <span className="d-none d-md-inline">
                             <Translate contentKey="entity.action.review">Rate/Review</Translate>
@@ -197,7 +201,8 @@ const mapStateToProps = (storeState: IRootState) => ({
 
 const mapDispatchToProps = {
   getEntities,
-  setCurrentSearchPreferences
+  setCurrentSearchPreferences,
+  logout
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;

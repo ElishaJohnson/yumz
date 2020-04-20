@@ -9,7 +9,9 @@ import { IRootState } from 'app/shared/reducers';
 import { getEntity } from 'app/entities/restaurant/restaurant.reducer';
 import { IRestaurant } from 'app/shared/model/restaurant.model';
 import { getEntities as getReviews } from 'app/entities/review/review.reducer';
+import { setCurrentSearchPreferences } from 'app/search/search.reducer';
 import { IReview } from 'app/shared/model/review.model';
+import { logout } from 'app/shared/reducers/authentication';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import StarRatingComponent from 'react-star-ratings';
 
@@ -21,6 +23,9 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
     props.getReviews();
   }, []);
 
+  const params = new URLSearchParams(window.location.search);
+
+  const [keyword, setKeyword] = useState();
   const [reviewsLoaded, setReviewsLoaded] = useState(false);
   const [gotAggregateRatings, setGotAggregateRatings] = useState(false);
   const [filteredList, setFilteredList] = useState([]);
@@ -30,7 +35,7 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
     atmosphere: 0
   });
 
-  const { account, restaurantEntity, reviewList, loading, match } = props;
+  const { account, currentSearchPreferences, restaurantEntity, reviewList, loading, match } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
@@ -40,6 +45,18 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
     empty: "lightgray",
     hover: "gold"
   }
+
+  useEffect(() => {
+    if (params.has("food") && params.has("hospitality") && params.has("atmosphere")) {
+      props.setCurrentSearchPreferences({
+        ...currentSearchPreferences,
+        food: parseInt(params.get("food"), 10),
+        hospitality: parseInt(params.get("hospitality"), 10),
+        atmosphere: parseInt(params.get("atmosphere"), 10)
+      });
+    }
+    if (params.has("keyword")) { setKeyword(params.get("keyword")); }
+  }, []);
 
   const createFilteredList = () => {
     const newList = [];
@@ -52,6 +69,7 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
     }
     setFilteredList(newList);
     setReviewsLoaded(true);
+    if (account && account.login && account.login === "anonymoususer") { props.logout(); }
   }
 
   const calculateAggregateRatings = () => {
@@ -102,7 +120,7 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
           </dt>
           <dd>{restaurantEntity.website}</dd>
         </dl>
-        <Button tag={Link} to="/search" replace color="info">
+        <Button tag={Link} to={`/search?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${params.has("keyword") ? "&keyword=" + params.get("keyword") : ""}`} replace color="info">
           <FontAwesomeIcon icon="arrow-left" />{' '}
           <span className="d-none d-md-inline">
             <Translate contentKey="entity.action.back">Back</Translate>
@@ -110,7 +128,7 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
         </Button>
         &nbsp;
         {account && account.login && account.login !== "anonymoususer" ? (
-          <Button tag={Link} to={`/search/${restaurantEntity.id}/review`} replace color="primary">
+          <Button tag={Link} to={`/search/${restaurantEntity.id}/review?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${params.has("keyword") ? "&keyword=" + params.get("keyword") : ""}`} replace color="primary">
             <FontAwesomeIcon icon="pencil-alt" />{' '}
             <span className="d-none d-md-inline">
               <Translate contentKey="entity.action.review">Rate/Review</Translate>
@@ -204,12 +222,15 @@ const mapStateToProps = (storeState: IRootState) => ({
   account: storeState.authentication.account,
   restaurantEntity: storeState.restaurant.entity,
   reviewList: storeState.review.entities,
-  loading: storeState.review.loading
+  loading: storeState.review.loading,
+  currentSearchPreferences: storeState.search.currentSearchPreferences
 });
 
 const mapDispatchToProps = {
   getEntity,
-  getReviews
+  getReviews,
+  setCurrentSearchPreferences,
+  logout
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;

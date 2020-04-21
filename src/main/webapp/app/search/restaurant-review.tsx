@@ -10,7 +10,7 @@ import { IRootState } from 'app/shared/reducers';
 import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { IRestaurant } from 'app/shared/model/restaurant.model';
-import { getEntity as getRestaurant } from 'app/entities/restaurant/restaurant.reducer';
+import { getEntity as getRestaurant, reset as resetRestaurant } from 'app/entities/restaurant/restaurant.reducer';
 import { getEntity, getEntities, updateEntity, createEntity, reset } from 'app/entities/review/review.reducer';
 import { IReview } from 'app/shared/model/review.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
@@ -20,9 +20,11 @@ import StarRatingComponent from 'react-star-ratings';
 export interface IReviewUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
 export const RestaurantReview = (props: IReviewUpdateProps) => {
+  useEffect(() => {
+    props.reset();
+  }, []);
   const [isNew, setIsNew] = useState(true);
   const [checkedForExistingReview, setCheckedForExistingReview] = useState(false);
-  const [oldReviewText, setOldReviewText] = useState('');
   const [newRating, setNewRating] = useState({
     food: 5,
     hospitality: 5,
@@ -49,6 +51,7 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
   useEffect(() => {
     props.getEntities();
     props.getRestaurant(props.match.params.id);
+    setCheckedForExistingReview(false);
   }, []);
 
   useEffect(() => {
@@ -65,7 +68,7 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
   }
 
   const checkNew = (category) => {
-    if (!checkedForExistingReview && reviewList && reviewList.length > 0) {
+    if (reviewList && reviewList.length > 0) {
       reviewList.map(review => {
         if (review.user && review.user.id === account.id && review.restaurant.id === restaurant.id) {
           props.getEntity(review.id);
@@ -76,7 +79,6 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
             hospitality: review.hospitality,
             atmosphere: review.atmosphere
           });
-          setOldReviewText(review.reviewText);
         }
       });
       if (isNew) {
@@ -84,8 +86,6 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
       }
       setCheckedForExistingReview(true);
     }
-
-    return newRating[category];
   }
 
   const saveEntity = (event, errors, values) => {
@@ -107,6 +107,7 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
       } else {
         props.updateEntity(entity);
       }
+
     }
   };
 
@@ -127,6 +128,7 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
                 {starKeys.map((category) => (
                   <tr key={category}>
                     <td>
+                      {!checkedForExistingReview ? checkNew(category) : null}
                       <Label id="foodLabel" for={"search-preferences-" + category}>
                         <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
                       </Label>
@@ -142,7 +144,7 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
                         starHoverColor={starColors.hover}
                         starRatedColor={starColors[category]}
                         starEmptyColor={starColors.empty}
-                        rating={!checkedForExistingReview ? checkNew(category) : newRating[category]}
+                        rating={newRating[category]}
                         changeRating={handleStarClick}
                       />
                     </td>
@@ -159,7 +161,7 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
                   type="text"
                   name="reviewText"
                   placeholder="(optional)"
-                  value={oldReviewText}
+                  value={reviewEntity && reviewEntity.reviewText && reviewEntity.reviewText.length > 0 ? reviewEntity.reviewText : ''}
                   validate={{
                     maxLength: { value: 5000, errorMessage: translate('entity.validation.maxlength', { max: 5000 }) }
                   }}
@@ -202,7 +204,8 @@ const mapDispatchToProps = {
   getEntities,
   updateEntity,
   createEntity,
-  reset
+  reset,
+  resetRestaurant
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;

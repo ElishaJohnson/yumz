@@ -40,6 +40,7 @@ export const Search = (props: IRestaurantProps) => {
 
   useEffect(() => {
     setEntityLoaded(false);
+    setGotUserMatch(false);
     setFilteredList([]);
     if (params.has("food") && params.has("hospitality") && params.has("atmosphere")) {
       props.setCurrentSearchPreferences({
@@ -125,7 +126,7 @@ export const Search = (props: IRestaurantProps) => {
   return (
     <div>
       {!entityLoaded && restaurantList && restaurantList.length > 0 ? createFilteredList() : null}
-      {!gotUserMatch ? getUserAggregateRatings() : null}
+      {!gotUserMatch && entityLoaded ? getUserAggregateRatings() : null}
       <h3>Your preferences:</h3>
       <br />
       <table style={{width: '100%'}}>
@@ -183,7 +184,7 @@ export const Search = (props: IRestaurantProps) => {
               </tr>
             </thead>
             <tbody>
-              {filteredList && filteredList.length > 0 ? filteredList.map((restaurant, i) => (
+              {entityLoaded && filteredList && filteredList.length > 0 ? filteredList.map((restaurant, i) => (
                 <tr key={`entity-${i}`}>
                   <td>{restaurant.name}</td>
                   <td>{restaurant.location}</td>

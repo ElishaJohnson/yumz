@@ -77,10 +77,17 @@ export const Search = (props: IRestaurantProps) => {
             hospitality: reviews.reduce((total, current) => total + parseInt(current.hospitality, 10), 0) / reviews.length,
             atmosphere: reviews.reduce((total, current) => total + parseInt(current.atmosphere, 10), 0) / reviews.length
           }
-          ratingsList.push({
-            id: aRestaurant.id,
-            rating: ((ratings.food * currentSearchPreferences.food) + (ratings.hospitality * currentSearchPreferences.hospitality) + (ratings.atmosphere * currentSearchPreferences.atmosphere)) / (currentSearchPreferences.food + currentSearchPreferences.hospitality + currentSearchPreferences.atmosphere)
-          });
+          if (!currentSearchPreferences.food && !currentSearchPreferences.hospitality && !currentSearchPreferences.atmosphere) {
+            ratingsList.push({
+              id: aRestaurant.id,
+              rating: ((ratings.food + ratings.hospitality + ratings.atmosphere) / 3)
+            })
+          } else {
+            ratingsList.push({
+              id: aRestaurant.id,
+              rating: ((ratings.food * currentSearchPreferences.food) + (ratings.hospitality * currentSearchPreferences.hospitality) + (ratings.atmosphere * currentSearchPreferences.atmosphere)) / (currentSearchPreferences.food + currentSearchPreferences.hospitality + currentSearchPreferences.atmosphere)
+            });
+          }
         }
       });
       props.setSearchRatings(ratingsList);

@@ -184,7 +184,7 @@ export const Search = (props: IRestaurantProps) => {
               </tr>
             </thead>
             <tbody>
-              {entityLoaded && filteredList && filteredList.length > 0 ? filteredList.map((restaurant, i) => (
+              {entityLoaded && filteredList && filteredList.length > 0 ? filteredList.slice().sort((a, b) => (getUserMatch(a.id) < getUserMatch(b.id) ? 1 : -1)).map((restaurant, i) => (
                 <tr key={`entity-${i}`}>
                   <td>{restaurant.name}</td>
                   <td>{restaurant.location}</td>

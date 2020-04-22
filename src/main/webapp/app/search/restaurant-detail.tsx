@@ -38,12 +38,11 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
 
   const { account, currentSearchPreferences, restaurantEntity, reviewList, loading, match } = props;
 
-  const starKeys = ["total", "food", "hospitality", "atmosphere"];
+  const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
     food: "red",
     hospitality: "blue",
     atmosphere: "green",
-    total: "gold",
     empty: "lightgray",
     hover: "gold"
   }
@@ -77,14 +76,21 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
   const calculateAggregateRatings = () => {
     if (reviewsLoaded) {
       const ratings = {
-        food: filteredList.reduce((total, current) => total + parseInt(current.food, 10), 0) / filteredList.length,
-        hospitality: filteredList.reduce((total, current) => total + parseInt(current.hospitality, 10), 0) / filteredList.length,
-        atmosphere: filteredList.reduce((total, current) => total + parseInt(current.atmosphere, 10), 0) / filteredList.length
+        food: parseFloat((filteredList.reduce((total, current) => total + parseInt(current.food, 10), 0) / filteredList.length).toFixed(2)),
+        hospitality: parseFloat((filteredList.reduce((total, current) => total + parseInt(current.hospitality, 10), 0) / filteredList.length).toFixed(2)),
+        atmosphere: parseFloat((filteredList.reduce((total, current) => total + parseInt(current.atmosphere, 10), 0) / filteredList.length).toFixed(2))
       }
-      setAggregateRatings({
-        ...ratings,
-        total: ((ratings.food * currentSearchPreferences.food) + (ratings.hospitality * currentSearchPreferences.hospitality) + (ratings.atmosphere * currentSearchPreferences.atmosphere)) / (currentSearchPreferences.food + currentSearchPreferences.hospitality + currentSearchPreferences.atmosphere)
-      });
+      if (!currentSearchPreferences.food && !currentSearchPreferences.hospitality && !currentSearchPreferences.atmosphere) {
+        setAggregateRatings({
+          ...ratings,
+          total: parseFloat(((ratings.food + ratings.hospitality + ratings.atmosphere) / 3).toFixed(2))
+        });
+      } else {
+        setAggregateRatings({
+          ...ratings,
+          total: parseFloat((((ratings.food * currentSearchPreferences.food) + (ratings.hospitality * currentSearchPreferences.hospitality) + (ratings.atmosphere * currentSearchPreferences.atmosphere)) / (currentSearchPreferences.food + currentSearchPreferences.hospitality + currentSearchPreferences.atmosphere)).toFixed(2))
+        });
+      }
       setGotAggregateRatings(true);
     }
   };
@@ -94,14 +100,14 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
     <p style={{textAlign: "center"}}>
     <h1>{restaurantEntity.name}</h1>
     <span>
-            {restaurantEntity.cuisineTypes
-              ? restaurantEntity.cuisineTypes.map((val, i) => (
-                  <span key={val.id}>
-                    <a>{val.name}</a>
-                    {i === restaurantEntity.cuisineTypes.length - 1 ? '' : ', '}
-                  </span>
-                ))
-              : null}
+      {restaurantEntity.cuisineTypes
+        ? restaurantEntity.cuisineTypes.map((val, i) => (
+          <span key={val.id}>
+            <a>{val.name}</a>
+            {i === restaurantEntity.cuisineTypes.length - 1 ? '' : ', '}
+          </span>
+        ))
+      : null}
     </span>
     </p>
     <Row>
@@ -144,7 +150,28 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
       </Col>
       <Col>
         {gotAggregateRatings ? (
-        <table style={{marginRight: "15%", marginLeft: "15%"}}>
+          <table style={{marginRight: "15%", marginLeft: "15%", marginBottom: "40px"}}>
+            <tr>
+              <td style={{fontSize: "30px"}}>
+                <Label id="foodLabel" for={"review-match"}>
+                  <Translate contentKey={"yumzApp.review.match"}>Your Match</Translate>
+                </Label>
+              </td>
+              <td style={{paddingLeft: 10, display: "inline"}}>
+                <StarRatingComponent
+                  starDimension={"60px"}
+                  starSpacing={"1px"}
+                  starRatedColor={"gold"}
+                  starEmptyColor={starColors.empty}
+                  rating={aggregateRatings.total}
+                />
+              </td>
+              <td style={{paddingLeft: 10, fontSize: "20px"}}>{aggregateRatings.total}</td>
+            </tr>
+          </table>
+        ) : null}
+        <table style={{marginRight: "15%", marginLeft: "15%", marginBottom: "30px"}}>
+          <th /><th>Overall Ratings</th>
           {starKeys.map((category) => (
             <tr key={category}>
               <td>
@@ -154,6 +181,8 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
               </td>
               <td style={{paddingLeft: 10}}>
                 <StarRatingComponent
+                  starDimension={"24px"}
+                  starSpacing={"1px"}
                   starRatedColor={starColors[category]}
                   starEmptyColor={starColors.empty}
                   rating={aggregateRatings[category]}
@@ -163,7 +192,6 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
             </tr>
           ))}
         </table>
-        ) : null}
       </Col>
     </Row>
       <h3 id="review-heading" style={{textAlign: "center"}}>

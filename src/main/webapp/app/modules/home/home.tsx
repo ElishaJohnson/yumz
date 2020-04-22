@@ -118,8 +118,25 @@ export const Home = (props) => {
             </Alert>
           </div>
         )}
+        <div style={{marginTop: 10}}>
+          <AvForm onSubmit={search}>
+            <AvField
+              type="text"
+              name="keyword"
+              placeholder="Enter search term here (optional)"
+              validate={{
+                maxLength: { value: 50, errorMessage: translate('entity.validation.maxlength', { max: 50 }) }
+              }}
+            />
+            <Button color="success" style={{float: "right"}}>
+              <FontAwesomeIcon icon="search" />
+              &nbsp;
+              <Translate contentKey="global.search">Search</Translate>
+            </Button>
+          </AvForm>
+        </div>
         <div>
-          Select the importance of each category:
+          Select the importance of each category to get ratings based on <i><b>your</b></i> preferences:
           <br />
           <table>
             {starKeys.map((category) => (
@@ -154,23 +171,6 @@ export const Home = (props) => {
               <Translate contentKey="entity.action.save">Save</Translate>
             </Button>
           ) : null}
-          <div style={{marginTop: 40}}>
-            <AvForm onSubmit={search}>
-                <AvField
-                  type="text"
-                  name="keyword"
-                  placeholder="Enter search term here (optional)"
-                  validate={{
-                    maxLength: { value: 50, errorMessage: translate('entity.validation.maxlength', { max: 50 }) }
-                  }}
-                />
-                <Button color="success" style={{float: "right"}}>
-                  <FontAwesomeIcon icon="search" />
-                  &nbsp;
-                  <Translate contentKey="global.search">Search</Translate>
-                </Button>
-            </AvForm>
-          </div>
         </div>
       </Col>
       <Col md="3" className="pad">

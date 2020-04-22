@@ -143,5 +143,5 @@
       "not.image": "File was expected to be an image but was found to be \"{{ fileType }}\""
     }
   },
-  "footer": "(c) Elisha Johnson 2020"
+  "footer": "© Elisha Johnson 2020"
 }

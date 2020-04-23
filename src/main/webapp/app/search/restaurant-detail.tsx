@@ -171,8 +171,8 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
           </table>
         ) : null}
         <table style={{marginRight: "15%", marginLeft: "15%", marginBottom: "30px"}}>
-          <th /><th>Overall Ratings</th>
-          {starKeys.map((category) => (
+          <th /><th>{gotAggregateRatings ? "Overall Ratings" : null}</th>
+          {gotAggregateRatings ? starKeys.map((category) => (
             <tr key={category}>
               <td>
                 <Label id="foodLabel" for={"search-preferences-" + category}>
@@ -190,7 +190,7 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
               </td>
               <td style={{paddingLeft: 10}}>{aggregateRatings[category]}</td>
             </tr>
-          ))}
+          )) : null}
         </table>
       </Col>
     </Row>

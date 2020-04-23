@@ -131,8 +131,8 @@
   position: absolute;
   top: 97px;
   left: -8px;
-  width: 24px;
-  height: 10px;
+  width: 16px;
+  height: 16px;
   background-image: url('../images/yumz-logo.png');
   background-size: contain;
   -webkit-animation: lds-pacman-3 1s linear infinite;

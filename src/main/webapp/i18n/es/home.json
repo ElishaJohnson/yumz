@@ -6,6 +6,8 @@
       "message": "Está conectado como \"{{username}}\"."
     },
     "question": "Si tiene preguntas sobre JHipster:",
+    "enterSearchTerm": "Introduzca un concepto de búsqueda (opcional)",
+    "importance": "Seleccione la importancia de cada categoría para obtener calificaciones basadas en <i><b>sus</b> </i> preferencias:",
     "link": {
       "homepage": "Página de inicio de JHipster",
       "stackoverflow": "JHipster en Stack Overflow",

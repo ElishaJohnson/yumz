@@ -21,7 +21,8 @@
       "phone": "Phone",
       "website": "Website",
       "review": "Review",
-      "cuisineType": "Cuisine Type"
+      "cuisineType": "Cuisine Type",
+      "match": "Your Match"
     }
   }
 }

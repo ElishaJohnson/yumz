@@ -2,24 +2,25 @@
   "yumzApp": {
     "searchPreferences": {
       "home": {
-        "title": "Search Preferences",
-        "createLabel": "Crear nuevo Search Preferences",
-        "createOrEditLabel": "Crear o editar Search Preferences",
-        "notFound": "Ningún Search Preferences encontrado"
+        "title": "Preferencias de Búsqueda",
+        "createLabel": "Crear nuevo Preferencias de Búsqueda",
+        "createOrEditLabel": "Crear o editar Preferencias de Búsqueda",
+        "notFound": "Ningún Preferencias de Búsqueda encontrado"
       },
-      "created": "Un nuevo Search Preferences ha sido creado con el identificador {{ param }}",
-      "updated": "Un Search Preferences ha sido actualizado con el identificador {{ param }}",
-      "deleted": "Un Search Preferences ha sido eliminado con el identificador {{ param }}",
+      "created": "Un nuevo Preferencias de Búsqueda ha sido creado con el identificador {{ param }}",
+      "updated": "Un Preferencias de Búsqueda ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Preferencias de Búsqueda ha sido eliminado con el identificador {{ param }}",
       "delete": {
-        "question": "¿Seguro que quiere eliminar Search Preferences {{ id }}?"
+        "question": "¿Seguro que quiere eliminar Preferencias de Búsqueda {{ id }}?"
       },
       "detail": {
-        "title": "Search Preferences"
+        "title": "Preferencias de Búsqueda"
       },
-      "food": "Food",
-      "hospitality": "Hospitality",
-      "atmosphere": "Atmosphere",
-      "user": "User"
+      "food": "Comida",
+      "hospitality": "Servicio",
+      "atmosphere": "Ambiente",
+      "user": "Usuario",
+      "yourPreferences": "Sus preferencias:"
     }
   }
 }

@@ -134,7 +134,9 @@ export const Search = (props: IRestaurantProps) => {
     <div>
       {!entityLoaded && restaurantList && restaurantList.length > 0 ? createFilteredList() : null}
       {!gotUserMatch && entityLoaded ? getUserAggregateRatings() : null}
-      <h3>Your preferences:</h3>
+      <h3>
+        <Translate contentKey={'yumzApp.searchPreferences.yourPreferences'}>Your preferences:</Translate>
+      </h3>
       <br />
       <table style={{width: '100%'}}>
         {starKeys.map((category) => (
@@ -190,7 +192,9 @@ export const Search = (props: IRestaurantProps) => {
                 <th>
                   <Translate contentKey="yumzApp.restaurant.cuisineType">Cuisine Type</Translate>
                 </th>
-                <th>Match</th>
+                <th>
+                  <Translate contentKey="yumzApp.restaurant.match">Match</Translate>
+                </th>
                 <th />
               </tr>
             </thead>

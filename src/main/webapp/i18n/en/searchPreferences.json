@@ -20,7 +20,8 @@
       "food": "Food",
       "hospitality": "Service",
       "atmosphere": "Atmosphere",
-      "user": "User"
+      "user": "User",
+      "yourPreferences": "Your preferences:"
     }
   }
 }

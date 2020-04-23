@@ -123,7 +123,7 @@ export const Home = (props) => {
             <AvField
               type="text"
               name="keyword"
-              placeholder="Enter search term here (optional)"
+              placeholder={translate('home.enterSearchTerm')}
               validate={{
                 maxLength: { value: 50, errorMessage: translate('entity.validation.maxlength', { max: 50 }) }
               }}
@@ -136,7 +136,9 @@ export const Home = (props) => {
           </AvForm>
         </div>
         <div>
-          Select the importance of each category to get ratings based on <i><b>your</b></i> preferences:
+          <Translate contentKey ={"home.importance"}>
+            Select the importance of each category to get ratings based on <i><b>your</b></i> preferences:
+          </Translate>
           <br />
           <table>
             {starKeys.map((category) => (

@@ -171,7 +171,10 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
           </table>
         ) : null}
         <table style={{marginRight: "15%", marginLeft: "15%", marginBottom: "30px"}}>
-          <th /><th>{gotAggregateRatings ? "Overall Ratings" : null}</th>
+          <th />
+          <th>{gotAggregateRatings ? (
+            <Translate contentKey="yumzApp.review.overall">Overall Ratings</Translate>
+          ) : null}</th>
           {gotAggregateRatings ? starKeys.map((category) => (
             <tr key={category}>
               <td>

@@ -6,7 +6,7 @@
         "createLabel": "Create a new Review",
         "createOrEditLabel": "Create or edit a Review",
         "notFound": "No Reviews found",
-        "userReview": "Review for "
+        "userReview": "ratings for"
       },
       "created": "A new Review is created with identifier {{ param }}",
       "updated": "A Review is updated with identifier {{ param }}",
@@ -17,14 +17,16 @@
       "detail": {
         "title": "Review"
       },
-      "reviewText": "Review Text",
+      "optional": "(optional)",
+      "reviewText": "Review",
+      "overall": "Overall Ratings:",
       "food": "Food",
       "hospitality": "Service",
       "atmosphere": "Atmosphere",
-      "match": "Your Match",
       "reviewDate": "Review Date",
       "user": "User",
-      "restaurant": "Restaurant"
+      "restaurant": "Restaurant",
+      "match": "Your Match:"
     }
   }
 }

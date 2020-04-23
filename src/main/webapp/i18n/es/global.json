@@ -1,6 +1,7 @@
 {
   "global": {
     "title": "Yumz",
+    "search": "Buscar",
     "browsehappy": "Está usando un navegador <strong>no actualizado</strong>. Por favor, <a href=\"http://browsehappy.com/?locale=es\">actualice su navegador</a> para mejorar su experiencia.",
     "menu": {
       "home": "Inicio",
@@ -99,8 +100,10 @@
       "back": "Volver",
       "cancel": "Cancelar",
       "delete": "Eliminar",
+      "details": "Ver Detalles",
       "edit": "Editar",
       "open": "Abrir",
+      "review": "Califique",
       "save": "Guardar",
       "view": "Vista"
     },
@@ -139,5 +142,5 @@
       "not.image": "File was expected to be an image but was found to be \"{{ fileType }}\""
     }
   },
-  "footer": "(c) Elisha Johnson 2020"
+  "footer": "© Elisha Johnson 2020"
 }

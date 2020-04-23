@@ -6,6 +6,8 @@
       "message": "You are logged in as user \"{{username}}\"."
     },
     "question": "If you have any question on JHipster:",
+    "enterSearchTerm": "Enter search term here (optional)",
+    "importance": "Select the importance of each category to get ratings based on <i><b>your</b></i> preferences:",
     "link": {
       "homepage": "JHipster homepage",
       "stackoverflow": "JHipster on Stack Overflow",

@@ -2,27 +2,31 @@
   "yumzApp": {
     "review": {
       "home": {
-        "title": "Reviews",
-        "createLabel": "Crear nuevo Review",
-        "createOrEditLabel": "Crear o editar Review",
-        "notFound": "Ningún Reviews encontrado"
+        "title": "Reseñas",
+        "createLabel": "Crear nuevo Reseña",
+        "createOrEditLabel": "Crear o editar Reseña",
+        "notFound": "Ningún Reseñas encontrado",
+        "userReview": "calificaciónes de"
       },
       "created": "Un nuevo Review ha sido creado con el identificador {{ param }}",
       "updated": "Un Review ha sido actualizado con el identificador {{ param }}",
       "deleted": "Un Review ha sido eliminado con el identificador {{ param }}",
       "delete": {
-        "question": "¿Seguro que quiere eliminar Review {{ id }}?"
+        "question": "¿Seguro que quiere eliminar Reseña {{ id }}?"
       },
       "detail": {
-        "title": "Review"
+        "title": "Reseña"
       },
-      "reviewText": "Review Text",
-      "food": "Food",
-      "hospitality": "Hospitality",
-      "atmosphere": "Atmosphere",
-      "reviewDate": "Review Date",
-      "user": "User",
-      "restaurant": "Restaurant"
+      "optional": "(opcional)",
+      "reviewText": "Reseña",
+      "overall": "Calificaciónes Generales:",
+      "food": "Comida",
+      "hospitality": "Servicio",
+      "atmosphere": "Ambiente",
+      "reviewDate": "Fecha",
+      "user": "Usuario",
+      "restaurant": "Restaurante",
+      "match": "Emparejar:"
     }
   }
 }

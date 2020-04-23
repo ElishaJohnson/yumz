@@ -138,13 +138,16 @@ export const Search = (props: IRestaurantProps) => {
       <br />
       <table style={{width: '100%'}}>
         {starKeys.map((category) => (
-          <th key={category} style={{textAlign: 'center'}}>
-            <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
+          <th key={category}>
+            <p style={{margin: '0 auto', textAlign: 'center', paddingLeft: '5%'}}>
+              <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
+            </p>
           </th>
         ))}
         <tr>
           {starKeys.map((category) => (
-            <td key={category} style={{paddingLeft: '5%', color: 'red', fontSize: '24px'}}>
+            <td key={category}>
+              <p style={{margin: '0 auto', textAlign: 'center', fontSize: '24px'}}>
               <Button color="" onClick={() => handleStarClick(0, category)}>
                 <FontAwesomeIcon icon="ban" />
               </Button>
@@ -158,6 +161,7 @@ export const Search = (props: IRestaurantProps) => {
                 rating={currentSearchPreferences[category]}
                 changeRating={handleStarClick}
               />
+              </p>
             </td>
           ))}
         </tr>
@@ -207,13 +211,15 @@ export const Search = (props: IRestaurantProps) => {
                         ))
                       : null}
                   </td>
-                  <td style={{display: "inline"}}>
-                    <StarRatingComponent
-                      starRatedColor = "gold"
-                      starDimension = "15px"
-                      starSpacing = "1px"
-                      rating = {getUserMatch(restaurant.id)}
-                    />
+                  <td style={{width: "120px"}}>
+                    <span style={{display: "inline"}}>
+                      <StarRatingComponent
+                        starRatedColor = "gold"
+                        starDimension = "16px"
+                        starSpacing = "1px"
+                        rating = {getUserMatch(restaurant.id)}
+                      />
+                    </span>
                   </td>
                   <td className="text-right">
                     <div className="btn-group flex-btn-group-container">

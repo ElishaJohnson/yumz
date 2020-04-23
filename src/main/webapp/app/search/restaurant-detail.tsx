@@ -229,9 +229,18 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
               {filteredList.map((review, i) => (
                 <tr key={`entity-${i}`}>
                   <td>{review.reviewText}</td>
-                  <td>{review.food}</td>
-                  <td>{review.hospitality}</td>
-                  <td>{review.atmosphere}</td>
+                  {starKeys.map((category) => (
+                    <td key={category} style={{width: "120px"}}>
+                      <span style={{display: "inline"}}>
+                      <StarRatingComponent
+                        starDimension={"16px"}
+                        starSpacing={"1px"}
+                        starRatedColor={starColors[category]}
+                        rating={aggregateRatings[category]}
+                      />
+                      </span>
+                    </td>
+                  ))}
                   <td>
                     <TextFormat type="date" value={review.reviewDate} format={APP_DATE_FORMAT} />
                   </td>

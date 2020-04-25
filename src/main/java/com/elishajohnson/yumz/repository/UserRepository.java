@@ -8,6 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,6 +26,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     String USERS_BY_LOGIN_CACHE = "usersByLogin";
 
     String USERS_BY_EMAIL_CACHE = "usersByEmail";
+
+    @Modifying
+    @Query(value = "DELETE review.*, search_preferences.* FROM yumz.review RIGHT JOIN yumz.search_preferences ON review.user_id = search_preferences.user_id WHERE search_preferences.user_id = :userId", nativeQuery = true)
+    void deleteChildren(@Param("userId") Long userId);
 
     Optional<User> findOneByActivationKey(String activationKey);
 

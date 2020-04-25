@@ -140,6 +140,7 @@ public class UserService {
         if (existingUser.getActivated()) {
              return false;
         }
+        userRepository.deleteChildren(existingUser.getId());
         userRepository.delete(existingUser);
         userRepository.flush();
         this.clearUserCaches(existingUser);
@@ -242,6 +243,7 @@ public class UserService {
 
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
+            userRepository.deleteChildren(user.getId());
             userRepository.delete(user);
             this.clearUserCaches(user);
             log.debug("Deleted User: {}", user);
@@ -294,6 +296,7 @@ public class UserService {
             .findAllByActivatedIsFalseAndActivationKeyIsNotNullAndCreatedDateBefore(Instant.now().minus(3, ChronoUnit.DAYS))
             .forEach(user -> {
                 log.debug("Deleting not activated user {}", user.getLogin());
+                userRepository.deleteChildren(user.getId());
                 userRepository.delete(user);
                 this.clearUserCaches(user);
             });

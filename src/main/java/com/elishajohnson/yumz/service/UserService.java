@@ -242,6 +242,7 @@ public class UserService {
 
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
+            userRepository.deleteChildren(user.getId());
             userRepository.delete(user);
             this.clearUserCaches(user);
             log.debug("Deleted User: {}", user);

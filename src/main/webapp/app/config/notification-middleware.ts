@@ -85,6 +85,9 @@ export default () => next => action => {
               }
               break;
             }
+            case 401:
+              addErrorAlert('Bad Credentials', 'error.unauthorized');
+              break;
             case 404:
               addErrorAlert('Not found', 'error.url.not.found');
               break;

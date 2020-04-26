@@ -129,6 +129,7 @@
   },
   "error": {
     "internalServerError": "Error interno en el servidor",
+    "unauthorized": "Credenciales incorrectas",
     "server.not.reachable": "Servidor no accesible",
     "url.not.found": "No existe",
     "NotNull": "¡El campo {{fieldName}} no puede estar vacío!",

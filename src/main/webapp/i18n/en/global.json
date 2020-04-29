@@ -53,7 +53,7 @@
     "messages": {
       "info": {
         "authenticated": {
-          "prefix": "If you want to ",
+          "prefix": "<b>WARNING:</b> This app is currently under development. <b><i>Use at your own risk.</i></b><br />While we do our best to keep your information secure,<br />we highly recommend that you <b><i>DO NOT</i></b> use a password that you use <b><i>anywhere</b></i> else.",
           "link": "Sign in",
           "suffix": ", you can try the default accounts:<br/>- Administrator (login=\"admin\" and password=\"admin\") <br/>- User (login=\"user\" and password=\"user\")."
         },

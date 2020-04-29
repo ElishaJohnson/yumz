@@ -6,6 +6,7 @@ import { Translate, getUrlParameter } from 'react-jhipster';
 
 import { IRootState } from 'app/shared/reducers';
 import { activateAction, reset } from './activate.reducer';
+import { logout } from 'app/shared/reducers/authentication';
 
 const successAlert = (
   <Alert color="success">
@@ -45,6 +46,7 @@ export const ActivatePage = (props: IActivateProps) => {
           <h1>
             <Translate contentKey="activate.title">Activation</Translate>
           </h1>
+          {props.logout()}
           {props.activationSuccess ? successAlert : undefined}
           {props.activationFailure ? failureAlert : undefined}
         </Col>
@@ -58,7 +60,7 @@ const mapStateToProps = ({ activate }: IRootState) => ({
   activationFailure: activate.activationFailure
 });
 
-const mapDispatchToProps = { activateAction, reset };
+const mapDispatchToProps = { activateAction, reset, logout };
 
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;

@@ -4,6 +4,7 @@ import { Col, Row, Button } from 'reactstrap';
 import { AvForm, AvField } from 'availity-reactstrap-validation';
 import { Translate, translate, getUrlParameter } from 'react-jhipster';
 import { RouteComponentProps } from 'react-router-dom';
+import { logout } from 'app/shared/reducers/authentication';
 
 import { handlePasswordResetFinish, reset } from '../password-reset.reducer';
 import PasswordStrengthBar from 'app/shared/layout/password/password-strength-bar';
@@ -16,7 +17,10 @@ export const PasswordResetFinishPage = (props: IPasswordResetFinishProps) => {
 
   useEffect(() => () => props.reset(), []);
 
-  const handleValidSubmit = (event, values) => props.handlePasswordResetFinish(key, values.newPassword);
+  const handleValidSubmit = (event, values) => {
+    props.logout();
+    props.handlePasswordResetFinish(key, values.newPassword);
+  };
 
   const updatePassword = event => setPassword(event.target.value);
 
@@ -69,7 +73,7 @@ export const PasswordResetFinishPage = (props: IPasswordResetFinishProps) => {
   );
 };
 
-const mapDispatchToProps = { handlePasswordResetFinish, reset };
+const mapDispatchToProps = { handlePasswordResetFinish, reset, logout };
 
 type DispatchProps = typeof mapDispatchToProps;
 

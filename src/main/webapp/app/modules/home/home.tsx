@@ -88,12 +88,12 @@ export const Home = (props) => {
 
   return (
     <Row>
-      <Col md="9">
-        <h2>
+      <Col style={{fontSize: "1.5vw"}} md="9">
+        <h2 style={{fontSize: "3vw"}}>
           <Translate contentKey="home.title">Welcome to Yumz!</Translate>
         </h2>
-        <p className="lead">
-          <Translate contentKey="home.subtitle">Personalize your search for food</Translate>
+        <p className="lead" style={{fontSize: "1.5vw"}}>
+          <i><Translate contentKey="home.subtitle">Personalize your search for food</Translate></i>
         </p>
         {account && account.login && account.login === "anonymoususer" ? props.logout() : null}
         {account && account.login ? (
@@ -121,6 +121,7 @@ export const Home = (props) => {
         <div style={{marginTop: 10}}>
           <AvForm onSubmit={search}>
             <AvField
+              style={{fontSize: "1.4vw"}}
               type="text"
               name="keyword"
               placeholder={translate('home.enterSearchTerm')}
@@ -129,14 +130,16 @@ export const Home = (props) => {
               }}
             />
             <Button color="success" style={{float: "right"}}>
-              <FontAwesomeIcon icon="search" />
-              &nbsp;
-              <Translate contentKey="global.search">Search</Translate>
+              <span style={{fontSize: "1.8vw"}}>
+               <FontAwesomeIcon icon="search" />
+                &nbsp;
+                <Translate contentKey="global.search">Search</Translate>
+              </span>
             </Button>
           </AvForm>
         </div>
         <div>
-          <Translate contentKey ={"home.importance"}>
+          <Translate contentKey={"home.importance"}>
             Select the importance of each category to get ratings based on <i><b>your</b></i> preferences:
           </Translate>
           <br />
@@ -148,29 +151,38 @@ export const Home = (props) => {
                     <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
                   </Label>
                 </td>
-                <td style={{paddingLeft: 20, color: "red"}}>
-                  <Button color="" onClick={() => handleStarClick(0, category)}>
-                    <FontAwesomeIcon icon="ban" />
-                  </Button>
-                </td>
                 <td>
-                  <StarRatingComponent
-                    name={category}
-                    starHoverColor={starColors.hover}
-                    starRatedColor={starColors[category]}
-                    starEmptyColor={starColors.empty}
-                    rating={currentSearchPreferences[category]}
-                    changeRating={handleStarClick}
-                  />
+                  <p style={{paddingLeft: "0.2vw", display: "inline-block", margin: "0 auto"}}>
+                    <Button color="" onClick={() => handleStarClick(0, category)}>
+                      <FontAwesomeIcon style={{fontSize: "1.8vw"}} icon="ban" />
+                    </Button>
+                    <StarRatingComponent
+                      name={category}
+                      starDimension={"4vw"}
+                      starSpacing={"0.2vw"}
+                      starHoverColor={starColors.hover}
+                      starRatedColor={starColors[category]}
+                      starEmptyColor={starColors.empty}
+                      rating={currentSearchPreferences[category]}
+                      changeRating={handleStarClick}
+                    />
+                  </p>
                 </td>
               </tr>
             ))}
           </table>
+          <div style={{width: "16vw", float: "right", position: "relative", bottom: "20vh", right: "10vw", border: "solid black", backgroundColor: "#aabbcc"}}>
+            <p style={{fontSize: "1.2vw", textAlign: "center", paddingBottom: "0.5vh", margin: "0 auto"}}>
+              <Translate contentKey="home.priorityMessage"></Translate>
+            </p>
+          </div>
           {account && account.login ? (
-            <Button style={{marginLeft: 382, marginTop: 12}} color="primary" onClick={() => saveEntity()}>
-              <FontAwesomeIcon icon="save" />
-              &nbsp;
-              <Translate contentKey="entity.action.save">Save</Translate>
+            <Button style={{marginLeft: "30vw", marginTop: "0.2vw"}} color="primary" onClick={() => saveEntity()}>
+              <span style={{fontSize: "1.8vw"}}>
+                <FontAwesomeIcon icon="save" />
+                &nbsp;
+                <Translate contentKey="entity.action.save">Save</Translate>
+              </span>
             </Button>
           ) : null}
         </div>
@@ -178,6 +190,7 @@ export const Home = (props) => {
       <Col md="3" className="pad">
         <span className="hipster rounded" />
       </Col>
+
     </Row>
   );
 };

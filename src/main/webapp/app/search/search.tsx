@@ -134,14 +134,14 @@ export const Search = (props: IRestaurantProps) => {
     <div>
       {!entityLoaded && restaurantList && restaurantList.length > 0 ? createFilteredList() : null}
       {!gotUserMatch && entityLoaded ? getUserAggregateRatings() : null}
-      <h3>
+      <h3 style={{fontSize: "2.5vw"}}>
         <Translate contentKey={'yumzApp.searchPreferences.yourPreferences'}>Your preferences:</Translate>
       </h3>
       <br />
       <table style={{width: '100%'}}>
         {starKeys.map((category) => (
           <th key={category}>
-            <p style={{margin: '0 auto', textAlign: 'center', paddingLeft: '5%'}}>
+            <p style={{margin: '0 auto', textAlign: 'center', fontSize: "1.2vw"}}>
               <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
             </p>
           </th>
@@ -149,32 +149,32 @@ export const Search = (props: IRestaurantProps) => {
         <tr>
           {starKeys.map((category) => (
             <td key={category}>
-              <p style={{margin: '0 auto', textAlign: 'center', fontSize: '24px'}}>
-              <Button color="" onClick={() => handleStarClick(0, category)}>
-                <FontAwesomeIcon icon="ban" />
-              </Button>
-              <StarRatingComponent
-                name={category}
-                starDimension={"40px"}
-                starSpacing={"3px"}
-                starHoverColor={starColors.hover}
-                starRatedColor={starColors[category]}
-                starEmptyColor={starColors.empty}
-                rating={currentSearchPreferences[category]}
-                changeRating={handleStarClick}
-              />
+              <p style={{margin: '0 auto', textAlign: 'center'}}>
+                <Button color="" onClick={() => handleStarClick(0, category)}>
+                  <FontAwesomeIcon style={{fontSize: "1.8vw"}} icon="ban" />
+                </Button>
+                <StarRatingComponent
+                  name={category}
+                  starDimension={"4vw"}
+                  starSpacing={"0.2vw"}
+                  starHoverColor={starColors.hover}
+                  starRatedColor={starColors[category]}
+                  starEmptyColor={starColors.empty}
+                  rating={currentSearchPreferences[category]}
+                  changeRating={handleStarClick}
+                />
               </p>
             </td>
           ))}
         </tr>
       </table>
-      <h2 id="restaurant-heading" style={{marginTop: '50px'}}>
-        <Translate contentKey="yumzApp.restaurant.home.title">Restaurants</Translate>
+      <h2 id="restaurant-heading" style={{marginTop: "2vw", fontSize: "3vw", textAlign: "center"}}>
+        <b><Translate contentKey="yumzApp.restaurant.home.title">Restaurants</Translate></b>
       </h2>
       <div className="table-responsive">
         <p>{keyword ? 'Results containing "' + keyword + '":' : ''}</p>
         {entityLoaded && filteredList && filteredList.length > 0 ? (
-          <Table responsive>
+          <Table responsive style={{fontSize: "1.2vw", tableLayout: "fixed"}}>
             <thead>
               <tr>
                 <th>
@@ -182,12 +182,6 @@ export const Search = (props: IRestaurantProps) => {
                 </th>
                 <th>
                   <Translate contentKey="yumzApp.restaurant.location">Location</Translate>
-                </th>
-                <th>
-                  <Translate contentKey="yumzApp.restaurant.phone">Phone</Translate>
-                </th>
-                <th>
-                  <Translate contentKey="yumzApp.restaurant.website">Website</Translate>
                 </th>
                 <th>
                   <Translate contentKey="yumzApp.restaurant.cuisineType">Cuisine Type</Translate>
@@ -201,11 +195,11 @@ export const Search = (props: IRestaurantProps) => {
             <tbody>
               {entityLoaded && filteredList && filteredList.length > 0 ? filteredList.slice().sort((a, b) => (getUserMatch(a.id) < getUserMatch(b.id) ? 1 : -1)).map((restaurant, i) => (
                 <tr key={`entity-${i}`}>
-                  <td>{restaurant.name}</td>
-                  <td>{restaurant.location}</td>
-                  <td>{restaurant.phone}</td>
-                  <td>{restaurant.website}</td>
-                  <td>
+                  <td><p style={{width: "18vw"}}>{restaurant.name}</p></td>
+                  <td><p style={{width: "18vw", margin: "0px"}}>{restaurant.location.split("^").map(addressLine => (
+                    <span key={addressLine}>{addressLine}<br /></span>
+                  ))}</p></td>
+                  <td><p style={{width: "18vw"}}>
                     {restaurant.cuisineTypes
                       ? restaurant.cuisineTypes.map((val, j) => (
                           <span key={j}>
@@ -214,30 +208,41 @@ export const Search = (props: IRestaurantProps) => {
                           </span>
                         ))
                       : null}
-                  </td>
-                  <td style={{width: "120px"}}>
-                    <span style={{display: "inline"}}>
+                  </p></td>
+                  <td style={{width: "12vw"}}>
+                    <span style={{display: "inline-block"}}>
                       <StarRatingComponent
                         starRatedColor = "gold"
-                        starDimension = "16px"
-                        starSpacing = "1px"
+                        starDimension = "1.5vw"
+                        starSpacing = "0px"
                         rating = {getUserMatch(restaurant.id)}
                       />
                     </span>
                   </td>
-                  <td className="text-right">
+                  <td className="text-right" style={{width: "18vw"}}>
                     <div className="btn-group flex-btn-group-container">
-                      <Button tag={Link} to={`${match.url}/${restaurant.id}?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${keyword ? '&keyword=' + keyword : ''}`} color="info" size="sm">
+                      <Button tag={Link}
+                        to={`${match.url}/${restaurant.id}?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${keyword ? '&keyword=' + keyword : ''}`}
+                        color="info"
+                        size="sm"
+                        style={{fontSize: "1.8vw"}}
+                      >
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.details">View Details</Translate>
+                          <Translate contentKey="entity.action.view">View</Translate>
                         </span>
                       </Button>
                       {account && account.login && account.login && account.login !== "anonymoususer" ? (
-                        <Button tag={Link} to={`${match.url}/${restaurant.id}/review?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${params.has("keyword") ? "&keyword=" + params.get("keyword") : ""}`} color="primary" size="sm">
+                        <Button
+                          tag={Link}
+                          to={`${match.url}/${restaurant.id}/review?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${params.has("keyword") ? "&keyword=" + params.get("keyword") : ""}`}
+                          color="primary"
+                          size="sm"
+                          style={{fontSize: "1.8vw"}}
+                        >
                           <FontAwesomeIcon icon="pencil-alt" />{' '}
                           <span className="d-none d-md-inline">
-                            <Translate contentKey="entity.action.review">Rate/Review</Translate>
+                            <Translate contentKey="entity.action.rate">Rate</Translate>
                           </span>
                         </Button>
                       ) : null}

@@ -2,11 +2,12 @@
   "home": {
     "title": "¡Bienvenido a Yumz!",
     "subtitle": "Personalice su búsqueda de comida.",
+    "priorityMessage": "Sus resultadas de búsqueda se basa en las preferencias que seleccione. Puede asignar tanto o poco prioriadad a cada categoría como se desee.",
     "logged": {
       "message": "Está conectado como \"{{username}}\"."
     },
     "question": "Si tiene preguntas sobre JHipster:",
-    "enterSearchTerm": "Introduzca un concepto de búsqueda (opcional)",
+    "enterSearchTerm": "Introduzca un concepto de búsqueda o solo haga clic en el botón para mostrar todos restaurantes.",
     "importance": "Seleccione la importancia de cada categoría para obtener calificaciones basadas en <i><b>sus</b> </i> preferencias:",
     "link": {
       "homepage": "Página de inicio de JHipster",

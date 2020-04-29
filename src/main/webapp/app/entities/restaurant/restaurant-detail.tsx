@@ -36,7 +36,9 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
               <Translate contentKey="yumzApp.restaurant.location">Location</Translate>
             </span>
           </dt>
-          <dd>{restaurantEntity.location}</dd>
+          <dd>{restaurantEntity.location.split("^").map(addressLine => (
+            <span key={addressLine}>{addressLine}<br /></span>
+          ))}</dd>
           <dt>
             <span id="phone">
               <Translate contentKey="yumzApp.restaurant.phone">Phone</Translate>

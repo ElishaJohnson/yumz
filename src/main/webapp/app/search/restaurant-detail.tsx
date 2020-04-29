@@ -98,27 +98,30 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
   return (
     <div>
     <p style={{textAlign: "center"}}>
-    <h1>{restaurantEntity.name}</h1>
-    <span>
+    <h1 style={{fontSize: "4vw"}}>{restaurantEntity.name}</h1>
+    <span style={{fontSize: "1.5vw"}}>
       {restaurantEntity.cuisineTypes
         ? restaurantEntity.cuisineTypes.map((val, i) => (
           <span key={val.id}>
-            <a>{val.name}</a>
-            {i === restaurantEntity.cuisineTypes.length - 1 ? '' : ', '}
+            <b>{val.name}{i === restaurantEntity.cuisineTypes.length - 1 ? '' : ', '}</b>
           </span>
         ))
       : null}
     </span>
     </p>
     <Row>
-      <Col md="3">
+      <Col md="3" style={{fontSize: "1.4vw"}}>
         <dl className="jh-entity-details">
           <dt>
             <span id="location">
               <Translate contentKey="yumzApp.restaurant.location">Location</Translate>
             </span>
           </dt>
-          <dd>{restaurantEntity.location}</dd>
+          <dd>
+            {restaurantEntity.location ? restaurantEntity.location.split("^").map(addressLine => (
+              <span key={addressLine}>{addressLine}<br /></span>
+            )) : null}
+          </dd>
           <dt>
             <span id="phone">
               <Translate contentKey="yumzApp.restaurant.phone">Phone</Translate>
@@ -130,47 +133,55 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
               <Translate contentKey="yumzApp.restaurant.website">Website</Translate>
             </span>
           </dt>
-          <dd>{restaurantEntity.website}</dd>
+          <dd>
+            <a style={{color: "blue", display: "inline-block"}} href={restaurantEntity.website}>
+              <u>{restaurantEntity.website}</u>
+            </a>
+          </dd>
         </dl>
         <Button tag={Link} to={`/search?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${params.has("keyword") ? "&keyword=" + params.get("keyword") : ""}`} replace color="info">
-          <FontAwesomeIcon icon="arrow-left" />{' '}
-          <span className="d-none d-md-inline">
-            <Translate contentKey="entity.action.back">Back</Translate>
+          <span style={{fontSize: "1.8vw"}}>
+            <FontAwesomeIcon icon="arrow-left" />{' '}
+            <span className="d-none d-md-inline">
+              <Translate contentKey="entity.action.back">Back</Translate>
+            </span>
           </span>
         </Button>
         &nbsp;
         {account && account.login && account.login !== "anonymoususer" ? (
           <Button tag={Link} to={`/search/${restaurantEntity.id}/review?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${params.has("keyword") ? "&keyword=" + params.get("keyword") : ""}`} replace color="primary">
-            <FontAwesomeIcon icon="pencil-alt" />{' '}
-            <span className="d-none d-md-inline">
-              <Translate contentKey="entity.action.review">Rate/Review</Translate>
+            <span style={{fontSize: "1.8vw"}}>
+              <FontAwesomeIcon icon="pencil-alt" />{' '}
+              <span className="d-none d-md-inline">
+                <Translate contentKey="entity.action.rate">Rate</Translate>
+              </span>
             </span>
           </Button>
         ) : null}
       </Col>
       <Col>
         {gotAggregateRatings ? (
-          <table style={{marginRight: "15%", marginLeft: "15%", marginBottom: "40px"}}>
+          <table style={{marginBottom: "4vw"}}>
             <tr>
-              <td style={{fontSize: "30px"}}>
+              <td style={{fontSize: "2vw", display: "inline-block", width: "16vw", textAlign: "right"}}>
                 <Label id="foodLabel" for={"review-match"}>
                   <Translate contentKey={"yumzApp.review.match"}>Your Match</Translate>
                 </Label>
               </td>
-              <td style={{paddingLeft: 10, display: "inline"}}>
+              <td style={{paddingLeft: "1vw", width: "32vw", fontSize: "2vw", display: "inline-block"}}>
                 <StarRatingComponent
-                  starDimension={"60px"}
-                  starSpacing={"1px"}
+                  starDimension={"5vw"}
+                  starSpacing={"0.2vw"}
                   starRatedColor={"gold"}
                   starEmptyColor={starColors.empty}
                   rating={aggregateRatings.total}
                 />
+                &nbsp;{aggregateRatings.total}
               </td>
-              <td style={{paddingLeft: 10, fontSize: "20px"}}>{aggregateRatings.total}</td>
             </tr>
           </table>
         ) : null}
-        <table style={{marginRight: "15%", marginLeft: "15%", marginBottom: "30px"}}>
+        <table style={{marginRight: "15%", marginLeft: "15%", marginBottom: "2vw", fontSize: "1.2vw"}}>
           <th />
           <th>{gotAggregateRatings ? (
             <Translate contentKey="yumzApp.review.overall">Overall Ratings</Translate>
@@ -178,14 +189,14 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
           {gotAggregateRatings ? starKeys.map((category) => (
             <tr key={category}>
               <td>
-                <Label id="foodLabel" for={"search-preferences-" + category}>
+                <span>
                   <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
-                </Label>
+                </span>
               </td>
               <td style={{paddingLeft: 10}}>
                 <StarRatingComponent
-                  starDimension={"24px"}
-                  starSpacing={"1px"}
+                  starDimension={"2vw"}
+                  starSpacing={"0.1vw"}
                   starRatedColor={starColors[category]}
                   starEmptyColor={starColors.empty}
                   rating={aggregateRatings[category]}
@@ -197,13 +208,13 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
         </table>
       </Col>
     </Row>
-      <h3 id="review-heading" style={{textAlign: "center"}}>
-        <Translate contentKey="yumzApp.review.home.title">Reviews</Translate>
+      <h3 id="review-heading" style={{textAlign: "center", fontSize: "2.5vw"}}>
+        <b><Translate contentKey="yumzApp.review.home.title">Reviews</Translate></b>
         {reviewList && reviewList.length > 0 && !reviewsLoaded ? createFilteredList() : null}
       </h3>
       <div className="table-responsive">
         {filteredList && filteredList.length > 0 ? (
-          <Table responsive>
+          <Table responsive style={{fontSize: "1.2vw"}}>
             {!gotAggregateRatings ? calculateAggregateRatings() : null}
             <thead>
               <tr>
@@ -233,11 +244,11 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
                 <tr key={`entity-${i}`}>
                   <td>{review.reviewText}</td>
                   {starKeys.map((category) => (
-                    <td key={category} style={{width: "120px"}}>
-                      <span style={{display: "inline"}}>
+                    <td key={category} style={{width: "12vw"}}>
+                      <span style={{display: "inline-block"}}>
                       <StarRatingComponent
-                        starDimension={"16px"}
-                        starSpacing={"1px"}
+                        starDimension={"1.2vw"}
+                        starSpacing={"0"}
                         starRatedColor={starColors[category]}
                         rating={aggregateRatings[category]}
                       />

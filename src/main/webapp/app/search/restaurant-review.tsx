@@ -118,11 +118,11 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
           {loading || restaurant.id !== parseInt(props.match.params.id, 10) ? (
             <p>Loading...</p>
           ) : (
-            <AvForm model={isNew ? {} : reviewEntity} onSubmit={saveEntity}>
-              <h2 id="yumzApp.review.home.userReview">
+            <AvForm style={{fontSize: "1.5vw"}} model={isNew ? {} : reviewEntity} onSubmit={saveEntity}>
+              <h2  style={{fontSize: "2.5vw"}}id="yumzApp.review.home.userReview">
                 <span>{account.login ? account.login : "User"}&apos;s </span>
                 <Translate contentKey="yumzApp.review.home.userReview">Review for</Translate>
-                <span> {restaurant && restaurant.name ? restaurant.name : "Restaurant"}</span>
+                <b> {restaurant && restaurant.name ? restaurant.name : "Restaurant"}</b>
               </h2>
               <table>
                 {starKeys.map((category) => (
@@ -133,20 +133,22 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
                         <Translate contentKey={"yumzApp.searchPreferences." + category}>Category</Translate>
                       </Label>
                     </td>
-                    <td style={{paddingLeft: 20, color: "red"}}>
-                      <Button color="" onClick={() => handleStarClick(0, category)}>
-                        <FontAwesomeIcon icon="ban" />
-                      </Button>
-                    </td>
                     <td>
+                      <span style={{display: "inline-block", margin: "0 auto", paddingLeft: "0.2vw"}}>
+                      <Button color="" onClick={() => handleStarClick(0, category)}>
+                        <FontAwesomeIcon style={{fontSize: "1.8vw"}} icon="ban" />
+                      </Button>
                       <StarRatingComponent
                         name={category}
+                        starDimension={"4vw"}
+                        starSpacing={"0.2vw"}
                         starHoverColor={starColors.hover}
                         starRatedColor={starColors[category]}
                         starEmptyColor={starColors.empty}
                         rating={newRating[category]}
                         changeRating={handleStarClick}
                       />
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -154,9 +156,10 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
               <br />
               <AvGroup>
                 <Label id="reviewTextLabel" for="review-reviewText">
-                  <Translate contentKey="yumzApp.review.reviewText">Review Text</Translate>
+                  <b style={{fontSize: "2vw"}}><Translate contentKey="yumzApp.review.reviewText">Review</Translate></b>
                 </Label>
                 <AvField
+                  style={{fontSize: "1.5vw"}}
                   id="review-reviewText"
                   type="text"
                   name="reviewText"
@@ -168,17 +171,19 @@ export const RestaurantReview = (props: IReviewUpdateProps) => {
                 />
               </AvGroup>
               <Button tag={Link} id="cancel-save" to={`/search${params && params.has("food") && params.has("hospitality") && params.has("atmosphere") ? "?food=" + params.get("food") + "&hospitality=" + params.get("hospitality") + "&atmosphere=" + params.get("atmosphere") + (params.has("keyword") ? "&keyword=" + params.get("keyword") : "") : ""}`} replace color="info">
-                <FontAwesomeIcon icon="arrow-left" />
+                <FontAwesomeIcon style={{fontSize: "1.8vw"}} icon="arrow-left" />
                 &nbsp;
-                <span className="d-none d-md-inline">
+                <span style={{fontSize: "1.8vw"}} className="d-none d-md-inline">
                   <Translate contentKey="entity.action.back">Back</Translate>
                 </span>
               </Button>
               &nbsp;
               <Button color="primary" id="save-entity" type="submit" disabled={updating}>
-                <FontAwesomeIcon icon="save" />
+                <FontAwesomeIcon style={{fontSize: "1.8vw"}} icon="save" />
                 &nbsp;
-                <Translate contentKey="entity.action.save">Save</Translate>
+                <span style={{fontSize: "1.8vw"}}>
+                  <Translate contentKey="entity.action.save">Save</Translate>
+                </span>
               </Button>
             </AvForm>
           )}

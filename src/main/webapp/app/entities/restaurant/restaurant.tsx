@@ -63,7 +63,9 @@ export const Restaurant = (props: IRestaurantProps) => {
                     </Button>
                   </td>
                   <td>{restaurant.name}</td>
-                  <td>{restaurant.location}</td>
+                  <td><p style={{width: "18vw", margin: "0px"}}>{restaurant.location.split("^").map(addressLine => (
+                    <span key={addressLine}>{addressLine}<br /></span>
+                  ))}</p></td>
                   <td>{restaurant.phone}</td>
                   <td>{restaurant.website}</td>
                   <td>

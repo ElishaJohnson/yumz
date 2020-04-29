@@ -16,7 +16,7 @@ export const RegisterPage = (props: IRegisterProps) => {
   useEffect(() => () => props.reset(), []);
 
   const handleValidSubmit = (event, values) => {
-    props.handleRegister(values.username, values.email, values.firstPassword, props.currentLocale);
+    props.handleRegister(values.username, values.firstName, values.lastName, values.email, values.firstPassword, props.currentLocale);
     event.preventDefault();
   };
 
@@ -46,6 +46,30 @@ export const RegisterPage = (props: IRegisterProps) => {
               }}
             />
             <AvField
+              className="form-control"
+              name="firstName"
+              label={translate('settings.form.firstname')}
+              id="firstName"
+              placeholder={translate('settings.form.firstname.placeholder')}
+              validate={{
+                required: { value: true, errorMessage: translate('settings.messages.validate.firstname.required') },
+                minLength: { value: 1, errorMessage: translate('settings.messages.validate.firstname.minlength') },
+                maxLength: { value: 50, errorMessage: translate('settings.messages.validate.firstname.maxlength') }
+              }}
+            />
+            <AvField
+              className="form-control"
+              name="lastName"
+              label={translate('settings.form.lastname')}
+              id="lastName"
+              placeholder={translate('settings.form.lastname.placeholder')}
+              validate={{
+                required: { value: true, errorMessage: translate('settings.messages.validate.lastname.required') },
+                minLength: { value: 1, errorMessage: translate('settings.messages.validate.lastname.minlength') },
+                maxLength: { value: 50, errorMessage: translate('settings.messages.validate.lastname.maxlength') }
+              }}
+            />
+            <AvField
               name="email"
               label={translate('global.form.email.label')}
               placeholder={translate('global.form.email.placeholder')}
@@ -56,6 +80,11 @@ export const RegisterPage = (props: IRegisterProps) => {
                 maxLength: { value: 254, errorMessage: translate('global.messages.validate.email.maxlength') }
               }}
             />
+            <Alert color="warning">
+              <span>
+                <Translate contentKey="global.messages.info.authenticated.prefix">WARNING</Translate>
+              </span>
+            </Alert>
             <AvField
               name="firstPassword"
               label={translate('global.form.newpassword.label')}
@@ -85,22 +114,6 @@ export const RegisterPage = (props: IRegisterProps) => {
               <Translate contentKey="register.form.button">Register</Translate>
             </Button>
           </AvForm>
-          <p>&nbsp;</p>
-          <Alert color="warning">
-            <span>
-              <Translate contentKey="global.messages.info.authenticated.prefix">If you want to </Translate>
-            </span>
-            <a className="alert-link">
-              <Translate contentKey="global.messages.info.authenticated.link"> sign in</Translate>
-            </a>
-            <span>
-              <Translate contentKey="global.messages.info.authenticated.suffix">
-                , you can try the default accounts:
-                <br />- Administrator (login=&quot;admin&quot; and password=&quot;admin&quot;)
-                <br />- User (login=&quot;user&quot; and password=&quot;user&quot;).
-              </Translate>
-            </span>
-          </Alert>
         </Col>
       </Row>
     </div>

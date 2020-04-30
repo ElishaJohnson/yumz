@@ -38,6 +38,8 @@
     "enableTranslation": true,
     "nativeLanguage": "en",
     "languages": ["en", "es"],
-    "blueprints": []
+    "blueprints": [],
+    "herokuAppName": "agile-temple-11013",
+    "herokuDeployType": "git"
   }
 }

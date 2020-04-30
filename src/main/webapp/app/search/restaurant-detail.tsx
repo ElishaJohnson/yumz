@@ -236,7 +236,6 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
                 <th>
                   <Translate contentKey="yumzApp.review.user">User</Translate>
                 </th>
-                <th />
               </tr>
             </thead>
             <tbody>
@@ -250,7 +249,7 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
                         starDimension={"1.2vw"}
                         starSpacing={"0"}
                         starRatedColor={starColors[category]}
-                        rating={aggregateRatings[category]}
+                        rating={review[category]}
                       />
                       </span>
                     </td>
@@ -258,7 +257,11 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
                   <td>
                     <TextFormat type="date" value={review.reviewDate} format={APP_DATE_FORMAT} />
                   </td>
-                  <td>{review.user ? review.user.login : ''}</td>
+                  <td style={{width: "14vw"}}>
+                    <span style={{display: "inline-block"}}>
+                      {review.user ? (review.user.firstName ? (review.user.firstName.length > 13 ? review.user.firstName.substring(0, 12) + "." : review.user.firstName) + (review.user.lastName ? " " + review.user.lastName[0] + "." : "") : (review.user.login ? review.user.login : "")) : ""}
+                    </span>
+                  </td>
                 </tr>
               ))}
             </tbody>

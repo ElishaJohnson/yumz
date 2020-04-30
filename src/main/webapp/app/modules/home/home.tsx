@@ -172,7 +172,7 @@ export const Home = (props) => {
             ))}
           </table>
           <div style={{width: "16vw", float: "right", position: "relative", bottom: "10vw", right: "10vw", border: "solid black", backgroundColor: "#aabbcc"}}>
-            <p style={{fontSize: "1.2vw", textAlign: "center", paddingBottom: "0.5vh", margin: "0 auto"}}>
+            <p style={{fontSize: "1.2vw", textAlign: "center", paddingBottom: "0.3vw", margin: "0 auto"}}>
               <Translate contentKey="home.priorityMessage"></Translate>
             </p>
           </div>

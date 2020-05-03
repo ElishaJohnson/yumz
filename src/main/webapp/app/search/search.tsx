@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
 import { getEntities } from 'app/entities/restaurant/restaurant.reducer';
-import { setCurrentSearchPreferences, setSearchRatings } from 'app/search/search.reducer'
+import { setCurrentSearchPreferences, setSearchRatings, setFilteredList } from 'app/search/search.reducer'
 import { IRestaurant } from 'app/shared/model/restaurant.model';
 import { logout } from 'app/shared/reducers/authentication';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
@@ -23,11 +23,10 @@ export const Search = (props: IRestaurantProps) => {
   const params = new URLSearchParams(window.location.search);
 
   const [keyword, setKeyword] = useState();
-  const [filteredList, setFilteredList] = useState([]);
   const [gotUserMatch, setGotUserMatch] = useState(false);
   const [entityLoaded, setEntityLoaded] = useState(false);
 
-  const { account, currentSearchPreferences, userSearchRatings, restaurantList, match, loading } = props;
+  const { account, currentSearchPreferences, userSearchRatings, restaurantList, filteredList, match, loading } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
@@ -41,7 +40,6 @@ export const Search = (props: IRestaurantProps) => {
   useEffect(() => {
     setEntityLoaded(false);
     setGotUserMatch(false);
-    setFilteredList([]);
     if (params.has("food") && params.has("hospitality") && params.has("atmosphere")) {
       props.setCurrentSearchPreferences({
         ...currentSearchPreferences,
@@ -117,7 +115,7 @@ export const Search = (props: IRestaurantProps) => {
         }
       });
     }
-    setFilteredList(newList);
+    props.setFilteredList(newList);
     setEntityLoaded(true);
     if (account && account.login && account.login === "anonymoususer") { props.logout(); }
   }
@@ -269,13 +267,15 @@ const mapStateToProps = (storeState: IRootState) => ({
   restaurantList: storeState.restaurant.entities,
   loading: storeState.restaurant.loading,
   currentSearchPreferences: storeState.search.currentSearchPreferences,
-  userSearchRatings: storeState.search.userSearchRatings
+  userSearchRatings: storeState.search.userSearchRatings,
+  filteredList: storeState.search.filteredList
 });
 
 const mapDispatchToProps = {
   getEntities,
   setCurrentSearchPreferences,
   setSearchRatings,
+  setFilteredList,
   logout
 };
 

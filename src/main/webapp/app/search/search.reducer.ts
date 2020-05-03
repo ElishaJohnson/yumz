@@ -1,6 +1,7 @@
 export const ACTION_TYPES = {
   SET_SEARCHPREFERENCES: 'search/SET_SEARCHPREFERENCES',
   SET_SEARCHRATINGS: 'search/SET_SEARCHRATINGS',
+  SET_FILTEREDLIST: 'search/SET_FILTEREDLIST',
   RESET: 'search/RESET'
 };
 
@@ -10,7 +11,8 @@ const initialState = {
     hospitality: 5,
     atmosphere: 5
   },
-  userSearchRatings: null as any
+  userSearchRatings: null as any,
+  filteredList: null as any
 };
 
 export type SearchState = Readonly<typeof initialState>;
@@ -25,6 +27,11 @@ export default (state: SearchState = initialState, action): SearchState => {
           hospitality: action.searchPreferences.hospitality,
           atmosphere: action.searchPreferences.atmosphere
         }
+      };
+    case ACTION_TYPES.SET_FILTEREDLIST:
+      return {
+        ...state,
+        filteredList: action.aList
       };
     case ACTION_TYPES.SET_SEARCHRATINGS:
       return {
@@ -48,6 +55,11 @@ export const setCurrentSearchPreferences = preferences => ({
 export const setSearchRatings = restaurantRatings => ({
   type: ACTION_TYPES.SET_SEARCHRATINGS,
   ratings: restaurantRatings
+});
+
+export const setFilteredList = newList => ({
+  type: ACTION_TYPES.SET_FILTEREDLIST,
+  aList: newList
 });
 
 export const reset = () => ({

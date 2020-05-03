@@ -13,7 +13,8 @@ import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { getEntity, getEntities, updateEntity, createEntity, reset } from 'app/entities/search-preferences/search-preferences.reducer';
 import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
-import { setCurrentSearchPreferences } from 'app/search/search.reducer';
+import { setCurrentSearchPreferences, setFilteredList, setSearchRatings } from 'app/search/search.reducer';
+import { getEntities as getRestaurants } from 'app/entities/restaurant/restaurant.reducer';
 
 import StarRatingComponent from 'react-star-ratings';
 
@@ -27,12 +28,14 @@ import StarRatingComponent from 'react-star-ratings';
 export const Home = (props) => {
   useEffect(() => {
     props.getEntities();
+    props.getRestaurants();
   }, []);
 
   const [searchPreferencesId, setSearchPreferencesId] = useState(null);
   const [entityLoaded, setEntityLoaded] = useState(false);
+  const [restaurantListIsSet, setRestaurantListIsSet] = useState(false);
 
-  const { account, searchPreferencesList, currentSearchPreferences, loading, updating, users } = props;
+  const { account, searchPreferencesList, currentSearchPreferences, userSearchRatings, restaurantList, loading, updating, users } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
@@ -80,8 +83,14 @@ export const Home = (props) => {
     }
   };
 
+  const setRestaurantListInSearchState = () => {
+    props.setFilteredList(restaurantList);
+    setRestaurantListIsSet(true);
+  }
+
   const search = (event, errors, values) => {
     if (errors.length === 0) {
+      props.setSearchRatings();
       window.location.href=`/search?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${values.keyword ? '&keyword=' + values.keyword : ''}`;
     }
   }
@@ -96,6 +105,7 @@ export const Home = (props) => {
           <i><Translate contentKey="home.subtitle">Personalize your search for food</Translate></i>
         </p>
         {account && account.login && account.login === "anonymoususer" ? props.logout() : null}
+        {!restaurantListIsSet && restaurantList && restaurantList.length > 0 ? setRestaurantListInSearchState() : null}
         {account && account.login ? (
           <div>
             {!entityLoaded && searchPreferencesList && searchPreferencesList.length > 0 ? savedUserRating() : null}
@@ -204,14 +214,19 @@ const mapStateToProps = (storeState: IRootState) => ({
   updating: storeState.searchPreferences.updating,
   updateSuccess: storeState.searchPreferences.updateSuccess,
   logoutUrl: storeState.authentication.logoutUrl,
-  currentSearchPreferences: storeState.search.currentSearchPreferences
+  currentSearchPreferences: storeState.search.currentSearchPreferences,
+  restaurantList: storeState.restaurant.entities,
+  userSearchRatings: storeState.search.userSearchRatings,
 });
 
 const mapDispatchToProps = {
     setCurrentSearchPreferences,
+    setFilteredList,
+    setSearchRatings,
     getUsers,
     getEntity,
     getEntities,
+    getRestaurants,
     updateEntity,
     createEntity,
     reset,

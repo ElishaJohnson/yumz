@@ -215,7 +215,7 @@ export const Search = (props: IRestaurantProps) => {
                         starRatedColor = "gold"
                         starDimension = "1.5vw"
                         starSpacing = "0px"
-                        rating = {getUserMatch(restaurant.id)}
+                        rating = {userSearchRatings && userSearchRatings.length > 0 ? userSearchRatings.find(aRating => aRating.id === restaurant.id).rating : 0}
                       />
                     </span>
                   </td>

@@ -186,7 +186,7 @@ export const Search = (props: IRestaurantProps) => {
                         starRatedColor = "gold"
                         starDimension = "1.5vw"
                         starSpacing = "0px"
-                        rating = {userSearchRatings && userSearchRatings.length > 0 ? userSearchRatings.find(aRating => aRating.id === restaurant.id).rating : 0}
+                        rating = {userSearchRatings && userSearchRatings.length > 0 ? parseFloat(userSearchRatings.find(aRating => parseInt(aRating.id, 10) === parseInt(restaurant.id, 10)).rating, 10) : 0}
                       />
                     </span>
                   </td>

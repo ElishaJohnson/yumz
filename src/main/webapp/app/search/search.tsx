@@ -62,35 +62,8 @@ export const Search = (props: IRestaurantProps) => {
   }
 
   const getUserAggregateRatings = () => {
-    const ratingsList = [];
-    if (restaurantList && restaurantList.length > 0) {
-      restaurantList.map(aRestaurant => {
-        if (aRestaurant.reviews && aRestaurant.reviews.length > 0) {
-          const reviews = [];
-          aRestaurant.reviews.map(review => {
-            reviews.push(review);
-          });
-          const ratings = {
-            food: reviews.reduce((total, current) => total + parseInt(current.food, 10), 0) / reviews.length,
-            hospitality: reviews.reduce((total, current) => total + parseInt(current.hospitality, 10), 0) / reviews.length,
-            atmosphere: reviews.reduce((total, current) => total + parseInt(current.atmosphere, 10), 0) / reviews.length
-          }
-          if (!currentSearchPreferences.food && !currentSearchPreferences.hospitality && !currentSearchPreferences.atmosphere) {
-            ratingsList.push({
-              id: aRestaurant.id,
-              rating: ((ratings.food + ratings.hospitality + ratings.atmosphere) / 3)
-            })
-          } else {
-            ratingsList.push({
-              id: aRestaurant.id,
-              rating: ((ratings.food * currentSearchPreferences.food) + (ratings.hospitality * currentSearchPreferences.hospitality) + (ratings.atmosphere * currentSearchPreferences.atmosphere)) / (currentSearchPreferences.food + currentSearchPreferences.hospitality + currentSearchPreferences.atmosphere)
-            });
-          }
-        }
-      });
-      props.setSearchRatings(ratingsList);
-      setGotUserMatch(true);
-    }
+    props.setSearchRatings();
+    setGotUserMatch(true);
   }
 
   const getUserMatch = (restaurantId) => {
@@ -125,7 +98,7 @@ export const Search = (props: IRestaurantProps) => {
       ...currentSearchPreferences,
       [category]: starValue
     });
-    setGotUserMatch(false);
+    props.setSearchRatings();
   }
 
   return (

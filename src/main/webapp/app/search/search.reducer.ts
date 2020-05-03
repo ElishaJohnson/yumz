@@ -18,6 +18,48 @@ const initialState = {
 export type SearchState = Readonly<typeof initialState>;
 
 export default (state: SearchState = initialState, action): SearchState => {
+  const calculateRatings = () => {
+    const ratingsList = [];
+    if (state.filteredList && state.filteredList.length > 0) {
+      state.filteredList.map(aRestaurant => {
+        if (aRestaurant.reviews && aRestaurant.reviews.length > 0) {
+          const reviews = [];
+          aRestaurant.reviews.map(review => {
+            reviews.push(review);
+          });
+          const ratings = {
+            food: reviews.reduce((total, current) => total + parseInt(current.food, 10), 0) / reviews.length,
+            hospitality: reviews.reduce((total, current) => total + parseInt(current.hospitality, 10), 0) / reviews.length,
+            atmosphere: reviews.reduce((total, current) => total + parseInt(current.atmosphere, 10), 0) / reviews.length
+          };
+          if (
+            !state.currentSearchPreferences.food &&
+            !state.currentSearchPreferences.hospitality &&
+            !state.currentSearchPreferences.atmosphere
+          ) {
+            ratingsList.push({
+              id: aRestaurant.id,
+              rating: (ratings.food + ratings.hospitality + ratings.atmosphere) / 3
+            });
+          } else {
+            ratingsList.push({
+              id: aRestaurant.id,
+              rating:
+                (ratings.food * state.currentSearchPreferences.food +
+                  ratings.hospitality * state.currentSearchPreferences.hospitality +
+                  ratings.atmosphere * state.currentSearchPreferences.atmosphere) /
+                (state.currentSearchPreferences.food +
+                  state.currentSearchPreferences.hospitality +
+                  state.currentSearchPreferences.atmosphere)
+            });
+          }
+        }
+      });
+      return ratingsList;
+    }
+    return state.userSearchRatings;
+  };
+
   switch (action.type) {
     case ACTION_TYPES.SET_SEARCHPREFERENCES:
       return {
@@ -36,7 +78,7 @@ export default (state: SearchState = initialState, action): SearchState => {
     case ACTION_TYPES.SET_SEARCHRATINGS:
       return {
         ...state,
-        userSearchRatings: action.ratings
+        userSearchRatings: calculateRatings()
       };
     case ACTION_TYPES.RESET:
       return {
@@ -52,9 +94,8 @@ export const setCurrentSearchPreferences = preferences => ({
   searchPreferences: preferences
 });
 
-export const setSearchRatings = restaurantRatings => ({
-  type: ACTION_TYPES.SET_SEARCHRATINGS,
-  ratings: restaurantRatings
+export const setSearchRatings = () => ({
+  type: ACTION_TYPES.SET_SEARCHRATINGS
 });
 
 export const setFilteredList = newList => ({

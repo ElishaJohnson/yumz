@@ -182,12 +182,7 @@ export const Search = (props: IRestaurantProps) => {
                   </p></td>
                   <td style={{width: "12vw"}}>
                     <span style={{display: "inline-block"}}>
-                      <StarRatingComponent
-                        starRatedColor = "gold"
-                        starDimension = "1.5vw"
-                        starSpacing = "0px"
-                        rating = {userSearchRatings && userSearchRatings.length > 0 ? parseFloat(userSearchRatings.find(aRating => parseInt(aRating.id, 10) === parseInt(restaurant.id, 10)).rating) : 0}
-                      />
+                      {userSearchRatings.find(aRating => aRating.id === restaurant.id).rating}
                     </span>
                   </td>
                   <td className="text-right" style={{width: "18vw"}}>

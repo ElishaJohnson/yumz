@@ -164,7 +164,7 @@ export const Search = (props: IRestaurantProps) => {
               </tr>
             </thead>
             <tbody>
-              {entityLoaded && userSearchRatings && userSearchRatings.length > 0 && filteredList && filteredList.length > 0 ? filteredList.slice().sort((a, b) => (getUserMatch(a.id) < getUserMatch(b.id) ? 1 : -1)).map((restaurant, i) => (
+              {!loading && entityLoaded && userSearchRatings && userSearchRatings.length > 0 && filteredList && filteredList.length > 0 ? filteredList.slice().sort((a, b) => (getUserMatch(a.id) < getUserMatch(b.id) ? 1 : -1)).map((restaurant, i) => (
                 <tr key={`entity-${i}`}>
                   <td><p style={{width: "18vw"}}>{restaurant.name}</p></td>
                   <td><p style={{width: "18vw", margin: "0px"}}>{restaurant.location.split("^").map(addressLine => (

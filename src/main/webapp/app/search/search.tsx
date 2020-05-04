@@ -134,8 +134,8 @@ export const Search = (props: IRestaurantProps) => {
       </h2>
       <div className="table-responsive">
         <p>{keyword ? 'Results containing "' + keyword + '":' : ''}</p>
-        {entityLoaded && filteredList && filteredList.length > 0 ? (
-          <table style={{fontSize: "1.2vw", tableLayout: "fixed"}}>
+        {entityLoaded && filteredList && filteredList.length > 0 && userSearchRatings && userSearchRatings.length > 0 ? (
+          <Table responsive style={{fontSize: "1.2vw", tableLayout: "fixed"}}>
             <thead>
               <tr>
                 <th>
@@ -154,7 +154,7 @@ export const Search = (props: IRestaurantProps) => {
               </tr>
             </thead>
             <tbody>
-              {entityLoaded && filteredList && filteredList.length > 0 && userSearchRatings && userSearchRatings.length > 0 ? filteredList.slice().sort((a, b) => (getUserMatch(a.id) < getUserMatch(b.id) ? 1 : -1)).map(restaurant => (
+              {filteredList.slice().sort((a, b) => (getUserMatch(a.id) < getUserMatch(b.id) ? 1 : -1)).map(restaurant => (
                 <tr key={restaurant}>
                   <td><p style={{width: "18vw"}}>{restaurant.name}</p></td>
                   <td><p style={{width: "18vw", margin: "0px"}}>{restaurant.location.split("^").map(addressLine => (
@@ -205,9 +205,9 @@ export const Search = (props: IRestaurantProps) => {
                     </div>
                   </td>
                 </tr>
-              )): "no restaurants found!"}
+              ))}
             </tbody>
-          </table>
+          </Table>
         ) : (
           !loading && (
             <div className="alert alert-warning">

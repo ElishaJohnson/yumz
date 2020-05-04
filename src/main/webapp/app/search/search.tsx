@@ -23,7 +23,6 @@ export const Search = (props: IRestaurantProps) => {
   const params = new URLSearchParams(window.location.search);
 
   const [keyword, setKeyword] = useState();
-  const [gotUserMatch, setGotUserMatch] = useState(false);
   const [entityLoaded, setEntityLoaded] = useState(false);
 
   const { account, currentSearchPreferences, userSearchRatings, restaurantList, filteredList, match, loading } = props;
@@ -39,7 +38,6 @@ export const Search = (props: IRestaurantProps) => {
 
   useEffect(() => {
     setEntityLoaded(false);
-    setGotUserMatch(false);
     if (params.has("food") && params.has("hospitality") && params.has("atmosphere")) {
       props.setCurrentSearchPreferences({
         ...currentSearchPreferences,
@@ -61,19 +59,11 @@ export const Search = (props: IRestaurantProps) => {
     return false;
   }
 
-  const getUserAggregateRatings = () => {
-    props.setSearchRatings();
-    setGotUserMatch(true);
-  }
-
   const getUserMatch = (restaurantId) => {
     if (userSearchRatings && userSearchRatings.length > 0) {
-      for (const searchRating of userSearchRatings) {
-        if (searchRating.id === restaurantId) {
-          if (!isNaN(searchRating.rating)) {
-            return searchRating.rating;
-          }
-        }
+      const userMatch = userSearchRatings.find(aRating => aRating.id === restaurantId).rating
+      if (userMatch) {
+        return userMatch;
       }
     }
     return 0;
@@ -145,7 +135,7 @@ export const Search = (props: IRestaurantProps) => {
       <div className="table-responsive">
         <p>{keyword ? 'Results containing "' + keyword + '":' : ''}</p>
         {entityLoaded && filteredList && filteredList.length > 0 ? (
-          <Table responsive style={{fontSize: "1.2vw", tableLayout: "fixed"}}>
+          <table style={{fontSize: "1.2vw", tableLayout: "fixed"}}>
             <thead>
               <tr>
                 <th>
@@ -164,25 +154,25 @@ export const Search = (props: IRestaurantProps) => {
               </tr>
             </thead>
             <tbody>
-              {entityLoaded && userSearchRatings && userSearchRatings.length > 0 && filteredList && filteredList.length > 0 ? filteredList.slice().sort((a, b) => (getUserMatch(a.id) < getUserMatch(b.id) ? 1 : -1)).map((restaurant, i) => (
-                <tr key={`entity-${i}`}>
+              {entityLoaded && filteredList && filteredList.length > 0 && userSearchRatings && userSearchRatings.length > 0 ? filteredList.slice().sort((a, b) => (getUserMatch(a.id) < getUserMatch(b.id) ? 1 : -1)).map(restaurant => (
+                <tr key={restaurant}>
                   <td><p style={{width: "18vw"}}>{restaurant.name}</p></td>
                   <td><p style={{width: "18vw", margin: "0px"}}>{restaurant.location.split("^").map(addressLine => (
                     <span key={addressLine}>{addressLine}<br /></span>
                   ))}</p></td>
                   <td><p style={{width: "18vw"}}>
                     {restaurant.cuisineTypes
-                      ? restaurant.cuisineTypes.map((val, j) => (
-                          <span key={j}>
-                            <Link to={`cuisine-type/${val.id}`}>{val.name}</Link>
-                            {j === restaurant.cuisineTypes.length - 1 ? '' : ', '}
+                      ? restaurant.cuisineTypes.map((cuisineType, i) => (
+                          <span key={i}>
+                            {cuisineType.name}
+                            {i === restaurant.cuisineTypes.length - 1 ? '' : ', '}
                           </span>
                         ))
                       : null}
                   </p></td>
                   <td style={{width: "12vw"}}>
                     <span style={{display: "inline-block"}}>
-                      {userSearchRatings & userSearchRatings.length > 0 ? userSearchRatings.find(aRating => aRating.id === restaurant.id).rating : null}
+                      {getUserMatch(restaurant.id)}
                     </span>
                   </td>
                   <td className="text-right" style={{width: "18vw"}}>
@@ -217,7 +207,7 @@ export const Search = (props: IRestaurantProps) => {
                 </tr>
               )): "no restaurants found!"}
             </tbody>
-          </Table>
+          </table>
         ) : (
           !loading && (
             <div className="alert alert-warning">

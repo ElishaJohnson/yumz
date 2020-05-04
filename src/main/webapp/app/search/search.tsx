@@ -182,7 +182,7 @@ export const Search = (props: IRestaurantProps) => {
                   </p></td>
                   <td style={{width: "12vw"}}>
                     <span style={{display: "inline-block"}}>
-                      {userSearchRatings.find(aRating => aRating.id === restaurant.id).rating}
+                      {userSearchRatings & userSearchRatings.length > 0 ? userSearchRatings.find(aRating => aRating.id === restaurant.id).rating : null}
                     </span>
                   </td>
                   <td className="text-right" style={{width: "18vw"}}>

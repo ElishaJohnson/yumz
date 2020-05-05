@@ -141,7 +141,7 @@ export const Search = (props: IRestaurantProps) => {
       </h2>
       <div className="table-responsive">
         <p>{keyword ? 'Results containing "' + keyword + '":' : ''}</p>
-        {entityLoaded && sortedList && sortedList.length > 0 && userSearchRatings && userSearchRatings.length > 0 ? (
+        {entityLoaded ? (
           <Table responsive style={{fontSize: "1.2vw", tableLayout: "fixed"}}>
             <thead>
               <tr>

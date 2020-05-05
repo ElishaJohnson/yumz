@@ -173,7 +173,7 @@ export const Search = (props: IRestaurantProps) => {
               </tr>
             </thead>
             <tbody>
-              {searchList.slice().sort((a, b) => (a.userMatch < b.userMatch ? 1 : -1)).map(restaurant => (
+              {searchList.slice().sort((a, b) => (aggregateRating(a) < aggregateRating(b) ? 1 : -1)).map(restaurant => (
                 <tr key={restaurant}>
                   <td><p style={{width: "18vw"}}>{restaurant.name}</p></td>
                   <td><p style={{width: "18vw", margin: "0px"}}>{restaurant.location.split("^").map(addressLine => (
@@ -191,7 +191,7 @@ export const Search = (props: IRestaurantProps) => {
                   </p></td>
                   <td style={{width: "12vw"}}>
                     <span style={{display: "inline-block"}}>
-                      {restaurant.userMatch}
+                      {aggregateRating(restaurant)}
                     </span>
                   </td>
                   <td className="text-right" style={{width: "18vw"}}>

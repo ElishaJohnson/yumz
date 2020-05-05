@@ -179,7 +179,7 @@ export const Search = (props: IRestaurantProps) => {
                   </p></td>
                   <td style={{width: "12vw"}}>
                     <span style={{display: "inline-block"}}>
-                      {getUserMatch(restaurant.id)}
+                      {currentSearchPreferences.food}
                     </span>
                   </td>
                   <td className="text-right" style={{width: "18vw"}}>

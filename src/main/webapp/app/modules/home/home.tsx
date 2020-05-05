@@ -13,7 +13,7 @@ import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { getEntity, getEntities, updateEntity, createEntity, reset } from 'app/entities/search-preferences/search-preferences.reducer';
 import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
-import { setCurrentSearchPreferences, setFilteredList, setSearchRatings } from 'app/search/search.reducer';
+import { setCurrentSearchPreferences, setSearchList } from 'app/search/search.reducer';
 import { getEntities as getRestaurants } from 'app/entities/restaurant/restaurant.reducer';
 
 import StarRatingComponent from 'react-star-ratings';
@@ -35,7 +35,7 @@ export const Home = (props) => {
   const [entityLoaded, setEntityLoaded] = useState(false);
   const [restaurantListIsSet, setRestaurantListIsSet] = useState(false);
 
-  const { account, searchPreferencesList, currentSearchPreferences, userSearchRatings, restaurantList, loading, updating, users } = props;
+  const { account, searchPreferencesList, currentSearchPreferences, restaurantList, loading, updating, users } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
@@ -84,13 +84,19 @@ export const Home = (props) => {
   };
 
   const setRestaurantListInSearchState = () => {
-    props.setFilteredList(restaurantList);
+    const newList = [];
+    restaurantList.map(restaurant => {
+      newList.push({
+        ...restaurant,
+        userMatch: 1
+      });
+    });
+    props.setSearchList(newList);
     setRestaurantListIsSet(true);
   }
 
   const search = (event, errors, values) => {
     if (errors.length === 0) {
-      props.setSearchRatings();
       window.location.href=`/search?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${values.keyword ? '&keyword=' + values.keyword : ''}`;
     }
   }
@@ -215,14 +221,12 @@ const mapStateToProps = (storeState: IRootState) => ({
   updateSuccess: storeState.searchPreferences.updateSuccess,
   logoutUrl: storeState.authentication.logoutUrl,
   currentSearchPreferences: storeState.search.currentSearchPreferences,
-  restaurantList: storeState.restaurant.entities,
-  userSearchRatings: storeState.search.userSearchRatings,
+  restaurantList: storeState.restaurant.entities
 });
 
 const mapDispatchToProps = {
     setCurrentSearchPreferences,
-    setFilteredList,
-    setSearchRatings,
+    setSearchList,
     getUsers,
     getEntity,
     getEntities,

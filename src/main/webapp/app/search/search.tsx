@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
 import { getEntities } from 'app/entities/restaurant/restaurant.reducer';
-import { setCurrentSearchPreferences, setSearchRatings, setFilteredList } from 'app/search/search.reducer'
+import { setCurrentSearchPreferences, setSearchList } from 'app/search/search.reducer'
 import { IRestaurant } from 'app/shared/model/restaurant.model';
 import { logout } from 'app/shared/reducers/authentication';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
@@ -26,7 +26,7 @@ export const Search = (props: IRestaurantProps) => {
   const [entityLoaded, setEntityLoaded] = useState(false);
   const [sortedList, setSortedList] = useState([]);
 
-  const { account, currentSearchPreferences, userSearchRatings, restaurantList, filteredList, match, loading } = props;
+  const { account, currentSearchPreferences, restaurantList, searchList, match, loading } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
@@ -35,20 +35,6 @@ export const Search = (props: IRestaurantProps) => {
     atmosphere: "green",
     empty: "lightgray",
     hover: "gold"
-  }
-
-  const getUserMatch = (restaurantId) => {
-    if (userSearchRatings && userSearchRatings.length > 0) {
-      const userMatch = userSearchRatings.find(aRating => aRating.id === restaurantId).rating
-      if (userMatch) {
-        return userMatch;
-      }
-    }
-    return 0;
-  }
-
-  const sortList = () => {
-    setSortedList(filteredList.slice().sort((a, b) => (getUserMatch(a.id) < getUserMatch(b.id) ? 1 : -1)));
   }
 
   useEffect(() => {
@@ -64,6 +50,34 @@ export const Search = (props: IRestaurantProps) => {
     if (params.has("keyword")) { setKeyword(params.get("keyword")); }
   }, []);
 
+  const aggregateRating = (aRestaurant) => {
+        if (aRestaurant.reviews && aRestaurant.reviews.length > 0) {
+          const reviews = [];
+          aRestaurant.reviews.map(review => {
+            reviews.push(review);
+          });
+          const ratings = {
+            food: reviews.reduce((total, current) => total + parseInt(current.food, 10), 0) / reviews.length,
+            hospitality: reviews.reduce((total, current) => total + parseInt(current.hospitality, 10), 0) / reviews.length,
+            atmosphere: reviews.reduce((total, current) => total + parseInt(current.atmosphere, 10), 0) / reviews.length
+          };
+          if (
+            !currentSearchPreferences.food &&
+            !currentSearchPreferences.hospitality &&
+            !currentSearchPreferences.atmosphere
+          ) {
+            return (ratings.food + ratings.hospitality + ratings.atmosphere) / 3
+          } else {
+            return (ratings.food * currentSearchPreferences.food +
+                  ratings.hospitality * currentSearchPreferences.hospitality +
+                  ratings.atmosphere * currentSearchPreferences.atmosphere) /
+                (currentSearchPreferences.food +
+                  currentSearchPreferences.hospitality +
+                  currentSearchPreferences.atmosphere)
+            };
+          }
+  };
+
   const hasSearchParameter = (restaurant) => {
     if (restaurant.name.toLowerCase().includes(keyword.toLowerCase())) { return true; }
     if (restaurant.cuisineTypes && restaurant.cuisineTypes.length > 0) {
@@ -74,17 +88,17 @@ export const Search = (props: IRestaurantProps) => {
     return false;
   }
 
-  const createFilteredList = () => {
+  const createSearchList = () => {
     const newList = [];
-    if (!filteredList || filteredList.length === 0) {
       restaurantList.map((aRestaurant) => {
         if (!keyword || (keyword && hasSearchParameter(aRestaurant))) {
-          newList.push(aRestaurant);
+          newList.push({
+            ...aRestaurant,
+            userMatch: aggregateRating(aRestaurant)
+          });
         }
       });
-    }
-    props.setFilteredList(newList);
-    props.setSearchRatings();
+    props.setSearchList(newList);
     setEntityLoaded(true);
     if (account && account.login && account.login === "anonymoususer") { props.logout(); }
   }
@@ -94,14 +108,12 @@ export const Search = (props: IRestaurantProps) => {
       ...currentSearchPreferences,
       [category]: starValue
     });
-    props.setSearchRatings();
-    sortList();
+    createSearchList();
   }
 
   return (
     <div>
-      {!entityLoaded && restaurantList && restaurantList.length > 0 ? createFilteredList() : null}
-      {filteredList && filteredList.length > 0 && (!sortedList || sortedList.length === 0) ? sortList() : null}
+      {!entityLoaded && restaurantList && restaurantList.length > 0 ? createSearchList() : null}
       <h3 style={{fontSize: "2.5vw"}}>
         <Translate contentKey={'yumzApp.searchPreferences.yourPreferences'}>Your preferences:</Translate>
       </h3>
@@ -141,7 +153,7 @@ export const Search = (props: IRestaurantProps) => {
       </h2>
       <div className="table-responsive">
         <p>{keyword ? 'Results containing "' + keyword + '":' : ''}</p>
-        {entityLoaded ? (
+        {entityLoaded && searchList && searchList.length > 0 ? (
           <Table responsive style={{fontSize: "1.2vw", tableLayout: "fixed"}}>
             <thead>
               <tr>
@@ -161,7 +173,7 @@ export const Search = (props: IRestaurantProps) => {
               </tr>
             </thead>
             <tbody>
-              {sortedList.map(restaurant => (
+              {searchList.slice().sort((a, b) => (a.userMatch < b.userMatch ? 1 : -1)).map(restaurant => (
                 <tr key={restaurant}>
                   <td><p style={{width: "18vw"}}>{restaurant.name}</p></td>
                   <td><p style={{width: "18vw", margin: "0px"}}>{restaurant.location.split("^").map(addressLine => (
@@ -179,7 +191,7 @@ export const Search = (props: IRestaurantProps) => {
                   </p></td>
                   <td style={{width: "12vw"}}>
                     <span style={{display: "inline-block"}}>
-                      {currentSearchPreferences.food}
+                      {restaurant.userMatch}
                     </span>
                   </td>
                   <td className="text-right" style={{width: "18vw"}}>
@@ -232,15 +244,13 @@ const mapStateToProps = (storeState: IRootState) => ({
   restaurantList: storeState.restaurant.entities,
   loading: storeState.restaurant.loading,
   currentSearchPreferences: storeState.search.currentSearchPreferences,
-  userSearchRatings: storeState.search.userSearchRatings,
-  filteredList: storeState.search.filteredList
+  searchList: storeState.search.searchList
 });
 
 const mapDispatchToProps = {
   getEntities,
   setCurrentSearchPreferences,
-  setSearchRatings,
-  setFilteredList,
+  setSearchList,
   logout
 };
 

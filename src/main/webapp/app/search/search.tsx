@@ -24,6 +24,7 @@ export const Search = (props: IRestaurantProps) => {
 
   const [keyword, setKeyword] = useState();
   const [entityLoaded, setEntityLoaded] = useState(false);
+  const [sortedList, setSortedList] = useState([]);
 
   const { account, currentSearchPreferences, userSearchRatings, restaurantList, filteredList, match, loading } = props;
 
@@ -34,6 +35,20 @@ export const Search = (props: IRestaurantProps) => {
     atmosphere: "green",
     empty: "lightgray",
     hover: "gold"
+  }
+
+  const getUserMatch = (restaurantId) => {
+    if (userSearchRatings && userSearchRatings.length > 0) {
+      const userMatch = userSearchRatings.find(aRating => aRating.id === restaurantId).rating
+      if (userMatch) {
+        return userMatch;
+      }
+    }
+    return 0;
+  }
+
+  const sortList = () => {
+    setSortedList(filteredList.slice().sort((a, b) => (getUserMatch(a.id) < getUserMatch(b.id) ? 1 : -1)));
   }
 
   useEffect(() => {
@@ -59,16 +74,6 @@ export const Search = (props: IRestaurantProps) => {
     return false;
   }
 
-  const getUserMatch = (restaurantId) => {
-    if (userSearchRatings && userSearchRatings.length > 0) {
-      const userMatch = userSearchRatings.find(aRating => aRating.id === restaurantId).rating
-      if (userMatch) {
-        return userMatch;
-      }
-    }
-    return 0;
-  }
-
   const createFilteredList = () => {
     const newList = [];
     if (!filteredList || filteredList.length === 0) {
@@ -90,11 +95,13 @@ export const Search = (props: IRestaurantProps) => {
       [category]: starValue
     });
     props.setSearchRatings();
+    sortList();
   }
 
   return (
     <div>
       {!entityLoaded && restaurantList && restaurantList.length > 0 ? createFilteredList() : null}
+      {filteredList && filteredList.length > 0 && (!sortedList || sortedList.length === 0) ? sortList() : null}
       <h3 style={{fontSize: "2.5vw"}}>
         <Translate contentKey={'yumzApp.searchPreferences.yourPreferences'}>Your preferences:</Translate>
       </h3>
@@ -134,7 +141,7 @@ export const Search = (props: IRestaurantProps) => {
       </h2>
       <div className="table-responsive">
         <p>{keyword ? 'Results containing "' + keyword + '":' : ''}</p>
-        {entityLoaded && filteredList && filteredList.length > 0 && userSearchRatings && userSearchRatings.length > 0 ? (
+        {entityLoaded && sortedList && sortedList.length > 0 && userSearchRatings && userSearchRatings.length > 0 ? (
           <Table responsive style={{fontSize: "1.2vw", tableLayout: "fixed"}}>
             <thead>
               <tr>
@@ -154,7 +161,7 @@ export const Search = (props: IRestaurantProps) => {
               </tr>
             </thead>
             <tbody>
-              {filteredList.slice().sort((a, b) => (getUserMatch(a.id) < getUserMatch(b.id) ? 1 : -1)).map(restaurant => (
+              {sortedList.map(restaurant => (
                 <tr key={restaurant}>
                   <td><p style={{width: "18vw"}}>{restaurant.name}</p></td>
                   <td><p style={{width: "18vw", margin: "0px"}}>{restaurant.location.split("^").map(addressLine => (

@@ -57,23 +57,23 @@ export const Search = (props: IRestaurantProps) => {
             reviews.push(review);
           });
           const ratings = {
-            food: reviews.reduce((total, current) => total + parseInt(current.food, 10), 0) / reviews.length,
-            hospitality: reviews.reduce((total, current) => total + parseInt(current.hospitality, 10), 0) / reviews.length,
-            atmosphere: reviews.reduce((total, current) => total + parseInt(current.atmosphere, 10), 0) / reviews.length
+            food: parseFloat((reviews.reduce((total, current) => total + parseInt(current.food, 10), 0) / reviews.length).toFixed(2)),
+            hospitality: parseFloat((reviews.reduce((total, current) => total + parseInt(current.hospitality, 10), 0) / reviews.length).toFixed(2)),
+            atmosphere: parseFloat((reviews.reduce((total, current) => total + parseInt(current.atmosphere, 10), 0) / reviews.length).toFixed(2))
           };
           if (
             !currentSearchPreferences.food &&
             !currentSearchPreferences.hospitality &&
             !currentSearchPreferences.atmosphere
           ) {
-            return (ratings.food + ratings.hospitality + ratings.atmosphere) / 3
+            return parseFloat(((ratings.food + ratings.hospitality + ratings.atmosphere) / 3).toFixed(2))
           } else {
-            return (ratings.food * currentSearchPreferences.food +
+            return parseFloat(((ratings.food * currentSearchPreferences.food +
                   ratings.hospitality * currentSearchPreferences.hospitality +
                   ratings.atmosphere * currentSearchPreferences.atmosphere) /
                 (currentSearchPreferences.food +
                   currentSearchPreferences.hospitality +
-                  currentSearchPreferences.atmosphere)
+                  currentSearchPreferences.atmosphere)).toFixed(2))
             };
           }
   };

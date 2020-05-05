@@ -33,7 +33,6 @@ export const Home = (props) => {
 
   const [searchPreferencesId, setSearchPreferencesId] = useState(null);
   const [entityLoaded, setEntityLoaded] = useState(false);
-  const [restaurantListIsSet, setRestaurantListIsSet] = useState(false);
 
   const { account, searchPreferencesList, currentSearchPreferences, restaurantList, loading, updating, users } = props;
 
@@ -83,18 +82,6 @@ export const Home = (props) => {
     }
   };
 
-  const setRestaurantListInSearchState = () => {
-    const newList = [];
-    restaurantList.map(restaurant => {
-      newList.push({
-        ...restaurant,
-        userMatch: 1
-      });
-    });
-    props.setSearchList(newList);
-    setRestaurantListIsSet(true);
-  }
-
   const search = (event, errors, values) => {
     if (errors.length === 0) {
       window.location.href=`/search?food=${currentSearchPreferences.food}&hospitality=${currentSearchPreferences.hospitality}&atmosphere=${currentSearchPreferences.atmosphere}${values.keyword ? '&keyword=' + values.keyword : ''}`;
@@ -111,7 +98,6 @@ export const Home = (props) => {
           <i><Translate contentKey="home.subtitle">Personalize your search for food</Translate></i>
         </p>
         {account && account.login && account.login === "anonymoususer" ? props.logout() : null}
-        {!restaurantListIsSet && restaurantList && restaurantList.length > 0 ? setRestaurantListInSearchState() : null}
         {account && account.login ? (
           <div>
             {!entityLoaded && searchPreferencesList && searchPreferencesList.length > 0 ? savedUserRating() : null}

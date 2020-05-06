@@ -1,7 +1,7 @@
 {
   "name": "yumz",
   "version": "0.0.1-SNAPSHOT",
-  "description": "Personalize your search for food.",
+  "description": "LaunchCode capstone project",
   "private": true,
   "license": "UNLICENSED",
   "cacheDirectories": [

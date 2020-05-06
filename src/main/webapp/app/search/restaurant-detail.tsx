@@ -243,7 +243,7 @@ export const RestaurantDetail = (props: IRestaurantDetailProps) => {
                 <tr key={`entity-${i}`}>
                   <td>{review.reviewText}</td>
                   {starKeys.map((category) => (
-                    <td key={category} style={{width: "12vw"}}>
+                    <td key={category} style={{width: "13vw"}}>
                       <span style={{display: "inline-block"}}>
                       <StarRatingComponent
                         starDimension={"1.2vw"}

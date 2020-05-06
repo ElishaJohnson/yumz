@@ -1,6 +1,7 @@
 # yumz
 
 This application was generated using JHipster 6.7.1 [https://www.jhipster.tech/documentation-archive/v6.7.1](https://www.jhipster.tech/documentation-archive/v6.7.1).
+
 You can see which parts are my own work by comparing this branch to the jhipster-initial-generated-code branch.
 
 See it in action at [https://agile-temple-11013.herokuapp.com/](https://agile-temple-11013.herokuapp.com/)!

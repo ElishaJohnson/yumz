@@ -44,6 +44,7 @@ public class Restaurant implements Serializable {
     @Column(name = "website", length = 100, nullable = false)
     private String website;
 
+    // fetch=FetchType.EAGER needed to get reviews with restaurant entity
     @OneToMany(mappedBy = "restaurant", fetch=FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Review> reviews = new HashSet<>();

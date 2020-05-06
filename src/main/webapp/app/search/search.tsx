@@ -189,9 +189,14 @@ export const Search = (props: IRestaurantProps) => {
                         ))
                       : null}
                   </p></td>
-                  <td style={{width: "12vw"}}>
+                  <td style={{width: "14vw"}}>
                     <span style={{display: "inline-block"}}>
-                      {aggregateRating(restaurant)}
+                      <StarRatingComponent
+                        rating={aggregateRating(restaurant)}
+                        starRatedColor="gold"
+                        starDimension="1.2vw"
+                        starSpacing="0px"
+                      />
                     </span>
                   </td>
                   <td className="text-right" style={{width: "18vw"}}>

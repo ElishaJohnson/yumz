@@ -11,30 +11,21 @@ import { IRootState } from 'app/shared/reducers';
 import { logout } from 'app/shared/reducers/authentication';
 import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
-import { getEntity, getEntities, updateEntity, createEntity, reset } from 'app/entities/search-preferences/search-preferences.reducer';
+import { getEntities, updateEntity } from 'app/entities/search-preferences/search-preferences.reducer';
 import { ISearchPreferences } from 'app/shared/model/search-preferences.model';
-import { setCurrentSearchPreferences, setSearchList } from 'app/search/search.reducer';
-import { getEntities as getRestaurants } from 'app/entities/restaurant/restaurant.reducer';
+import { setCurrentSearchPreferences } from 'app/search/search.reducer';
 
 import StarRatingComponent from 'react-star-ratings';
-
-{/*
-  removed the line "export type IHomeProp = StateProps;" and removed ": IHomeProps" from function declaration
-  which now allowed dispatch to be accessed but caused numerous errors while there was no user logged in.
-  removed errors by relaxing certain restrictions in java/.../config/SecurityConfiguration.java.
-  TODO: find permanent solution that does not compromise security
-*/}
 
 export const Home = (props) => {
   useEffect(() => {
     props.getEntities();
-    props.getRestaurants();
   }, []);
 
   const [searchPreferencesId, setSearchPreferencesId] = useState(null);
   const [entityLoaded, setEntityLoaded] = useState(false);
 
-  const { account, searchPreferencesList, currentSearchPreferences, restaurantList, loading, updating, users } = props;
+  const { account, searchPreferencesList, currentSearchPreferences, loading, updating, users } = props;
 
   const starKeys = ["food", "hospitality", "atmosphere"];
   const starColors = {
@@ -212,14 +203,9 @@ const mapStateToProps = (storeState: IRootState) => ({
 
 const mapDispatchToProps = {
     setCurrentSearchPreferences,
-    setSearchList,
     getUsers,
-    getEntity,
     getEntities,
-    getRestaurants,
     updateEntity,
-    createEntity,
-    reset,
     logout
 };
 

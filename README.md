@@ -2,6 +2,8 @@
 
 This application was generated using JHipster 6.7.1 [https://www.jhipster.tech/documentation-archive/v6.7.1](https://www.jhipster.tech/documentation-archive/v6.7.1).
 
+You can see it in action at [https://agile-temple-11013.herokuapp.com/](https://agile-temple-11013.herokuapp.com/).
+
 ## Overview
 
 This program will provide a searchable database of restaurant ratings and reviews. Users will rate different aspects of a restaurant (e.g. quality of food, service, atmosphere) on a scale of 1 to 5 stars, and will be able to view & sort results based on the average star rating in any or all of the available categories.

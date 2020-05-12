@@ -8,9 +8,9 @@ See it in action at [https://agile-temple-11013.herokuapp.com/](https://agile-te
 
 ## Overview
 
-This program will provide a searchable database of restaurant ratings and reviews. Users will rate different aspects of a restaurant (e.g. quality of food, service, atmosphere) on a scale of 1 to 5 stars, and will be able to view & sort results based on the average star rating in any or all of the available categories.
+This program provides a searchable database of restaurant ratings and reviews. Users can rate different aspects of a restaurant (food, service, & atmosphere) on a scale of 0 to 5 stars, and are able to view & sort results based on the average star rating in any or all of the available categories.
 
-The thing that will set this apart from other rating systems will be personalized customization a user's search results. Users will be able to select the priority of each category (or turn any of them off if desired), and the database will return weighted overall average ratings based on the user's settings. For example, if a restaurant has 5 stars for quality, 4 stars for service, and 3 stars for atmosphere, the default overall rating would be 4 stars. However, if the user prioritizes quality at 100%, service at 60%, and atmosphere at 10%, the restaurant's overall rating would show up as 4.5 stars in the user's personalized search. If the user selected 0% for quality, 100% for service, and 100% for atmosphere, the same restaurant would have a 3.5 star overall rating. This will allow the user to tailor their dining experience to their immediate individual needs.
+The thing that sets this apart from other rating systems is its personalized customization of a user's search results. The user can select the priority of each category and the database will return weighted overall average ratings based on the user's settings, allowing the user to tailor their dining experience to their immediate individual needs.
 
 ### Features
 * A database of users, with the ability to create an account, log in & out, and create restaurant ratings & reviews

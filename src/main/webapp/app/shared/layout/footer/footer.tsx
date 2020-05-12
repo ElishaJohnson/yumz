@@ -10,6 +10,7 @@ const Footer = props => (
       <Col md="12">
         <p>
           <Translate contentKey="footer">Your footer</Translate>
+          <a href="https://github.com/ElishaJohnson/yumz"> https://github.com/ElishaJohnson/yumz</a>
         </p>
       </Col>
     </Row>
